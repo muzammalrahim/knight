@@ -38,6 +38,11 @@ const languages = [
     name: "French",
     flag: toAbsoluteUrl("/media/svg/flags/195-france.svg"),
   },
+  {
+    lang: "pt",
+    name: "Portuguese",
+    flag: toAbsoluteUrl("/media/svg/flags/011-brazil.svg"),
+  },
 ];
 
 export function LanguageSelectorDropdown() {

@@ -4,13 +4,14 @@ import React, {useMemo, useEffect} from "react";
 import SVG from "react-inlinesvg";
 import objectPath from "object-path";
 import ApexCharts from "apexcharts";
-import {Dropdown} from "react-bootstrap";
 import {toAbsoluteUrl} from "../../../_helpers";
 import {useHtmlClassService} from "../../../layout";
-import {DropdownMenu2} from "../../dropdowns";
+import { useHistory } from "react-router";
+import { FormattedMessage } from "react-intl";
 
 export function MixedWidget1({ className }) {
   const uiService = useHtmlClassService();
+  const history = useHistory();
 
   const layoutProps = useMemo(() => {
     return {
@@ -48,25 +49,16 @@ export function MixedWidget1({ className }) {
       chart.destroy();
     };
   }, [layoutProps]);
-
+  function handleClick(url){
+    history.push(`/${url}`);
+  }
   return (
     <div className={`card card-custom bg-gray-100 ${className}`}>
       {/* Header */}
       <div className="card-header border-0 bg-danger py-5">
-        <h3 className="card-title font-weight-bolder text-white">Sales Stat</h3>
-        <div className="card-toolbar">
-          <Dropdown className="dropdown-inline" drop="down" alignRight>
-            <Dropdown.Toggle
-              className="btn btn-transparent-white btn-sm font-weight-bolder dropdown-toggle px-5"
-              variant="transparent"
-              id="dropdown-toggle-top">
-              Export
-            </Dropdown.Toggle>
-            <Dropdown.Menu className="dropdown-menu dropdown-menu-sm dropdown-menu-right">
-              <DropdownMenu2 />
-            </Dropdown.Menu>
-          </Dropdown>
-        </div>
+        <h3 className="card-title font-weight-bolder text-white">
+          <FormattedMessage id="Dashboard.Welcome" />
+        </h3>
       </div>
       {/* Body */}
       <div className="card-body p-0 position-relative overflow-hidden">
@@ -80,24 +72,24 @@ export function MixedWidget1({ className }) {
         {/* Stat */}
         <div className="card-spacer mt-n25">
           <div className="row m-0">
-            <div className="col bg-light-warning px-6 py-8 rounded-xl mr-7 mb-7">
+            <div className="col bg-light-warning px-6 py-8 rounded-xl mr-7 mb-7" style={{cursor:'pointer'}} onClick={()=>{handleClick('speaker')}}>
               <span className="svg-icon svg-icon-3x svg-icon-warning d-block my-2">
                 <SVG
-                  src={toAbsoluteUrl("/media/svg/icons/Media/Equalizer.svg")}
+                  src={toAbsoluteUrl("/media/svg/icons/Communication/Group.svg")}
                 ></SVG>
               </span>
               <a
                 href="#"
                 className="text-warning font-weight-bold font-size-h6"
               >
-                Weekly Sales
+                <FormattedMessage id="Dashboard.New.Speaker" />
               </a>
             </div>
-            <div className="col bg-light-primary px-6 py-8 rounded-xl mb-7">
+            <div className="col bg-light-primary px-6 py-8 rounded-xl mb-7" style={{cursor:'pointer'}} onClick={()=>{handleClick('event')}}>
               <span className="svg-icon svg-icon-3x svg-icon-primary d-block my-2">
                 <SVG
                   src={toAbsoluteUrl(
-                    "/media/svg/icons/Communication/Add-user.svg"
+                    "/media/svg/icons/Communication/Write.svg"
                   )}
                 ></SVG>
               </span>
@@ -105,29 +97,29 @@ export function MixedWidget1({ className }) {
                 href="#"
                 className="text-primary font-weight-bold font-size-h6 mt-2"
               >
-                New Users
+                <FormattedMessage id="Dashboard.New.Event" />
               </a>
             </div>
           </div>
           <div className="row m-0">
-            <div className="col bg-light-danger px-6 py-8 rounded-xl mr-7">
+            <div className="col bg-light-danger px-6 py-8 rounded-xl mr-7" style={{cursor:'pointer'}} onClick={()=>{handleClick('user')}}>
               <span className="svg-icon svg-icon-3x svg-icon-danger d-block my-2">
                 <SVG
-                  src={toAbsoluteUrl("/media/svg/icons/Design/Layers.svg")}
+                  src={toAbsoluteUrl("/media/svg/icons/Communication/Add-user.svg")}
                 ></SVG>
               </span>
               <a
                 href="#"
                 className="text-danger font-weight-bold font-size-h6 mt-2"
               >
-                Item Orders
+                <FormattedMessage id="Dashboard.New.User" />
               </a>
             </div>
-            <div className="col bg-light-success px-6 py-8 rounded-xl">
+            <div className="col bg-light-success px-6 py-8 rounded-xl" style={{cursor:'pointer'}} onClick={()=>{handleClick('approval')}}>
               <span className="svg-icon svg-icon-3x svg-icon-success d-block my-2">
                 <SVG
                   src={toAbsoluteUrl(
-                    "/media/svg/icons/Communication/Urgent-mail.svg"
+                    "/media/svg/icons/Communication/Chat-check.svg"
                   )}
                 ></SVG>
               </span>
@@ -135,7 +127,7 @@ export function MixedWidget1({ className }) {
                 href="#"
                 className="text-success font-weight-bold font-size-h6 mt-2"
               >
-                Bug Reports
+                <FormattedMessage id="Dashboard.Approvals" />
               </a>
             </div>
           </div>

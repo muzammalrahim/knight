@@ -13,14 +13,14 @@ export function Footer() {
   }, [uiService]);
 
   return (
-    <div
+   <div
       className={`footer bg-white py-4 d-flex flex-lg-column  ${layoutProps.footerClasses}`}
       id="kt_footer"
     >
-      <div
+     {/*  <div
         className={`${layoutProps.footerContainerClasses} d-flex flex-column flex-md-row align-items-center justify-content-between`}
       >
-        <div className="text-dark order-2 order-md-1">
+         <div className="text-dark order-2 order-md-1">
           <span className="text-muted font-weight-bold mr-2">{today.toString()}</span> &copy;{" "}
           <a
             href="http://keenthemes.com/metronic"
@@ -30,7 +30,7 @@ export function Footer() {
           >
             Keenthemes
           </a>
-        </div>
+        </div> 
         <div className="nav nav-dark order-1 order-md-2">
           <a
             href="http://keenthemes.com/metronic"
@@ -57,7 +57,7 @@ export function Footer() {
             Contact
           </a>
         </div>
-      </div>
+      </div>*/}
     </div>
   );
 }

@@ -2,7 +2,7 @@
     "name": "demo1",
     "version": "7.0.5",
     "private": true,
-    "homepage": "https://keenthemes.com/metronic/preview/react/demo1",
+    "homepage": "https://stagings.tk/knight",
     "scripts": {
         "serve": "cp-cli build _site/react/preview/react/demo1 && serve",
         "start": "react-scripts start -o",
@@ -89,7 +89,7 @@
     },
     "devDependencies": {
         "copyfiles": "2.1.1",
-        "node-sass": "4.13.0",
+        "node-sass": "^5.0.0",
         "prettier": "1.19.1",
         "serve": "11.2.0",
         "webpack-cli": "3.3.11",

@@ -7,6 +7,7 @@ import "@formatjs/intl-relativetimeformat/dist/locale-data/de";
 import "@formatjs/intl-relativetimeformat/dist/locale-data/es";
 import "@formatjs/intl-relativetimeformat/dist/locale-data/fr";
 import "@formatjs/intl-relativetimeformat/dist/locale-data/ja";
+import "@formatjs/intl-relativetimeformat/dist/locale-data/pt";
 import "@formatjs/intl-relativetimeformat/dist/locale-data/zh";
 
 import deMessages from "./messages/de";
@@ -14,6 +15,7 @@ import enMessages from "./messages/en";
 import esMessages from "./messages/es";
 import frMessages from "./messages/fr";
 import jaMessages from "./messages/ja";
+import ptMessages from "./messages/pt";
 import zhMessages from "./messages/zh";
 
 const allMessages = {
@@ -22,7 +24,8 @@ const allMessages = {
   es: esMessages,
   fr: frMessages,
   ja: jaMessages,
-  zh: zhMessages
+  pt: ptMessages,
+  zh: zhMessages,
 };
 
 export function I18nProvider({ children }) {
