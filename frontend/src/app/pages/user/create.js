@@ -54,7 +54,7 @@ export default function TextFieldsExamplesPage() {
             <div className={classes.root}>
                 <div className="col-md-12">
                     <h3 className="card-label text-center pt-4 pb-2">
-                        <FormattedMessage id="User.Form.Title"/>
+                        <FormattedMessage id="User.Registration.Title"/>
                     </h3>
                     <form className={classes.container} noValidate autoComplete="off">
                         <div className="col-md-6">

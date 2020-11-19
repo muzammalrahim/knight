@@ -4,10 +4,17 @@ import {LayoutSplashScreen, ContentRoute} from "../_metronic/layout";
 import {BuilderPage} from "./pages/BuilderPage";
 import {MyPage} from "./pages/MyPage";
 import {DashboardPage} from "./pages/DashboardPage";
-import Speaker from "./pages/speaker/createSpeaker";
-import Event from "./pages/event/createEvent";
-import User from "./pages/user/createUser";
-import Approval from "./pages/approval/List";
+
+import SpeakerCreate from "./pages/speaker/create";
+import Speakers from "./pages/speaker/list";
+
+import EventCreate from "./pages/event/create";
+import Events from "./pages/event/list";
+
+import UserCreate from "./pages/user/create";
+import Users from "./pages/user/list";
+
+import Approvals from "./pages/approval/list";
 
 const GoogleMaterialPage = lazy(() =>
   import("./modules/GoogleMaterialExamples/GoogleMaterialPage")
@@ -33,10 +40,18 @@ export default function BasePage() {
                     <Redirect exact from="/" to="/dashboard"/>
                 }
                 <ContentRoute path="/dashboard" component={DashboardPage}/>
-                <ContentRoute path="/speaker" component={Speaker}/>
-                <ContentRoute path="/event" component={Event}/>
-                <ContentRoute path="/user" component={User}/>
-                <ContentRoute path="/approval" component={Approval}/>
+                {/* Speaker Routes */}
+                <ContentRoute exact path="/speaker/create" component={SpeakerCreate}/>
+                <ContentRoute path="/speakers" component={Speakers}/>
+
+                <ContentRoute path="/event/create" component={EventCreate}/>
+                <ContentRoute path="/events" component={Events}/>
+
+                <ContentRoute path="/user/create" component={UserCreate}/>
+                <ContentRoute path="/users" component={Users}/>
+
+                <ContentRoute path="/approvals" component={Approvals}/>
+
                 <ContentRoute path="/builder" component={BuilderPage}/>
                 <ContentRoute path="/my-page" component={MyPage}/>
                 <Route path="/google-material" component={GoogleMaterialPage}/>

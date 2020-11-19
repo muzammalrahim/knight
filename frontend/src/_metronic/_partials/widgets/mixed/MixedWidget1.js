@@ -72,7 +72,7 @@ export function MixedWidget1({ className }) {
         {/* Stat */}
         <div className="card-spacer mt-n25">
           <div className="row m-0">
-            <div className="col bg-light-warning px-6 py-8 rounded-xl mr-7 mb-7" style={{cursor:'pointer'}} onClick={()=>{handleClick('speaker')}}>
+            <div className="col bg-light-warning px-6 py-8 rounded-xl mr-7 mb-7" style={{cursor:'pointer'}} onClick={()=>{handleClick('speaker/create')}}>
               <span className="svg-icon svg-icon-3x svg-icon-warning d-block my-2">
                 <SVG
                   src={toAbsoluteUrl("/media/svg/icons/Communication/Group.svg")}
@@ -85,7 +85,7 @@ export function MixedWidget1({ className }) {
                 <FormattedMessage id="Dashboard.New.Speaker" />
               </a>
             </div>
-            <div className="col bg-light-primary px-6 py-8 rounded-xl mb-7" style={{cursor:'pointer'}} onClick={()=>{handleClick('event')}}>
+            <div className="col bg-light-primary px-6 py-8 rounded-xl mb-7" style={{cursor:'pointer'}} onClick={()=>{handleClick('event/create')}}>
               <span className="svg-icon svg-icon-3x svg-icon-primary d-block my-2">
                 <SVG
                   src={toAbsoluteUrl(
@@ -102,7 +102,7 @@ export function MixedWidget1({ className }) {
             </div>
           </div>
           <div className="row m-0">
-            <div className="col bg-light-danger px-6 py-8 rounded-xl mr-7" style={{cursor:'pointer'}} onClick={()=>{handleClick('user')}}>
+            <div className="col bg-light-danger px-6 py-8 rounded-xl mr-7" style={{cursor:'pointer'}} onClick={()=>{handleClick('user/create')}}>
               <span className="svg-icon svg-icon-3x svg-icon-danger d-block my-2">
                 <SVG
                   src={toAbsoluteUrl("/media/svg/icons/Communication/Add-user.svg")}
@@ -115,7 +115,7 @@ export function MixedWidget1({ className }) {
                 <FormattedMessage id="Dashboard.New.User" />
               </a>
             </div>
-            <div className="col bg-light-success px-6 py-8 rounded-xl" style={{cursor:'pointer'}} onClick={()=>{handleClick('approval')}}>
+            <div className="col bg-light-success px-6 py-8 rounded-xl" style={{cursor:'pointer'}} onClick={()=>{handleClick('approvals')}}>
               <span className="svg-icon svg-icon-3x svg-icon-success d-block my-2">
                 <SVG
                   src={toAbsoluteUrl(

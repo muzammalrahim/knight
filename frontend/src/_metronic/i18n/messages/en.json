@@ -67,7 +67,7 @@
   "ECOMMERCE.CUSTOMERS.EDIT.UPDATE_MESSAGE": "Customer has been updated",
   "ECOMMERCE.CUSTOMERS.EDIT.ADD_MESSAGE": "Customer has been created",
 
-  "Approvals.Main.Title": "Pending Approvals",
+  "Approval.List.Title": "Pending Approvals",
   
   "Dashboard.New.Speaker": "New Speaker",
   "Dashboard.New.Event": "New Event",
@@ -75,5 +75,12 @@
   "Dashboard.Approvals": "Approvals",
   "Dashboard.Welcome": "Welcome",
 
-  "User.Form.Title": "Create User"
+  "Event.Create.Title": "Event Registration",
+  "Event.List.Title": "Events List",
+
+  "Speaker.Registration.Title": "Speaker Registration",
+  "Speaker.List.Title": "Speakers List",
+
+  "User.Registration.Title": "Create User",
+  "User.List.Title": "Users List"
 }

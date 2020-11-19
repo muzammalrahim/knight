@@ -164,7 +164,7 @@ const EnhancedTableToolbar = props => {
           </Typography>
         ) : (
           <Typography variant="h6" id="tableTitle">
-            <FormattedMessage id="Approval.List.Title"/>
+            <FormattedMessage id="User.List.Title"/>
           </Typography>
         )}
       </div>

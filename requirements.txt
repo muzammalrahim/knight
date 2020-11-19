@@ -3,3 +3,4 @@ asgiref==3.3.1
 pytz==2020.4 
 sqlparse==0.4.1
 djangorestframework==3.12.2
+mysqlclient==1.4.6

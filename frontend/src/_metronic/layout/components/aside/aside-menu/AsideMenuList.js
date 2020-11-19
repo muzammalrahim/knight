@@ -30,84 +30,225 @@ export function AsideMenuList({ layoutProps }) {
             </NavLink>
           </li>
 
-          <li className="menu-section ">
-            <h4 className="menu-text">Speaker</h4>
-            <i className="menu-icon flaticon-more-v2"></i>
-          </li>
           <li
               className={`menu-item menu-item-submenu ${getMenuItemActive(
-                  "/e-commerce", true
+                  "/google-material", true
               )}`}
               aria-haspopup="true"
               data-menu-toggle="hover"
           >
-            <NavLink className="menu-link menu-toggle" to="/speaker">
+            <NavLink className="menu-link menu-toggle" to="/google-material">
             <span className="svg-icon menu-icon">
               <SVG src={toAbsoluteUrl("/media/svg/icons/Communication/Group.svg")}/>
             </span>
-              <span className="menu-text">New Speaker</span>
+              <span className="menu-text">Speaker</span>
+              <i className="menu-arrow"/>
             </NavLink>
+            <div className="menu-submenu ">
+              <i className="menu-arrow"/>
+              <ul className="menu-subnav">
+                {/* Layout */}
+                <li
+                    className={`menu-item menu-item-submenu ${getMenuItemActive(
+                        "/google-material/layout", true
+                    )}`}
+                    aria-haspopup="true"
+                    data-menu-toggle="hover"
+                >
+                  <ul className="menu-subnav">
+                      <li
+                          className={`menu-item ${getMenuItemActive(
+                              "/google-material/layout/box"
+                          )}`}
+                          aria-haspopup="true"
+                      >
+                        <NavLink className="menu-link" to="/speakers">
+                          <i className="menu-bullet menu-bullet-dot">
+                            <span/>
+                          </i>
+                          <span className="menu-text">List</span>
+                        </NavLink>
+                      </li>
+                      <li
+                          className={`menu-item ${getMenuItemActive(
+                              "/google-material/layout/box"
+                          )}`}
+                          aria-haspopup="true"
+                      >
+                        <NavLink className="menu-link" to="/speaker/create">
+                          <i className="menu-bullet menu-bullet-dot">
+                            <span/>
+                          </i>
+                          <span className="menu-text">Create</span>
+                        </NavLink>
+                      </li>
+                    </ul>
+                </li>
+              </ul>
+            </div>
           </li>
 
-           <li className="menu-section ">
-            <h4 className="menu-text">Events</h4>
-            <i className="menu-icon flaticon-more-v2"></i>
-          </li>
           <li
               className={`menu-item menu-item-submenu ${getMenuItemActive(
-                  "/e-commerce", true
+                  "/google-material", true
               )}`}
               aria-haspopup="true"
               data-menu-toggle="hover"
           >
-            <NavLink className="menu-link menu-toggle" to="/event">
+            <NavLink className="menu-link menu-toggle" to="/google-material">
             <span className="svg-icon menu-icon">
               <SVG src={toAbsoluteUrl("/media/svg/icons/Communication/Write.svg")}/>
             </span>
-              <span className="menu-text">New Event</span>
+              <span className="menu-text">Events</span>
+              <i className="menu-arrow"/>
             </NavLink>
+            <div className="menu-submenu ">
+              <i className="menu-arrow"/>
+              <ul className="menu-subnav">
+                {/* Layout */}
+                <li
+                    className={`menu-item menu-item-submenu ${getMenuItemActive(
+                        "/google-material/layout", true
+                    )}`}
+                    aria-haspopup="true"
+                    data-menu-toggle="hover"
+                >
+                  <ul className="menu-subnav">
+                      <li
+                          className={`menu-item ${getMenuItemActive(
+                              "/google-material/layout/box"
+                          )}`}
+                          aria-haspopup="true"
+                      >
+                        <NavLink className="menu-link" to="/events">
+                          <i className="menu-bullet menu-bullet-dot">
+                            <span/>
+                          </i>
+                          <span className="menu-text">List</span>
+                        </NavLink>
+                      </li>
+                      <li
+                          className={`menu-item ${getMenuItemActive(
+                              "/google-material/layout/box"
+                          )}`}
+                          aria-haspopup="true"
+                      >
+                        <NavLink className="menu-link" to="/event/create">
+                          <i className="menu-bullet menu-bullet-dot">
+                            <span/>
+                          </i>
+                          <span className="menu-text">Create</span>
+                        </NavLink>
+                      </li>
+                    </ul>
+                </li>
+              </ul>
+            </div>
           </li>
 
-          <li className="menu-section ">
-            <h4 className="menu-text">User</h4>
-            <i className="menu-icon flaticon-more-v2"></i>
-          </li>
           <li
               className={`menu-item menu-item-submenu ${getMenuItemActive(
-                  "/e-commerce", true
+                  "/google-material", true
               )}`}
               aria-haspopup="true"
               data-menu-toggle="hover"
           >
-            <NavLink className="menu-link menu-toggle" to="/user">
+            <NavLink className="menu-link menu-toggle" to="/google-material">
             <span className="svg-icon menu-icon">
               <SVG src={toAbsoluteUrl("/media/svg/icons/Communication/Add-user.svg")}/>
             </span>
-              <span className="menu-text">Add User</span>
+              <span className="menu-text">User</span>
+              <i className="menu-arrow"/>
             </NavLink>
+            <div className="menu-submenu ">
+              <i className="menu-arrow"/>
+              <ul className="menu-subnav">
+                {/* Layout */}
+                <li
+                    className={`menu-item menu-item-submenu ${getMenuItemActive(
+                        "/google-material/layout", true
+                    )}`}
+                    aria-haspopup="true"
+                    data-menu-toggle="hover"
+                >
+                  <ul className="menu-subnav">
+                      <li
+                          className={`menu-item ${getMenuItemActive(
+                              "/google-material/layout/box"
+                          )}`}
+                          aria-haspopup="true"
+                      >
+                        <NavLink className="menu-link" to="/users">
+                          <i className="menu-bullet menu-bullet-dot">
+                            <span/>
+                          </i>
+                          <span className="menu-text">List</span>
+                        </NavLink>
+                      </li>
+                      <li
+                          className={`menu-item ${getMenuItemActive(
+                              "/google-material/layout/box"
+                          )}`}
+                          aria-haspopup="true"
+                      >
+                        <NavLink className="menu-link" to="/user/create">
+                          <i className="menu-bullet menu-bullet-dot">
+                            <span/>
+                          </i>
+                          <span className="menu-text">Create</span>
+                        </NavLink>
+                      </li>
+                    </ul>
+                </li>
+              </ul>
+            </div>
           </li>
 
-          <li className="menu-section ">
-            <h4 className="menu-text">Approvals</h4>
-            <i className="menu-icon flaticon-more-v2"></i>
-          </li>
           <li
               className={`menu-item menu-item-submenu ${getMenuItemActive(
-                  "/e-commerce", true
+                  "/google-material", true
               )}`}
               aria-haspopup="true"
               data-menu-toggle="hover"
           >
-            <NavLink className="menu-link menu-toggle" to="/approval">
+            <NavLink className="menu-link menu-toggle" to="/google-material">
             <span className="svg-icon menu-icon">
               <SVG src={toAbsoluteUrl("/media/svg/icons/Communication/Chat-check.svg")}/>
             </span>
-              <span className="menu-text">List</span>
+              <span className="menu-text">Approvals</span>
+              <i className="menu-arrow"/>
             </NavLink>
+            <div className="menu-submenu ">
+              <i className="menu-arrow"/>
+              <ul className="menu-subnav">
+                {/* Layout */}
+                <li
+                    className={`menu-item menu-item-submenu ${getMenuItemActive(
+                        "/google-material/layout", true
+                    )}`}
+                    aria-haspopup="true"
+                    data-menu-toggle="hover"
+                >
+                  <ul className="menu-subnav">
+                      <li
+                          className={`menu-item ${getMenuItemActive(
+                              "/google-material/layout/box"
+                          )}`}
+                          aria-haspopup="true"
+                      >
+                        <NavLink className="menu-link" to="/approvals">
+                          <i className="menu-bullet menu-bullet-dot">
+                            <span/>
+                          </i>
+                          <span className="menu-text">List</span>
+                        </NavLink>
+                      </li>
+                    </ul>
+                </li>
+              </ul>
+            </div>
           </li>
         </ul>
-
-        {/* end::Menu Nav */}
       </>
   );
 }
