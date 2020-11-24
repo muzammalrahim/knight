@@ -20,7 +20,7 @@ export function QuickUser() {
         <div className="offcanvas-header d-flex align-items-center justify-content-between pb-5">
           <h3 className="font-weight-bold m-0">
             User Profile
-            <small className="text-muted font-size-sm ml-2">12 messages</small>
+            {/* <small className="text-muted font-size-sm ml-2">12 messages</small> */}
           </h3>
           <a
               href="#"
@@ -78,7 +78,7 @@ export function QuickUser() {
             </div>
           </div>
 
-          <div className="separator separator-dashed mt-8 mb-5"/>
+          {/* <div className="separator separator-dashed mt-8 mb-5"/>
 
           <div className="navi navi-spacer-x-0 p-0">
             <a href="/user/profile" className="navi-item">
@@ -265,6 +265,7 @@ export function QuickUser() {
             </span>
             </div>
           </div>
+         */}
         </div>
       </div>
   );

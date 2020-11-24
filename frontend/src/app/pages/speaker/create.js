@@ -10,7 +10,7 @@ import Grid from '@material-ui/core/Grid';
 import {
 	getCurrentDate
   } from "../../../_metronic/_helpers";
-import list from '../helper/api';
+// import list from '../helper/api';
 
 class SpeakerRegistrationForm extends React.Component{
 	constructor(props){
@@ -25,6 +25,7 @@ class SpeakerRegistrationForm extends React.Component{
 		this.state={
 			speaker: this.speaker,
 			currentTab: 0,
+			onlyNums:'',
 			countries:[{value:'Select country ....', label:'Select country ....'}]
 		}
 	}
@@ -33,8 +34,17 @@ class SpeakerRegistrationForm extends React.Component{
 		let key = event.target.name;
 		let value = event.target.value;
 		let {speaker} = this.state;
-		if(key==='foreignFlag' || key==='accept_info' || key==='registration_in_city' || key==="social_security"){
+		if(key==="foreignFlag" || key==="accept_info" || key==="registration_in_city" || key==="social_security"){
 			speaker[key]=!(speaker[key])
+		}
+		else if(key==="id_number" || key==="fax" || key==="mobile"){
+			if(event.keyCode !== 107 && event.keyCode !== 109){
+				speaker[key]=value;
+				this.setState({speaker});
+			}
+			else {
+				event.target.value = speaker[key];
+			}
 		}
 		else {
 			speaker[key]= value;
@@ -57,18 +67,6 @@ class SpeakerRegistrationForm extends React.Component{
 			})
 			this.setState({countries:list_data})});
 	}
-	// numberChange(e) {
-	// 	const onlyNums = e.target.value.replace(/[^0-9]/g, '');
-	// 	if (onlyNums.length < 10) {
-	// 		this.setState({ value: onlyNums });
-	// 	} else if (onlyNums.length === 10) {
-	// 		const number = onlyNums.replace(
-	// 			/(\d{3})(\d{3})(\d{4})/,
-	// 			'($1) $2-$3'
-	// 		);
-	// 		this.setState({ value: number });
-	// 	}
-	// }
 	render(){
 		let {speaker:{foreignFlag, accept_info, person_type}, speaker, currentTab, countries} = this.state;
 
@@ -345,8 +343,8 @@ class SpeakerRegistrationForm extends React.Component{
 											type="number"
 											margin="normal"
 											variant="outlined"
-											// onChange={(e)=>{this.numberChange(e)}}
-											onBlur={(event)=>{this.handleChange(event)}}
+											// onKeyUp={(e)=>{this.numberChange(e)}}
+											onKeyUp={(event)=>{this.handleChange(event)}}
 										/>
 									</div>
 									<div className="col-md-4">
@@ -400,7 +398,8 @@ class SpeakerRegistrationForm extends React.Component{
 											name="mobile"
 											margin="normal"
 											variant="outlined"
-											onBlur={(event)=>{this.handleChange(event)}}
+											// onKeyUp={(e)=>{this.numberChange(e)}}
+											onKeyUp={(event)=>{this.handleChange(event)}}
 										/>
 									</div>
 									<div className="col-md-3">
@@ -412,7 +411,8 @@ class SpeakerRegistrationForm extends React.Component{
 											type="number"
 											margin="normal"
 											variant="outlined"
-											onBlur={(event)=>{this.handleChange(event)}}
+											// onKeyUp={(e)=>{this.numberChange(e)}}
+											onKeyUp={(event)=>{this.handleChange(event)}}
 										/>
 									</div>
 									<div className="col-md-4">
@@ -801,20 +801,6 @@ const civilStatus = [
 		label: "Divorced"
 	}
 ];
-const province = [
-	{
-		value: "Punjab",
-		label: "Punjab"
-	},
-	{
-		value: "KPK",
-		label: "KPK"
-	},
-	{
-		value: "Sindh",
-		label: "Sindh"
-	}
-];
 function TabContainer(props) {
 	return (
 		<Typography component="div" style={{ padding: 8 * 3 }}>
@@ -826,7 +812,7 @@ function TabContainer(props) {
 TabContainer.propTypes = {
 	children: PropTypes.node.isRequired,
 };
-// Example 2
+
 const styles = {
 	container: {
 		display: "flex",

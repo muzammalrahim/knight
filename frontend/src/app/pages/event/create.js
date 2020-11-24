@@ -18,7 +18,7 @@ class EventRegistrationForm extends React.Component {
 		this.event={
 			name:"", type:"", date:"", duration:"", web_presential:"", country:"",	state:"",
 			city:"", address:"", solicitant:"", business_unit:"", department:"", cost_center:"",
-			speaker_name:"", virtual_presential:"", duration:"", displacement:''
+			speaker_name:"", virtual_presential:"", _duration:"", displacement:''
 		}
 		this.state={
 			event: this.event,

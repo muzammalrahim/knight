@@ -40,7 +40,7 @@ export default function list(endpoint, params={}) {
 	}
 	// let URL = endpoint.includes("http") ? endpoint : API_URL+endpoint;
 	return axios.get("https://restcountries.eu/rest/v2/all", config).then(response => {
-		if(response.data.results != undefined) {
+		if(response.data.results !== undefined) {
 			// pagination response handling there :)
 			response.extra_data = {
 				count : response.data.count,

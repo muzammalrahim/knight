@@ -7,6 +7,13 @@ from django.conf.urls import url
 
 router = DefaultRouter()
 
+user_detail = users_view.UserViewSet.as_view({
+	'get': 'retrieve',
+	'put': 'update',
+	'patch': 'partial_update',
+	'delete': 'destroy'
+})
+
 events_list = users_view.EventsViewSet.as_view({
 	'get': 'list',
 	'post': 'create'
@@ -19,9 +26,11 @@ speakers_list = users_view.SpeakersViewSet.as_view({
 
 urlpatterns = format_suffix_patterns([
 
-	path('', users_view.api_root),
+	# path('', users_view.api_root),
 	path('login', users_view.login),
 	path('logout', users_view.logout),
+
+	path('users/<pk>/', user_detail),
 	
 	path('events', events_list, name='events'),
 	path('speakers', speakers_list, name='speakers'),

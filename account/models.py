@@ -1,7 +1,7 @@
 from django.db import models
 
 class Speaker(models.Model):
-	foreign_flag = models.BooleanField(null=True, default=False)
+	foreign_flag = models.BooleanField(default=False)
 	accept_information_rule = models.BooleanField(null=True, default=False)
 	name = models.CharField(max_length=191)
 	father_name = models.CharField(max_length=191, blank=True, null=True)

@@ -15,6 +15,8 @@ from rest_framework.status import (
 	HTTP_200_OK,
 	HTTP_204_NO_CONTENT
 )
+from rest_framework.authtoken.models import Token
+from rest_framework.request import Request
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -24,6 +26,22 @@ class UserViewSet(viewsets.ModelViewSet):
 	queryset = User.objects.all().order_by('-date_joined')
 	serializer_class = UserSerializer
 	permission_classes = [permissions.IsAuthenticated]
+
+	def retrieve(self, request: Request, *args, **kwargs):
+		if kwargs.get('pk') == 'me':
+			response_data = self.get_serializer(request.user).data
+			# response_data['permissions'] = Permission.objects.filter(id__in=request.user.user_permissions.values_list('id', flat=True)).values_list('codename', flat=True)
+			# response_data['group_permissions'] = request.user.groups.first().permissions.all().values_list('codename', flat=True)
+			response_data['groups'] = request.user.groups.first().name
+			# if request.user.contact.exists():
+			# 	response_data['media'] = AbMedias.get_media(request.user.contact.first(), 'App\\Contact')
+			# else:
+			# 	response_data['media'] = None
+			return Response(response_data)
+
+		instance = self.get_object()
+		serializer = self.get_serializer(instance)
+		return Response(serializer.data)
 
 
 class GroupViewSet(viewsets.ModelViewSet):
@@ -66,12 +84,10 @@ def login(request):
 		return Response({'error': 'Please provide both email and password'},
 						status=HTTP_400_BAD_REQUEST)
 	user = authenticate(email=email, password=password)
+	print(user)
 	if not user:
 		return Response({'error': 'Invalid Credentials'},
 						status=HTTP_404_NOT_FOUND)
-
-	# create access logs entry
-	AbAccesslogs(user=user, payload=json.dumps(makeRequestDict(request.META))).save()
 
 	token, _ = Token.objects.get_or_create(user=user)
 	return Response({'token': token.key},
@@ -79,5 +95,6 @@ def login(request):
 
 @api_view(["POST"])
 def logout(request):
+	print(request.user.auth_token)
 	request.user.auth_token.delete()
 	return Response(status=HTTP_200_OK)
