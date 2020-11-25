@@ -30,13 +30,8 @@ class UserViewSet(viewsets.ModelViewSet):
 	def retrieve(self, request: Request, *args, **kwargs):
 		if kwargs.get('pk') == 'me':
 			response_data = self.get_serializer(request.user).data
-			# response_data['permissions'] = Permission.objects.filter(id__in=request.user.user_permissions.values_list('id', flat=True)).values_list('codename', flat=True)
-			# response_data['group_permissions'] = request.user.groups.first().permissions.all().values_list('codename', flat=True)
 			response_data['groups'] = request.user.groups.first().name
-			# if request.user.contact.exists():
-			# 	response_data['media'] = AbMedias.get_media(request.user.contact.first(), 'App\\Contact')
-			# else:
-			# 	response_data['media'] = None
+			response_data['fullname']= request.user.first_name+' '+request.user.last_name
 			return Response(response_data)
 
 		instance = self.get_object()

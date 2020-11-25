@@ -70,7 +70,7 @@ function Login(props) {
     validationSchema: LoginSchema,
     onSubmit: (values, { setStatus, setSubmitting }) => {
       enableLoading();
-      // setTimeout(() => {
+      setTimeout(() => {
         login(values.email, values.password)
           .then(({ data: { token } }) => {
             let accessToken = token;
@@ -86,7 +86,7 @@ function Login(props) {
               })
             );
           });
-      // }, 1000);
+      }, 1000);
     },
   });
 
