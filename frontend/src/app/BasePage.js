@@ -14,7 +14,7 @@ import Events from "./pages/event/list";
 import UserCreate from "./pages/user/create";
 import Users from "./pages/user/list";
 
-import Approvals from "./pages/approval/list";
+import Approvals from "./pages/approval/List";
 
 const GoogleMaterialPage = lazy(() =>
   import("./modules/GoogleMaterialExamples/GoogleMaterialPage")
