@@ -21,6 +21,14 @@ import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { FormattedMessage } from 'react-intl';
+import {useState,useEffect} from 'react'
+import axios from 'axios'
+import list from '../helper/api';
+
+
+ 
+
+
 
 function createData(name, calories, fat, carbs, protein) {
   return { name, calories, fat, carbs, protein };
@@ -217,6 +225,9 @@ export default function EnhancedTable() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rows, setRows] = React.useState([]);
+
+
 
   function handleRequestSort(event, property) {
     const isDesc = orderBy === property && order === 'desc';
@@ -264,6 +275,25 @@ export default function EnhancedTable() {
   function handleChangeDense(event) {
     setDense(event.target.checked);
   }
+
+  async function getUsers (){
+    const result = await axios.get("http://127.0.0.1:8000/api/speakers");
+    console.log("boom",result);
+    list('api/speakers').then((response)=>{
+      let user_list = [];
+      console.log("boom",response.data);
+      response.data.map((row)=>{
+
+        user_list.push(createData(row.username, row.first_name, row.last_name, row.email, row.business_unit))
+      })
+      setRows(user_list);
+    })
+  }
+  useEffect(() => {
+    console.log('called')
+    getUsers();
+  },[]);
+
 
   const isSelected = name => selected.indexOf(name) !== -1;
 
@@ -351,3 +381,4 @@ export default function EnhancedTable() {
     </div>
   );
 }
+
