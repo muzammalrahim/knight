@@ -9,6 +9,7 @@ router = DefaultRouter()
 
 user_detail = users_view.UserViewSet.as_view({
 	'get': 'retrieve',
+	'post': 'create',
 	'put': 'update',
 	'patch': 'partial_update',
 	'delete': 'destroy'

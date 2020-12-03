@@ -1,4 +1,9 @@
 from django.db import models
+from django.contrib.auth.models import User
+
+class User(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    business_unit = models.CharField(max_length=191, blank=True, null=True)
 
 class Speaker(models.Model):
 	foreign_flag = models.BooleanField(default=False)

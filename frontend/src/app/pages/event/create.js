@@ -62,7 +62,7 @@ class EventRegistrationForm extends React.Component {
 											name="name"
 											label="Event Name"
 											style={styles.textField}
-											defaultValue={event.name}
+											value={event.name}
 											onBlur={(e)=>{this.handleChange(e)}}
 											margin="normal"
 											variant="outlined"
@@ -75,7 +75,7 @@ class EventRegistrationForm extends React.Component {
 											name="type"
 											label="Type"
 											style={styles.textField}
-											defaultValue={event.type}
+											value={event.type}
 											onChange={(e)=>{this.handleChange(e)}}
 											SelectProps={{
 												native: true,
@@ -100,7 +100,7 @@ class EventRegistrationForm extends React.Component {
 											name="date"
 											label="Date"
 											type="date"
-											defaultValue={event.date ? event.date : getCurrentDate()}
+											value={event.date ? event.date : getCurrentDate()}
 											onChange={(e) =>{this.handleChange(e)}}
 											style={styles.textField}
 											InputLabelProps={{
@@ -114,7 +114,7 @@ class EventRegistrationForm extends React.Component {
 											name="duration"
 											label="Duration"
 											style={styles.textField}
-											defaultValue={event.duration}
+											value={event.duration}
 											onBlur={(e)=>{this.handleChange(e)}}
 											margin="normal"
 											variant="outlined"
@@ -127,7 +127,7 @@ class EventRegistrationForm extends React.Component {
 											name="web_presential"
 											label="Web/Presential"
 											style={styles.textField}
-											defaultValue={event.web_presential}
+											value={event.web_presential}
 											onChange={(e)=>{this.handleChange(e)}}
 											SelectProps={{
 												native: true,
@@ -155,7 +155,7 @@ class EventRegistrationForm extends React.Component {
 												name="country"
 												label="Country"
 												style={styles.textField}
-												defaultValue={event.country}
+												value={event.country}
 												onChange={(e)=>{this.handleChange(e)}}
 												SelectProps={{
 													native: true,
@@ -181,7 +181,7 @@ class EventRegistrationForm extends React.Component {
 												name="state"
 												label="State / Province"
 												style={styles.textField}
-												defaultValue={event.state}
+												value={event.state}
 												onChange={(e)=>{this.handleChange(e)}}
 												SelectProps={{
 													native: true,
@@ -205,7 +205,7 @@ class EventRegistrationForm extends React.Component {
 												required
 												name="city"
 												label="City"
-												defaultValue={event.city}
+												value={event.city}
 												style={styles.textField}
 												onBlur={(e)=>{this.handleChange(e)}}
 												margin="normal"
@@ -217,7 +217,7 @@ class EventRegistrationForm extends React.Component {
 											required
 											name="address"
 											label="Address"
-											defaultValue={event.address}
+											value={event.address}
 											style={styles.textField}
 											onBlur={(e)=>{this.handleChange(e)}}
 											margin="normal"
@@ -240,7 +240,7 @@ class EventRegistrationForm extends React.Component {
 											name="solicitant"
 											label="Solicitant Name"
 											style={styles.textField}
-											defaultValue={event.solicitant}
+											value={event.solicitant}
 											onChange={(e)=>{this.handleChange(e)}}
 											margin="normal"
 											variant="outlined"
@@ -253,7 +253,7 @@ class EventRegistrationForm extends React.Component {
 											name="business_unit"
 											label="Business Unit"
 											style={styles.textField}
-											defaultValue={event.business_unit}
+											value={event.business_unit}
 											onChange={(e)=>{this.handleChange(e)}}
 											SelectProps={{
 												native: true,
@@ -279,7 +279,7 @@ class EventRegistrationForm extends React.Component {
 											name="department"
 											label="Department"
 											style={styles.textField}
-											defaultValue={event.department}
+											value={event.department}
 											onChange={(e)=>{this.handleChange(e)}}
 											SelectProps={{
 												native: true,
@@ -304,7 +304,7 @@ class EventRegistrationForm extends React.Component {
 											name="cost_center"
 											label="Cost Center"
 											style={styles.textField}
-											defaultValue={event.cost_center}
+											value={event.cost_center}
 											onBlur={(e)=>{this.handleChange(e)}}
 											margin="normal"
 											variant="outlined"
@@ -343,7 +343,7 @@ class EventRegistrationForm extends React.Component {
 											name="virtual_presential"
 											label="Virtual / Presential"
 											style={styles.textField}
-											defaultValue={event.virtual_presential}
+											value={event.virtual_presential}
 											onChange={(e)=>{this.handleChange(e)}}
 											SelectProps={{
 												native: true,
@@ -369,7 +369,7 @@ class EventRegistrationForm extends React.Component {
 											name="duration"
 											label="Duration"
 											style={styles.textField}
-											defaultValue={event.duration}
+											value={event.duration}
 											onChange={(e)=>{this.handleChange(e)}}
 											SelectProps={{
 												native: true,

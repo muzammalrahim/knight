@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { lighten, makeStyles } from '@material-ui/core/styles';
@@ -21,11 +20,18 @@ import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { FormattedMessage } from 'react-intl';
+import list from '../helper/api';
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
+function createData(username, first_name, last_name, email, business_unit) {
+  return { username, first_name, last_name, email, business_unit };
 }
-
+const headRows = [
+  { id: 'username', numeric: false, disablePadding: true, label: 'Username' },
+  { id: 'first_name', numeric: true, disablePadding: false, label: 'First Name' },
+  { id: 'last_name', numeric: true, disablePadding: false, label: 'Last Name' },
+  { id: 'email', numeric: true, disablePadding: false, label: 'Email' },
+  { id: 'business_unit', numeric: true, disablePadding: false, label: 'business_unit' },
+];
 const rows = [
   createData('Cupcake', 305, 3.7, 67, 4.3),
   createData('Donut', 452, 25.0, 51, 4.9),
@@ -66,13 +72,7 @@ function getSorting(order, orderBy) {
   return order === 'desc' ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy);
 }
 
-const headRows = [
-  { id: 'name', numeric: false, disablePadding: true, label: 'Dessert (100g serving)' },
-  { id: 'calories', numeric: true, disablePadding: false, label: 'Calories' },
-  { id: 'fat', numeric: true, disablePadding: false, label: 'Fat (g)' },
-  { id: 'carbs', numeric: true, disablePadding: false, label: 'Carbs (g)' },
-  { id: 'protein', numeric: true, disablePadding: false, label: 'Protein (g)' },
-];
+
 
 function EnhancedTableHead(props) {
   const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
@@ -264,6 +264,14 @@ export default function EnhancedTable() {
   function handleChangeDense(event) {
     setDense(event.target.checked);
   }
+  function getUsers(){
+    list('users').then((response)=>{
+      console.log('response', response.data);
+    })
+  }
+  useEffect(() => {
+    getUsers();
+  });
 
   const isSelected = name => selected.indexOf(name) !== -1;
 
