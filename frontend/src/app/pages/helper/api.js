@@ -1,9 +1,10 @@
 import axios from "axios";
 
 const API_URL = process.env.REACT_APP_API_URL;
+const Authorization = JSON.parse(localStorage.getItem('persist:v705-demo1-auth')).authToken;
 export const headers = {
   'Content-Type': 'application/json',
-  // 'Authorization': 'Token 2f2b7961077264b154a140b3111d2063add5f442'
+  Authorization: `Token ${Authorization.replaceAll('"','')}`,
 }
 
 export default function list(endpoint, params={}) {
@@ -11,7 +12,6 @@ export default function list(endpoint, params={}) {
 	  headers: headers,
 	  params: params,
 	}
-	console.log(JSON.parse(localStorage.getItem('persist:v705-demo1-auth')).authToken)
 	return axios.get(API_URL+endpoint, config).then(response => {
 		if(response.data.results !== undefined) {
 			response.extra_data = {
