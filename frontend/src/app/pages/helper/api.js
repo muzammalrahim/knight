@@ -1,10 +1,10 @@
 import axios from "axios";
 
 const API_URL = process.env.REACT_APP_API_URL;
-const Authorization = JSON.parse(localStorage.getItem('persist:v705-demo1-auth')).authToken;
+const Authorization = JSON.parse(localStorage.getItem('persist:v705-demo1-auth')) && JSON.parse(localStorage.getItem('persist:v705-demo1-auth')).authToken;
 export const headers = {
   'Content-Type': 'application/json',
-  Authorization: `Token ${Authorization.replaceAll('"','')}`,
+  Authorization: `Token ${Authorization && Authorization.replaceAll('"','')}`,
 }
 
 export default function list(endpoint, params={}) {
@@ -32,12 +32,12 @@ export default function list(endpoint, params={}) {
 //   return axios.patch(API_URL + endpoint, data, config)
 // }
 
-// export function post(endpoint, data) {
-//   let config = {
-//     headers: headers,
-//   }
-//   return axios.post(API_URL + endpoint, data, config)
-// }
+export function post(endpoint, data) {
+  let config = {
+    headers: headers,
+  }
+  return axios.post(API_URL + endpoint, data, config)
+}
 
 // export function del(endpoint, data = {}) {
 //   let config = {

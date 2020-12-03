@@ -1,18 +1,22 @@
 /* eslint-disable no-script-url,jsx-a11y/anchor-is-valid */
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {useLocation} from "react-router";
 import {NavLink}  from "react-router-dom";
 import SVG from "react-inlinesvg";
 import {toAbsoluteUrl, checkIsActive} from "../../../../_helpers";
-
 export function AsideMenuList({ layoutProps }) {
   const location = useLocation();
+  const [user, setUser] = useState();
   const getMenuItemActive = (url, hasSubmenu = false) => {
     return checkIsActive(location, url)
         ? ` ${!hasSubmenu && "menu-item-active"} menu-item-open `
         : "";
   };
-
+  // useEffect(() => {
+  //   let User = localStorage.getItem('persist:v705-demo1-auth') && JSON.parse(localStorage.getItem('persist:v705-demo1-auth')).user;
+  //   User = JSON.parse(User)
+  //   User && User.groups.length > 0 && setUser(User.groups[0])
+  // },[]);
   return (
       <>
         {/* begin::Menu Nav */}
@@ -145,7 +149,7 @@ export function AsideMenuList({ layoutProps }) {
               </ul>
             </div>
           </li>
-
+          {/* {user && user === 1 && */}
           <li
               className={`menu-item menu-item-submenu ${getMenuItemActive(
                   "/google-material", true
@@ -203,7 +207,7 @@ export function AsideMenuList({ layoutProps }) {
               </ul>
             </div>
           </li>
-
+          {/* } */}
           <li
               className={`menu-item menu-item-submenu ${getMenuItemActive(
                   "/google-material", true

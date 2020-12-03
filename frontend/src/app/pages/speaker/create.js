@@ -10,7 +10,7 @@ import Grid from '@material-ui/core/Grid';
 import {
 	getCurrentDate
   } from "../../../_metronic/_helpers";
-// import list from '../helper/api';
+import {post} from '../helper/api';
 
 class SpeakerRegistrationForm extends React.Component{
 	constructor(props){
@@ -56,7 +56,16 @@ class SpeakerRegistrationForm extends React.Component{
 	handleTabChange(currentTab) {
 		this.setState({currentTab});
 	}
-
+	handleSubmit(){
+		let {speaker} = this.state;
+		if(speaker.name && speaker.dob && speaker.birthplace && speaker.civil_state && speaker.scholarity && speaker.service_provider && speaker.country && speaker.state && speaker.city){
+			post('api/speakers', speaker).then((response)=>{
+				this.props.history.push('/speakers')
+			}).catch((response)=>{
+				console.log('response error', response)
+			})
+		}
+	}
 	componentDidMount(){
 		fetch('https://restcountries.eu/rest/v2/all')
 		.then(response => response.json())
@@ -296,6 +305,7 @@ class SpeakerRegistrationForm extends React.Component{
 											style={styles.textField}
 											margin="normal"
 											variant="outlined"
+											onChange={(event)=>{this.handleChange(event)}}
 										/>
 									</div>
 									<div className="col-md-5">
@@ -307,6 +317,7 @@ class SpeakerRegistrationForm extends React.Component{
 											style={styles.textField}
 											margin="normal"
 											variant="outlined"
+											onChange={(event)=>{this.handleChange(event)}}
 										/>
 									</div>
 									<div className="col-md-2">
@@ -762,7 +773,7 @@ class SpeakerRegistrationForm extends React.Component{
 												Cancel
 												{/* <DeleteIcon style={styles.rightIcon} /> */}
 											</Button>
-											<Button variant="contained" color="primary" style={styles.button}>
+											<Button variant="contained" color="primary" style={styles.button} onClick={()=>{this.handleSubmit()}}>
 												Submit
 												{/* This Button uses a Font Icon, see the installation instructions in the docs. */}
 												<Icon style={styles.rightIcon}>send</Icon>

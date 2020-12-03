@@ -20,7 +20,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'first_name', 'last_name', 'email', 'business_unit')
+        # fields = ('id', 'username', 'first_name', 'last_name', 'email', 'business_unit')
+        fields = '__all__'
 
 
 
@@ -35,7 +36,7 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['id','name', '_type', 'date', 'duration', 'web_presential', 'country', 'state', 'city', 'address', 'solicitant', 'business_unit', 'despartment',
         'cost_center','virtual_presential', 'displacement', 'created_at']
 
-class SpeakerSerializer(serializers.HyperlinkedModelSerializer):
+class SpeakerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Speaker
-        fields = ['id','name','dob','country','created_at']
+        fields = '__all__'

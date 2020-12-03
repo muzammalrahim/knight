@@ -75,9 +75,9 @@ function EnhancedTableHead(props) {
             inputProps={{ 'aria-label': 'Select all desserts' }}
           />
         </TableCell>
-        {headRows.map(row => (
+        {headRows.map((row, index) => (
           <TableCell
-            key={row.id}
+            key={index}
             align={row.numeric ? 'right' : 'left'}
             padding={row.disablePadding ? 'none' : 'default'}
             sortDirection={orderBy === row.id ? order : false}
@@ -259,7 +259,6 @@ export default function EnhancedTable() {
     })
   }
   useEffect(() => {
-    console.log('called')
     getUsers();
   },[]);
 
