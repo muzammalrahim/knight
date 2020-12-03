@@ -1,9 +1,5 @@
 /frontend/node_modules
 /static
-/account/migrations/*
-
-
-!/account/migrations/__init__.py
 
 db.sqlite3
 .idea
