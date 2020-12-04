@@ -21,8 +21,7 @@ import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { FormattedMessage } from 'react-intl';
-import {useState,useEffect} from 'react'
-import axios from 'axios'
+import {useState,useEffect} from 'react';
 import list from '../helper/api';
 
 
@@ -258,21 +257,16 @@ export default function EnhancedTable() {
     setDense(event.target.checked);
   }
 
-  async function getUsers (){
-    const result = await axios.get("http://127.0.0.1:8000/api/speakers");
-    console.log("boom",result);
+  function getUsers (){
     list('api/speakers').then((response)=>{
       let speaker_list = [];
-      console.log("boom",response.data);
       response.data.map((row)=>{
-
         speaker_list.push(createData(row.name, row.father_name, row.mobile, row.email, row.city))
       })
       setRows(speaker_list);
     })
   }
   useEffect(() => {
-    console.log('called')
     getUsers();
   },[]);
 

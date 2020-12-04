@@ -22,10 +22,11 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import { FormattedMessage } from 'react-intl';
 import list from '../helper/api';
 
-function createData(username, first_name, last_name, email, business_unit) {
-  return { username, first_name, last_name, email, business_unit };
+function createData(id, username, first_name, last_name, email, business_unit) {
+  return { id, username, first_name, last_name, email, business_unit };
 }
 const headRows = [
+  { id: 'id', numeric: false, disablePadding: true, label: 'Id', hidden:true  },
   { id: 'username', numeric: false, disablePadding: true, label: 'Username' },
   { id: 'first_name', numeric: true, disablePadding: false, label: 'First Name' },
   { id: 'last_name', numeric: true, disablePadding: false, label: 'Last Name' },
@@ -81,6 +82,7 @@ function EnhancedTableHead(props) {
             align={row.numeric ? 'right' : 'left'}
             padding={row.disablePadding ? 'none' : 'default'}
             sortDirection={orderBy === row.id ? order : false}
+            style={{display:row.id==='id' ? 'none' : ''}}
           >
             <TableSortLabel
               active={orderBy === row.id}
@@ -133,7 +135,7 @@ const useToolbarStyles = makeStyles(theme => ({
 
 const EnhancedTableToolbar = props => {
   const classes = useToolbarStyles();
-  const { numSelected } = props;
+  const { numSelected, selectedRows } = props;
 
   return (
     <Toolbar
@@ -142,9 +144,9 @@ const EnhancedTableToolbar = props => {
       })}
     >
       <div className={classes.title}>
-        {numSelected > 0 ? (
+        {selectedRows.length > 0 ? (
           <Typography color="inherit" variant="subtitle1">
-            {numSelected} selected
+            {selectedRows.length} selected
           </Typography>
         ) : (
           <Typography variant="h6" id="tableTitle">
@@ -193,7 +195,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function EnhancedTable() {
+export default function EnhancedTable(props) {
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
@@ -202,6 +204,8 @@ export default function EnhancedTable() {
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [rows, setRows] = React.useState([]);
+  const [selectedRows, setSelectedRows] = React.useState([]);
+  const [allSelected, setAllSelected] = React.useState([]);
 
   function handleRequestSort(event, property) {
     const isDesc = orderBy === property && order === 'desc';
@@ -253,7 +257,7 @@ export default function EnhancedTable() {
     list('users').then((response)=>{
       let user_list = [];
       response.data.map((row)=>{
-        user_list.push(createData(row.username, row.first_name, row.last_name, row.email, row.business_unit))
+        user_list.push(createData(row.id, row.username, row.first_name, row.last_name, row.email, row.business_unit))
       })
       setRows(user_list);
     })
@@ -262,14 +266,14 @@ export default function EnhancedTable() {
     getUsers();
   },[]);
 
-  const isSelected = name => selected.indexOf(name) !== -1;
+  const isSelected = id => selected.indexOf(id) !== -1;
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar numSelected={selected.length} selectedRows={selectedRows} />
         <div className={classes.tableWrapper}>
           <Table
             className={classes.table}
@@ -288,7 +292,7 @@ export default function EnhancedTable() {
               {stableSort(rows, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
+                  const isItemSelected = isSelected(row.id);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
@@ -303,11 +307,30 @@ export default function EnhancedTable() {
                     >
                       <TableCell padding="checkbox">
                         <Checkbox
-                          checked={isItemSelected}
-                          inputProps={{ 'aria-labelledby': labelId }}
+                          onChange={()=>{
+                            let selected = selectedRows;
+                            const index = selected.indexOf(row.id);
+                            if (index > -1) {
+                              selected.splice(index, 1);
+                            }else{
+                              selected.push(row.id)
+                            }
+                            setSelectedRows(selected)
+                          }}
+                          checked={selectedRows.includes(row.id)}
+                          // inputProps={{ 'aria-labelledby': labelId }}
                         />
                       </TableCell>
-                      <TableCell component="th" id={labelId} scope="row" padding="none">
+                      <TableCell align="right" style={{display:'none'}}>
+                        {row.id}
+                      </TableCell>
+                      <TableCell 
+                        component="th" 
+                        id={labelId} 
+                        scope="row" 
+                        padding="none"
+                        onClick={()=>{props.history.push(`user/${row.id}`)}} 
+                        style={{cursor:'pointer', color:'blue'}}>
                         {row.username}
                       </TableCell>
                       <TableCell align="right">{row.first_name}</TableCell>

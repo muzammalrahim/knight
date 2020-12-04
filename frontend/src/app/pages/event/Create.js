@@ -11,18 +11,21 @@ import FormControl from '@material-ui/core/FormControl';
 import {
 	getCurrentDate
   } from "../../../_metronic/_helpers";
+  import list, {post} from '../helper/api';
 
 class EventRegistrationForm extends React.Component {
 	constructor(props){
 		super(props);
 		this.event={
-			name:"", type:"", date:"", duration:"", web_presential:"", country:"",	state:"",
-			city:"", address:"", solicitant:"", business_unit:"", department:"", cost_center:"",
+			name:"", _type:"", date:"", duration:"", web_presential:"", country:"",	state:"",
+			city:"", address:"", solicitant:"", business_unit:"", despartment:"", cost_center:"",
 			speaker_name:"", virtual_presential:"", _duration:"", displacement:''
 		}
 		this.state={
 			event: this.event,
 			currentTab: 0,
+			speaker_list:[],
+			countries:[]
 		}
 	}
 
@@ -37,9 +40,36 @@ class EventRegistrationForm extends React.Component {
 	handleTabChange(value) {
 		this.setState({currentTab:value});
 	}
-
+	submitHandler(){
+        let {event} = this.state;
+        if(event.name && event._type && event.date && event.country && event.city){
+            post('api/events', event).then((response)=>{
+                this.props.history.push('/events')
+            })
+        }
+    }
+	getSpeakers (){
+		list('api/speakers').then((response)=>{
+		  let speaker_list = [];
+		  response.data.map((row)=>{
+			  speaker_list.push({label:row.name, value:row.id})
+		  })
+		  this.setState({speaker_list});
+		})
+	  }
+	componentDidMount(){
+		this.getSpeakers();
+		fetch('https://restcountries.eu/rest/v2/all')
+		.then(response => response.json())
+		.then((data) => {
+			let list_data = []
+			data.map((country)=>{
+				list_data.push({label:country.name, value: country.name})
+			})
+			this.setState({countries:list_data})});
+	}
 	render(){
-		let {event:{web_presential}, event, currentTab} = this.state;
+		let {event:{web_presential}, event, currentTab, speaker_list, countries} = this.state;
 		return (
 			<div className="row">
 				<div style={styles.root}>
@@ -63,7 +93,7 @@ class EventRegistrationForm extends React.Component {
 											label="Event Name"
 											style={styles.textField}
 											value={event.name}
-											onBlur={(e)=>{this.handleChange(e)}}
+											onChange={(e)=>{this.handleChange(e)}}
 											margin="normal"
 											variant="outlined"
 										/>
@@ -72,10 +102,10 @@ class EventRegistrationForm extends React.Component {
 										<TextField
 											required
 											select
-											name="type"
+											name="_type"
 											label="Type"
 											style={styles.textField}
-											value={event.type}
+											value={event._type}
 											onChange={(e)=>{this.handleChange(e)}}
 											SelectProps={{
 												native: true,
@@ -87,7 +117,7 @@ class EventRegistrationForm extends React.Component {
 											margin="normal"
 											variant="outlined"
 											>
-											{country.map(option => (
+											{type.map(option => (
 												<option key={option.value} value={option.value}>
 												{option.label}
 												</option>
@@ -113,9 +143,10 @@ class EventRegistrationForm extends React.Component {
 											required
 											name="duration"
 											label="Duration"
+											type="number"
 											style={styles.textField}
 											value={event.duration}
-											onBlur={(e)=>{this.handleChange(e)}}
+											onChange={(e)=>{this.handleChange(e)}}
 											margin="normal"
 											variant="outlined"
 										/>
@@ -167,7 +198,7 @@ class EventRegistrationForm extends React.Component {
 												margin="normal"
 												variant="outlined"
 												>
-												{country.map(option => (
+												{countries.map(option => (
 													<option key={option.value} value={option.value}>
 													{option.label}
 													</option>
@@ -207,7 +238,7 @@ class EventRegistrationForm extends React.Component {
 												label="City"
 												value={event.city}
 												style={styles.textField}
-												onBlur={(e)=>{this.handleChange(e)}}
+												onChange={(e)=>{this.handleChange(e)}}
 												margin="normal"
 												variant="outlined"
 											/>
@@ -219,7 +250,7 @@ class EventRegistrationForm extends React.Component {
 											label="Address"
 											value={event.address}
 											style={styles.textField}
-											onBlur={(e)=>{this.handleChange(e)}}
+											onChange={(e)=>{this.handleChange(e)}}
 											margin="normal"
 											variant="outlined"
 										/>
@@ -265,7 +296,7 @@ class EventRegistrationForm extends React.Component {
 											margin="normal"
 											variant="outlined"
 										>
-											{country.map(option => (
+											{b_unit.map(option => (
 												<option key={option.value} value={option.value}>
 													{option.label}
 												</option>
@@ -276,10 +307,10 @@ class EventRegistrationForm extends React.Component {
 										<TextField
 											required
 											select
-											name="department"
+											name="despartment"
 											label="Department"
 											style={styles.textField}
-											value={event.department}
+											value={event.despartment}
 											onChange={(e)=>{this.handleChange(e)}}
 											SelectProps={{
 												native: true,
@@ -291,7 +322,7 @@ class EventRegistrationForm extends React.Component {
 											margin="normal"
 											variant="outlined"
 										>
-											{country.map(option => (
+											{department.map(option => (
 												<option key={option.value} value={option.value}>
 													{option.label}
 												</option>
@@ -305,7 +336,7 @@ class EventRegistrationForm extends React.Component {
 											label="Cost Center"
 											style={styles.textField}
 											value={event.cost_center}
-											onBlur={(e)=>{this.handleChange(e)}}
+											onChange={(e)=>{this.handleChange(e)}}
 											margin="normal"
 											variant="outlined"
 										/>
@@ -329,7 +360,7 @@ class EventRegistrationForm extends React.Component {
 											margin="normal"
 											variant="outlined"
 										>
-											{country.map(option => (
+											{speaker_list.map(option => (
 												<option key={option.value} value={option.value}>
 													{option.label}
 												</option>
@@ -355,7 +386,7 @@ class EventRegistrationForm extends React.Component {
 											margin="normal"
 											variant="outlined"
 										>
-											{country.map(option => (
+											{virtual_presential.map(option => (
 												<option key={option.value} value={option.value}>
 													{option.label}
 												</option>
@@ -366,10 +397,10 @@ class EventRegistrationForm extends React.Component {
 										<TextField
 											required
 											select
-											name="duration"
+											name="_duration"
 											label="Duration"
 											style={styles.textField}
-											value={event.duration}
+											value={event._duration}
 											onChange={(e)=>{this.handleChange(e)}}
 											SelectProps={{
 												native: true,
@@ -399,7 +430,7 @@ class EventRegistrationForm extends React.Component {
 													value={event.displacement}
 													onChange={(e)=>{this.handleChange(e)}}
 												>
-													<FormControlLabel value="local" control={<Radio />} label="Local (at the same State" />
+													<FormControlLabel value="local" control={<Radio />} label="Local (at the same State)" />
 													<FormControlLabel value="regional" control={<Radio />} label="Regional (at the same Country)" />
 													<FormControlLabel value="international" control={<Radio />} label="International (at different Country)" />
 												</RadioGroup>
@@ -414,7 +445,7 @@ class EventRegistrationForm extends React.Component {
 										<Button variant="contained" color="default" style={styles.button}>
 											Cancel
 										</Button>
-										<Button variant="contained" color="primary" style={styles.button}>
+										<Button variant="contained" color="primary" style={styles.button} onClick={()=>{this.submitHandler()}}>
 											Submit
 											<Icon style={styles.rightIcon}>send</Icon>
 										</Button>
@@ -432,6 +463,24 @@ class EventRegistrationForm extends React.Component {
 
 export default EventRegistrationForm;
 
+const b_unit = [
+	{
+		value: "Unit 1",
+		label: "Unit 1"
+	},
+	{
+		value: "Unit 2",
+		label: "Unit 2"
+	},
+	{
+		value: "Unit 3",
+		label: "Unit 3"
+	},
+	{
+		value: "Unit 4",
+		label: "Unit 4"
+	}
+];
 const country = [
 	{
 		value: "Pakistan",
@@ -448,6 +497,60 @@ const country = [
 	{
 		value: "China",
 		label: "China"
+	}
+];
+const virtual_presential = [
+	{
+		value: "Test 1",
+		label: "Test 1"
+	},
+	{
+		value: "Test 2",
+		label: "Test 2"
+	},
+	{
+		value: "Test 3",
+		label: "Test 3"
+	},
+	{
+		value: "Test 4",
+		label: "Test 4"
+	}
+];
+const department = [
+	{
+		value: "Department 1",
+		label: "Department 1"
+	},
+	{
+		value: "Department 2",
+		label: "Department 2"
+	},
+	{
+		value: "Department 3",
+		label: "Department 3"
+	},
+	{
+		value: "Department 4",
+		label: "Department 4"
+	}
+];
+const type = [
+	{
+		value: "Type 1",
+		label: "Type 1"
+	},
+	{
+		value: "Type 2",
+		label: "Type 2"
+	},
+	{
+		value: "Type 3",
+		label: "Type 3"
+	},
+	{
+		value: "Type 4",
+		label: "Type 4"
 	}
 ];
 const province = [

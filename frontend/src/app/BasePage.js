@@ -12,6 +12,7 @@ import EventCreate from "./pages/event/Create";
 import Events from "./pages/event/List";
 
 import UserCreate from "./pages/user/Create";
+import UserEdit from "./pages/user/Edit";
 import Users from "./pages/user/List";
 
 import Approvals from "./pages/approval/List";
@@ -47,8 +48,9 @@ export default function BasePage() {
                 <ContentRoute path="/event/create" component={EventCreate}/>
                 <ContentRoute path="/events" component={Events}/>
 
-                <ContentRoute path="/user/create" component={UserCreate}/>
-                <ContentRoute path="/users" component={Users}/>
+                <ContentRoute exact path="/user/create" component={UserCreate}/>
+                <ContentRoute eaxct path="/user/:id" component={UserEdit}/>
+                <ContentRoute exact path="/users" component={Users}/>
 
                 <ContentRoute path="/approvals" component={Approvals}/>
 
