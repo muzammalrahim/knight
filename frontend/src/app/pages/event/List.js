@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect} from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { lighten, makeStyles } from '@material-ui/core/styles';
@@ -22,16 +22,9 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import { FormattedMessage } from 'react-intl';
 import list from '../helper/api';
 
-function createData(username, first_name, last_name, email, business_unit) {
-  return { username, first_name, last_name, email, business_unit };
+function createData(name, country, city, date, _type) {
+  return { name, country, city, date, _type };
 }
-const headRows = [
-  { id: 'username', numeric: false, disablePadding: true, label: 'Username' },
-  { id: 'first_name', numeric: true, disablePadding: false, label: 'First Name' },
-  { id: 'last_name', numeric: true, disablePadding: false, label: 'Last Name' },
-  { id: 'email', numeric: true, disablePadding: false, label: 'Email' },
-  { id: 'business_unit', numeric: true, disablePadding: false, label: 'business_unit' },
-];
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -56,7 +49,13 @@ function getSorting(order, orderBy) {
   return order === 'desc' ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy);
 }
 
-
+const headRows = [
+  { id: 'name', numeric: false, disablePadding: true, label: 'Name' },
+  { id: 'country', numeric: true, disablePadding: false, label: 'Country' },
+  { id: 'city', numeric: true, disablePadding: false, label: 'City' },
+  { id: 'date', numeric: true, disablePadding: false, label: 'Date' },
+  { id: 'type', numeric: true, disablePadding: false, label: 'Type' },
+];
 
 function EnhancedTableHead(props) {
   const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
@@ -75,9 +74,9 @@ function EnhancedTableHead(props) {
             inputProps={{ 'aria-label': 'Select all desserts' }}
           />
         </TableCell>
-        {headRows.map((row, index) => (
+        {headRows.map(row => (
           <TableCell
-            key={index}
+            key={row.id}
             align={row.numeric ? 'right' : 'left'}
             padding={row.disablePadding ? 'none' : 'default'}
             sortDirection={orderBy === row.id ? order : false}
@@ -148,7 +147,7 @@ const EnhancedTableToolbar = props => {
           </Typography>
         ) : (
           <Typography variant="h6" id="tableTitle">
-            <FormattedMessage id="User.List.Title"/>
+            <FormattedMessage id="Event.List.Title"/>
           </Typography>
         )}
       </div>
@@ -249,19 +248,18 @@ export default function EnhancedTable() {
   function handleChangeDense(event) {
     setDense(event.target.checked);
   }
-  function getUsers(){
-    list('users').then((response)=>{
-      let user_list = [];
+  async function getSpeakers (){
+    list('api/events').then((response)=>{
+      let event_list = [];
       response.data.map((row)=>{
-        user_list.push(createData(row.username, row.first_name, row.last_name, row.email, row.business_unit))
+        event_list.push(createData(row.name, row.country, row.city, row.date, row._type))
       })
-      setRows(user_list);
+      setRows(event_list);
     })
   }
   useEffect(() => {
-    getUsers();
+    getSpeakers();
   },[]);
-
   const isSelected = name => selected.indexOf(name) !== -1;
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
@@ -308,12 +306,12 @@ export default function EnhancedTable() {
                         />
                       </TableCell>
                       <TableCell component="th" id={labelId} scope="row" padding="none">
-                        {row.username}
+                        {row.name}
                       </TableCell>
-                      <TableCell align="right">{row.first_name}</TableCell>
-                      <TableCell align="right">{row.last_name}</TableCell>
-                      <TableCell align="right">{row.email}</TableCell>
-                      <TableCell align="right">{row.business_unit}</TableCell>
+                      <TableCell align="right">{row.country}</TableCell>
+                      <TableCell align="right">{row.city}</TableCell>
+                      <TableCell align="right">{row.date}</TableCell>
+                      <TableCell align="right">{row._type}</TableCell>
                     </TableRow>
                   );
                 })}

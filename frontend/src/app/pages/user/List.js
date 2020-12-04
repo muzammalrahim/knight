@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { lighten, makeStyles } from '@material-ui/core/styles';
@@ -21,27 +20,19 @@ import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { FormattedMessage } from 'react-intl';
+import list from '../helper/api';
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
+function createData(id, username, first_name, last_name, email, business_unit) {
+  return { id, username, first_name, last_name, email, business_unit };
 }
-
-const rows = [
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Donut', 452, 25.0, 51, 4.9),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-  createData('Honeycomb', 408, 3.2, 87, 6.5),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Jelly Bean', 375, 0.0, 94, 0.0),
-  createData('KitKat', 518, 26.0, 65, 7.0),
-  createData('Lollipop', 392, 0.2, 98, 0.0),
-  createData('Marshmallow', 318, 0, 81, 2.0),
-  createData('Nougat', 360, 19.0, 9, 37.0),
-  createData('Oreo', 437, 18.0, 63, 4.0),
+const headRows = [
+  { id: 'id', numeric: false, disablePadding: true, label: 'Id', hidden:true  },
+  { id: 'username', numeric: false, disablePadding: true, label: 'Username' },
+  { id: 'first_name', numeric: true, disablePadding: false, label: 'First Name' },
+  { id: 'last_name', numeric: true, disablePadding: false, label: 'Last Name' },
+  { id: 'email', numeric: true, disablePadding: false, label: 'Email' },
+  { id: 'business_unit', numeric: true, disablePadding: false, label: 'business_unit' },
 ];
-
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -66,13 +57,7 @@ function getSorting(order, orderBy) {
   return order === 'desc' ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy);
 }
 
-const headRows = [
-  { id: 'name', numeric: false, disablePadding: true, label: 'Dessert (100g serving)' },
-  { id: 'calories', numeric: true, disablePadding: false, label: 'Calories' },
-  { id: 'fat', numeric: true, disablePadding: false, label: 'Fat (g)' },
-  { id: 'carbs', numeric: true, disablePadding: false, label: 'Carbs (g)' },
-  { id: 'protein', numeric: true, disablePadding: false, label: 'Protein (g)' },
-];
+
 
 function EnhancedTableHead(props) {
   const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
@@ -91,12 +76,13 @@ function EnhancedTableHead(props) {
             inputProps={{ 'aria-label': 'Select all desserts' }}
           />
         </TableCell>
-        {headRows.map(row => (
+        {headRows.map((row, index) => (
           <TableCell
-            key={row.id}
+            key={index}
             align={row.numeric ? 'right' : 'left'}
             padding={row.disablePadding ? 'none' : 'default'}
             sortDirection={orderBy === row.id ? order : false}
+            style={{display:row.id==='id' ? 'none' : ''}}
           >
             <TableSortLabel
               active={orderBy === row.id}
@@ -149,7 +135,7 @@ const useToolbarStyles = makeStyles(theme => ({
 
 const EnhancedTableToolbar = props => {
   const classes = useToolbarStyles();
-  const { numSelected } = props;
+  const { numSelected, selectedRows } = props;
 
   return (
     <Toolbar
@@ -158,13 +144,13 @@ const EnhancedTableToolbar = props => {
       })}
     >
       <div className={classes.title}>
-        {numSelected > 0 ? (
+        {selectedRows.length > 0 ? (
           <Typography color="inherit" variant="subtitle1">
-            {numSelected} selected
+            {selectedRows.length} selected
           </Typography>
         ) : (
           <Typography variant="h6" id="tableTitle">
-            <FormattedMessage id="Event.List.Title"/>
+            <FormattedMessage id="User.List.Title"/>
           </Typography>
         )}
       </div>
@@ -209,7 +195,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function EnhancedTable() {
+export default function EnhancedTable(props) {
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
@@ -217,6 +203,9 @@ export default function EnhancedTable() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rows, setRows] = React.useState([]);
+  const [selectedRows, setSelectedRows] = React.useState([]);
+  const [allSelected, setAllSelected] = React.useState([]);
 
   function handleRequestSort(event, property) {
     const isDesc = orderBy === property && order === 'desc';
@@ -264,15 +253,27 @@ export default function EnhancedTable() {
   function handleChangeDense(event) {
     setDense(event.target.checked);
   }
+  function getUsers(){
+    list('users').then((response)=>{
+      let user_list = [];
+      response.data.map((row)=>{
+        user_list.push(createData(row.id, row.username, row.first_name, row.last_name, row.email, row.business_unit))
+      })
+      setRows(user_list);
+    })
+  }
+  useEffect(() => {
+    getUsers();
+  },[]);
 
-  const isSelected = name => selected.indexOf(name) !== -1;
+  const isSelected = id => selected.indexOf(id) !== -1;
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar numSelected={selected.length} selectedRows={selectedRows} />
         <div className={classes.tableWrapper}>
           <Table
             className={classes.table}
@@ -291,7 +292,7 @@ export default function EnhancedTable() {
               {stableSort(rows, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
+                  const isItemSelected = isSelected(row.id);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
@@ -306,17 +307,36 @@ export default function EnhancedTable() {
                     >
                       <TableCell padding="checkbox">
                         <Checkbox
-                          checked={isItemSelected}
-                          inputProps={{ 'aria-labelledby': labelId }}
+                          onChange={()=>{
+                            let selected = selectedRows;
+                            const index = selected.indexOf(row.id);
+                            if (index > -1) {
+                              selected.splice(index, 1);
+                            }else{
+                              selected.push(row.id)
+                            }
+                            setSelectedRows(selected)
+                          }}
+                          checked={selectedRows.includes(row.id)}
+                          // inputProps={{ 'aria-labelledby': labelId }}
                         />
                       </TableCell>
-                      <TableCell component="th" id={labelId} scope="row" padding="none">
-                        {row.name}
+                      <TableCell align="right" style={{display:'none'}}>
+                        {row.id}
                       </TableCell>
-                      <TableCell align="right">{row.calories}</TableCell>
-                      <TableCell align="right">{row.fat}</TableCell>
-                      <TableCell align="right">{row.carbs}</TableCell>
-                      <TableCell align="right">{row.protein}</TableCell>
+                      <TableCell 
+                        component="th" 
+                        id={labelId} 
+                        scope="row" 
+                        padding="none"
+                        onClick={()=>{props.history.push(`user/${row.id}`)}} 
+                        style={{cursor:'pointer', color:'blue'}}>
+                        {row.username}
+                      </TableCell>
+                      <TableCell align="right">{row.first_name}</TableCell>
+                      <TableCell align="right">{row.last_name}</TableCell>
+                      <TableCell align="right">{row.email}</TableCell>
+                      <TableCell align="right">{row.business_unit}</TableCell>
                     </TableRow>
                   );
                 })}

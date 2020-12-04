@@ -25,12 +25,18 @@ export default function list(endpoint, params={}) {
 	})
 }
 
-// export function patch(endpoint, data) {
-//   let config = {
-//     headers: headers,
-//   }
-//   return axios.patch(API_URL + endpoint, data, config)
-// }
+export function put(endpoint, data) {
+  let config = {
+    headers: headers,
+  }
+  return axios.put(API_URL + endpoint, data, config)
+}
+export function patch(endpoint, data) {
+  let config = {
+    headers: headers,
+  }
+  return axios.patch(API_URL + endpoint, data, config)
+}
 
 export function post(endpoint, data) {
   let config = {

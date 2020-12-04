@@ -88,11 +88,11 @@ WSGI_APPLICATION = 'knight.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', 
+        'ENGINE': 'django.db.backends.mysql',
         'NAME': 'knight',
         'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+        'PASSWORD': 'knight12',
+        'HOST': 'db',   # Or an IP Address that your DB is hosted on
         'PORT': '3306',
         'default-character-set': 'utf8',
     }

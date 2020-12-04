@@ -65,7 +65,7 @@ class Create extends React.Component {
             <div className="row">
                 <div className={classes.root}>
                     <div className="col-md-12">
-                        <h3 className="card-label text-center pt-4 pb-2">
+                        <h3 className="card-label pt-4 pb-2">
                             <FormattedMessage id="User.Registration.Title"/>
                         </h3>
                         <form className={classes.container} noValidate autoComplete="off">
