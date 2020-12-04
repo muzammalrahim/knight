@@ -5,14 +5,14 @@ import {BuilderPage} from "./pages/BuilderPage";
 import {MyPage} from "./pages/MyPage";
 import {DashboardPage} from "./pages/DashboardPage";
 
-import SpeakerCreate from "./pages/speaker/create";
-import Speakers from "./pages/speaker/list";
+import SpeakerCreate from "./pages/speaker/Create";
+import Speakers from "./pages/speaker/List";
 
-import EventCreate from "./pages/event/create";
-import Events from "./pages/event/list";
+import EventCreate from "./pages/event/Create";
+import Events from "./pages/event/List";
 
-import UserCreate from "./pages/user/create";
-import Users from "./pages/user/list";
+import UserCreate from "./pages/user/Create";
+import Users from "./pages/user/List";
 
 import Approvals from "./pages/approval/List";
 
