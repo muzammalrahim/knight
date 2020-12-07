@@ -135,18 +135,18 @@ const useToolbarStyles = makeStyles(theme => ({
 
 const EnhancedTableToolbar = props => {
   const classes = useToolbarStyles();
-  const { numSelected } = props;
+  const { selectedRows, getEvents } = props;
 
   return (
     <Toolbar
       className={clsx(classes.root, {
-        [classes.highlight]: numSelected > 0,
+        [classes.highlight]: selectedRows.length > 0,
       })}
     >
       <div className={classes.title}>
-        {numSelected > 0 ? (
+        {selectedRows.length > 0 ? (
           <Typography color="inherit" variant="subtitle1">
-            {numSelected} selected
+            {selectedRows.length} selected
           </Typography>
         ) : (
           <Typography variant="h6" id="tableTitle">
@@ -156,9 +156,11 @@ const EnhancedTableToolbar = props => {
       </div>
       <div className={classes.spacer} />
       <div className={classes.actions}>
-        {numSelected > 0 ? (
+        {selectedRows.length > 0 ? (
           <Tooltip title="Delete">
-            <IconButton aria-label="Delete">
+            <IconButton aria-label="Delete" onClick={()=>{del(`api/events/${selectedRows[0]}`, selectedRows).then((response)=>{
+              getEvents();
+            })}}>
               <Delete />
             </IconButton>
           </Tooltip>
@@ -204,6 +206,8 @@ export default function EnhancedTable(props) {
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [rows, setRows] = React.useState([]);
+  const [selectedRows, setSelectedRows] = React.useState([]);
+  const [isSelectedAll, setIsSelectedAll] = React.useState(false);
 
   function handleRequestSort(event, property) {
     const isDesc = orderBy === property && order === 'desc';
@@ -211,13 +215,18 @@ export default function EnhancedTable(props) {
     setOrderBy(property);
   }
 
-  function handleSelectAllClick(event) {
-    if (event.target.checked) {
-      const newSelecteds = rows.map(n => n.id);
-      setSelected(newSelecteds);
-      return;
+  function handleSelectAllClick() {
+    let all_selected =[]
+    if (!isSelectedAll) {
+    setIsSelectedAll(!isSelectedAll)
+      rows.map((n) => {
+        all_selected.push(n.id)
+      });
+    }else{
+      setIsSelectedAll(!isSelectedAll)
     }
-    setSelected([]);
+    setSelectedRows(all_selected);
+    return all_selected;
   }
 
   function handleClick(event, id) {
@@ -251,7 +260,7 @@ export default function EnhancedTable(props) {
   function handleChangeDense(event) {
     setDense(event.target.checked);
   }
-  async function getSpeakers (){
+  async function getEvents (){
     list('api/events').then((response)=>{
       let event_list = [];
       response.data.map((row)=>{
@@ -261,16 +270,16 @@ export default function EnhancedTable(props) {
     })
   }
   useEffect(() => {
-    getSpeakers();
+    getEvents();
   },[]);
-  const isSelected = id => selected.indexOf(id) !== -1;
+  
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar selectedRows={selectedRows} getEvents={getEvents}/>
         <div className={classes.tableWrapper}>
           <Table
             className={classes.table}
@@ -278,7 +287,7 @@ export default function EnhancedTable(props) {
             size={dense ? 'small' : 'medium'}
           >
             <EnhancedTableHead
-              numSelected={selected.length}
+              numSelected={selectedRows.length}
               order={order}
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
@@ -289,7 +298,6 @@ export default function EnhancedTable(props) {
               {stableSort(rows, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.id);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
@@ -297,16 +305,29 @@ export default function EnhancedTable(props) {
                       hover
                       onClick={event => handleClick(event, row.id)}
                       role="checkbox"
-                      aria-checked={isItemSelected}
+                      aria-checked={selectedRows.includes(row.id)}
                       tabIndex={-1}
                       key={index}
-                      selected={isItemSelected}
+                      selected={selectedRows.includes(row.id)}
                     >
                       
                       <TableCell align="right" style={{display:'none'}}>{row.id}</TableCell>
                       <TableCell padding="checkbox">
                         <Checkbox
-                          checked={isItemSelected}
+                          checked={selectedRows.includes(row.id)}
+                          onChange={()=>{
+                            let selected = selectedRows;
+                            const index = selected.indexOf(row.id);
+                            if (index > -1) {
+                              selected.splice(index, 1);
+                            }else{
+                              selected.push(row.id)
+                            }
+                            if(selected.length < 1){
+                              setIsSelectedAll(false)
+                            }
+                            setSelectedRows(selected)
+                          }}
                           inputProps={{ 'aria-labelledby': labelId }}
                         />
                       </TableCell>
@@ -326,15 +347,8 @@ export default function EnhancedTable(props) {
                         <Delete 
                           style={{cursor:'pointer'}}
                           onClick={()=>{
-                            del(`api/event/${row.id}/`,[row.id]).then((response)=>{
-                              let data = rows;
-                              data.map((dat, index)=>{
-                                if (row.id === dat.id){
-                                  data.splice(index, 1);
-                                }
-                              })
-                              setRows(data);
-                            console.log('response', response.data)
+                            del(`api/events/${row.id}/`,[row.id]).then((response)=>{
+                              getEvents();
                           })}}
                         />
                       </TableCell>

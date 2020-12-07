@@ -11,7 +11,7 @@ import FormControl from '@material-ui/core/FormControl';
 import {
 	getCurrentDate
   } from "../../../_metronic/_helpers";
-  import list, {post} from '../helper/api';
+  import list, {post, put} from '../helper/api';
 
 class EventEditForm extends React.Component {
 	constructor(props){
@@ -43,7 +43,7 @@ class EventEditForm extends React.Component {
 	submitHandler(){
         let {event} = this.state;
         if(event.name && event._type && event.date && event.country && event.city){
-            post('api/events', event).then((response)=>{
+            put(`api/event/${event.id}/`, event).then((response)=>{
                 this.props.history.push('/events')
             })
         }

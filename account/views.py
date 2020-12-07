@@ -73,9 +73,20 @@ class EventsViewSet(viewsets.ModelViewSet):
 		else:
 			return super(EventsViewSet, self).destroy(request, *args, **kwargs)
 	
-	# def get_queryset(self):
-	#   queryset = Event.objects.filter(pk=self.kwargs['id'])
-	#   return queryset
+	def retrieve(self, request: Request, *args, **kwargs):
+		instance = self.get_object()
+		serializer = self.get_serializer(instance)
+		data = serializer.data
+		
+		related_models = ['speaker']
+		
+		for model in related_models:
+			try:
+				data[model] = to_dict(getattr(instance, model))
+			except:
+				data[model] = None
+
+		return Response(data)
 
 class SpeakersViewSet(viewsets.ModelViewSet):
 	"""
