@@ -76,7 +76,21 @@
   "Dashboard.Welcome": "Welcome",
 
   "Event.Create.Title": "Event Registration",
+
+  "Event.Create.Eve_Name": "Event Name",
+  "Event.Create.Type": "Type",
+  "Event.Create.Date": "Date",
+  "Event.Create.Duration": "Duration",
+  "Event.Create.Web_OR_pres": "Web/Presential",
+
   "Event.List.Title": "Events List",
+
+  "Event.List.Column.Name": "Name",
+  "Event.List.Column.Country": "Country",
+  "Event.List.Column.City": "City",
+  "Event.List.Column.Date": "Date",
+  "Event.List.Column.Type": "Type",
+  "Event.List.Column.Action": "Action",
 
   "Speaker.Registration.Title": "Speaker Registration",
   "Speaker.Registration.Form.F_Flag": "Foreign Flag",

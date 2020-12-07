@@ -90,7 +90,7 @@ class EventRegistrationForm extends React.Component {
 										<TextField
 											required
 											name="name"
-											label="Event Name"
+											label={<FormattedMessage id="Event.Create.Eve_Name"/>}
 											style={styles.textField}
 											value={event.name}
 											onChange={(e)=>{this.handleChange(e)}}
@@ -103,7 +103,7 @@ class EventRegistrationForm extends React.Component {
 											required
 											select
 											name="_type"
-											label="Type"
+											label={<FormattedMessage id="Event.Create.Type"/>}
 											style={styles.textField}
 											value={event._type}
 											onChange={(e)=>{this.handleChange(e)}}
@@ -128,7 +128,7 @@ class EventRegistrationForm extends React.Component {
 										<TextField
 											required
 											name="date"
-											label="Date"
+											label={<FormattedMessage id="Event.Create.Date"/>}
 											type="date"
 											value={event.date ? event.date : getCurrentDate()}
 											onChange={(e) =>{this.handleChange(e)}}
@@ -142,7 +142,7 @@ class EventRegistrationForm extends React.Component {
 										<TextField
 											required
 											name="duration"
-											label="Duration"
+											label={<FormattedMessage id="Event.Create.Duration"/>}
 											type="number"
 											style={styles.textField}
 											value={event.duration}
@@ -156,7 +156,7 @@ class EventRegistrationForm extends React.Component {
 											required
 											select
 											name="web_presential"
-											label="Web/Presential"
+											label={<FormattedMessage id="Event.Create.Web_OR_pres"/>}
 											style={styles.textField}
 											value={event.web_presential}
 											onChange={(e)=>{this.handleChange(e)}}

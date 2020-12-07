@@ -51,12 +51,12 @@ function getSorting(order, orderBy) {
 
 const headRows = [
   { id: 'id', numeric: false, disablePadding: true, label: 'Id' },
-  { id: 'name', numeric: false, disablePadding: true, label: 'Name' },
-  { id: 'country', numeric: true, disablePadding: false, label: 'Country' },
-  { id: 'city', numeric: true, disablePadding: false, label: 'City' },
-  { id: 'date', numeric: true, disablePadding: false, label: 'Date' },
-  { id: 'type', numeric: true, disablePadding: false, label: 'Type' },
-  { id: 'action', numeric: true, disablePadding: false, label: 'Action' },
+  { id: 'name', numeric: false, disablePadding: true, label: <FormattedMessage id="Event.List.Column.Name"/> },
+  { id: 'country', numeric: true, disablePadding: false, label:<FormattedMessage id="Event.List.Column.Country"/>},
+  { id: 'city', numeric: true, disablePadding: false, label: <FormattedMessage id="Event.List.Column.City"/> },
+  { id: 'date', numeric: true, disablePadding: false, label: <FormattedMessage id="Event.List.Column.Date"/> },
+  { id: 'type', numeric: true, disablePadding: false, label: <FormattedMessage id="Event.List.Column.Type"/> },
+  { id: 'action', numeric: true, disablePadding: false, label:<FormattedMessage id="Event.List.Column.Action"/>},
 ];
 
 function EnhancedTableHead(props) {
