@@ -17,13 +17,13 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
-import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { FormattedMessage } from 'react-intl';
-import list from '../helper/api';
+import list, {del} from '../helper/api';
+import {Edit, Delete} from '@material-ui/icons';
 
-function createData(name, country, city, date, _type) {
-  return { name, country, city, date, _type };
+function createData(id, name, country, city, date, _type) {
+  return { id, name, country, city, date, _type };
 }
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -50,11 +50,13 @@ function getSorting(order, orderBy) {
 }
 
 const headRows = [
+  { id: 'id', numeric: false, disablePadding: true, label: 'Id' },
   { id: 'name', numeric: false, disablePadding: true, label: 'Name' },
   { id: 'country', numeric: true, disablePadding: false, label: 'Country' },
   { id: 'city', numeric: true, disablePadding: false, label: 'City' },
   { id: 'date', numeric: true, disablePadding: false, label: 'Date' },
   { id: 'type', numeric: true, disablePadding: false, label: 'Type' },
+  { id: 'action', numeric: true, disablePadding: false, label: 'Action' },
 ];
 
 function EnhancedTableHead(props) {
@@ -74,9 +76,10 @@ function EnhancedTableHead(props) {
             inputProps={{ 'aria-label': 'Select all desserts' }}
           />
         </TableCell>
-        {headRows.map(row => (
-          <TableCell
-            key={row.id}
+        {headRows.map((row, index) => (
+        <TableCell
+            style={{display:row.id === 'id' ? 'none' : ''}}
+            key={index}
             align={row.numeric ? 'right' : 'left'}
             padding={row.disablePadding ? 'none' : 'default'}
             sortDirection={orderBy === row.id ? order : false}
@@ -156,7 +159,7 @@ const EnhancedTableToolbar = props => {
         {numSelected > 0 ? (
           <Tooltip title="Delete">
             <IconButton aria-label="Delete">
-              <DeleteIcon />
+              <Delete />
             </IconButton>
           </Tooltip>
         ) : (
@@ -192,7 +195,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function EnhancedTable() {
+export default function EnhancedTable(props) {
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
@@ -210,19 +213,19 @@ export default function EnhancedTable() {
 
   function handleSelectAllClick(event) {
     if (event.target.checked) {
-      const newSelecteds = rows.map(n => n.name);
+      const newSelecteds = rows.map(n => n.id);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   }
 
-  function handleClick(event, name) {
-    const selectedIndex = selected.indexOf(name);
+  function handleClick(event, id) {
+    const selectedIndex = selected.indexOf(id);
     let newSelected = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
+      newSelected = newSelected.concat(selected, id);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -252,7 +255,7 @@ export default function EnhancedTable() {
     list('api/events').then((response)=>{
       let event_list = [];
       response.data.map((row)=>{
-        event_list.push(createData(row.name, row.country, row.city, row.date, row._type))
+        event_list.push(createData(row.id, row.name, row.country, row.city, row.date, row._type))
       })
       setRows(event_list);
     })
@@ -260,7 +263,7 @@ export default function EnhancedTable() {
   useEffect(() => {
     getSpeakers();
   },[]);
-  const isSelected = name => selected.indexOf(name) !== -1;
+  const isSelected = id => selected.indexOf(id) !== -1;
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
@@ -286,38 +289,63 @@ export default function EnhancedTable() {
               {stableSort(rows, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
+                  const isItemSelected = isSelected(row.id);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <TableRow
                       hover
-                      onClick={event => handleClick(event, row.name)}
+                      onClick={event => handleClick(event, row.id)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.name}
+                      key={index}
                       selected={isItemSelected}
                     >
+                      
+                      <TableCell align="right" style={{display:'none'}}>{row.id}</TableCell>
                       <TableCell padding="checkbox">
                         <Checkbox
                           checked={isItemSelected}
                           inputProps={{ 'aria-labelledby': labelId }}
                         />
                       </TableCell>
-                      <TableCell component="th" id={labelId} scope="row" padding="none">
+                      <TableCell 
+                        component="th" 
+                        id={labelId} 
+                        scope="row" 
+                        padding="none">
                         {row.name}
                       </TableCell>
                       <TableCell align="right">{row.country}</TableCell>
                       <TableCell align="right">{row.city}</TableCell>
                       <TableCell align="right">{row.date}</TableCell>
                       <TableCell align="right">{row._type}</TableCell>
+                      <TableCell align="right">
+                        <Edit onClick={()=>{props.history.push(`/event/${row.id}`)}} style={{cursor:'pointer'}}/>
+                        <Delete 
+                          style={{cursor:'pointer'}}
+                          onClick={()=>{
+                            del(`api/event/${row.id}/`,[row.id]).then((response)=>{
+                              let data = rows;
+                              data.map((dat, index)=>{
+                                if (row.id === dat.id){
+                                  data.splice(index, 1);
+                                }
+                              })
+                              setRows(data);
+                            console.log('response', response.data)
+                          })}}
+                        />
+                      </TableCell>
                     </TableRow>
                   );
                 })}
               {emptyRows > 0 && (
-                <TableRow style={{ height: 49 * emptyRows }}>
-                  <TableCell colSpan={6} />
+                <TableRow>
+                  <TableCell colSpan={6}>
+                    No Record Found
+                  </TableCell>
                 </TableRow>
               )}
             </TableBody>
