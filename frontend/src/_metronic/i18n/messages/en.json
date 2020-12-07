@@ -80,6 +80,8 @@
 
   "Speaker.Registration.Title": "Speaker Registration",
   "Speaker.List.Title": "Speakers List",
+  "Speaker.List.Column.Name": "Name",
+  "Speaker.List.Column.F_Name": "Father Name",
 
   "User.Registration.Title": "Create User",
   "User.Edit.Title": "Edit User",

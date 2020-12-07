@@ -5,7 +5,7 @@ from account.serializers import UserSerializer, GroupSerializer
 from rest_framework.decorators import api_view, action, permission_classes
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import AllowAny
-from account.models import Event, Speaker
+from account.models import Event, Speaker, User as CustomUser
 from account.serializers import *
 from django.contrib.auth import authenticate
 from rest_framework.response import Response
@@ -17,6 +17,7 @@ from rest_framework.status import (
 )
 from rest_framework.authtoken.models import Token
 from rest_framework.request import Request
+import json
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -37,6 +38,17 @@ class UserViewSet(viewsets.ModelViewSet):
 		instance = self.get_object()
 		serializer = self.get_serializer(instance)
 		return Response(serializer.data)
+
+	def destroy(self, request, *args, **kwargs):
+		request_data = json.loads(request.body.decode('utf-8'))
+		if 'ids' in request_data:
+			CustomUser.objects.filter(id__in=request_data['ids']).delete()
+			return Response(status=HTTP_204_NO_CONTENT)
+		else:
+			return super(UserViewSet, self).destroy(request, *args, **kwargs)
+		# CustomUser.objects.filter(id__in=[i for i in request.body]).delete()
+		# return Response(response_data)
+	
 
 
 class GroupViewSet(viewsets.ModelViewSet):

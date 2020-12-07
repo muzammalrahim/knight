@@ -20,7 +20,7 @@ import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { FormattedMessage } from 'react-intl';
-import list from '../helper/api';
+import list, {del} from '../helper/api';
 
 function createData(id, username, first_name, last_name, email, business_unit) {
   return { id, username, first_name, last_name, email, business_unit };
@@ -158,7 +158,9 @@ const EnhancedTableToolbar = props => {
       <div className={classes.actions}>
         {numSelected > 0 ? (
           <Tooltip title="Delete">
-            <IconButton aria-label="Delete">
+            <IconButton aria-label="Delete" onClick={()=>{del(`api/users/${selectedRows[0]}`, selectedRows).then((response)=>{
+              console.log('response', response.data)
+            })}}>
               <DeleteIcon />
             </IconButton>
           </Tooltip>
@@ -205,7 +207,7 @@ export default function EnhancedTable(props) {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [rows, setRows] = React.useState([]);
   const [selectedRows, setSelectedRows] = React.useState([]);
-  const [allSelected, setAllSelected] = React.useState([]);
+  const [isSelectedAll, setIsSelectedAll] = React.useState(false);
 
   function handleRequestSort(event, property) {
     const isDesc = orderBy === property && order === 'desc';
@@ -213,21 +215,27 @@ export default function EnhancedTable(props) {
     setOrderBy(property);
   }
 
-  function handleSelectAllClick(event) {
-    if (event.target.checked) {
-      const newSelecteds = rows.map(n => n.name);
-      setSelected(newSelecteds);
-      return;
+  function handleSelectAllClick() {
+    let all_selected =[]
+    if (!isSelectedAll) {
+    setIsSelectedAll(!isSelectedAll)
+      rows.map((n) => {
+        all_selected.push(n.id)
+        console.log(n);
+      });
+    }else{
+      setIsSelectedAll(!isSelectedAll)
     }
-    setSelected([]);
+    setSelectedRows(all_selected);
+    return all_selected;
   }
 
-  function handleClick(event, name) {
-    const selectedIndex = selected.indexOf(name);
+  function handleClick(event, id) {
+    const selectedIndex = selected.indexOf(id);
     let newSelected = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
+      newSelected = newSelected.concat(selected, id);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -273,7 +281,7 @@ export default function EnhancedTable(props) {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} selectedRows={selectedRows} />
+        <EnhancedTableToolbar numSelected={selectedRows.length} selectedRows={selectedRows} />
         <div className={classes.tableWrapper}>
           <Table
             className={classes.table}
@@ -281,7 +289,7 @@ export default function EnhancedTable(props) {
             size={dense ? 'small' : 'medium'}
           >
             <EnhancedTableHead
-              numSelected={selected.length}
+              numSelected={selectedRows.length}
               order={order}
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
@@ -298,11 +306,11 @@ export default function EnhancedTable(props) {
                   return (
                     <TableRow
                       hover
-                      onClick={event => handleClick(event, row.name)}
+                      onClick={event => handleClick(event, row.id)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.name}
+                      key={row.id}
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">
@@ -314,6 +322,9 @@ export default function EnhancedTable(props) {
                               selected.splice(index, 1);
                             }else{
                               selected.push(row.id)
+                            }
+                            if(selected.length < 1){
+                              setIsSelectedAll(false)
                             }
                             setSelectedRows(selected)
                           }}

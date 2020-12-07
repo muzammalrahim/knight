@@ -45,10 +45,10 @@ export function post(endpoint, data) {
   return axios.post(API_URL + endpoint, data, config)
 }
 
-// export function del(endpoint, data = {}) {
-//   let config = {
-//     headers: headers,
-//     data: data,
-//   }
-//   return axios.delete(API_URL + endpoint, config)
-// }
+export function del(endpoint, data = {}) {
+  let config = {
+    headers: headers,
+    data: data,
+  }
+  return axios.delete(API_URL + endpoint, config)
+}
