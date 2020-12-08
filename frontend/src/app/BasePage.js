@@ -5,8 +5,9 @@ import {BuilderPage} from "./pages/BuilderPage";
 import {MyPage} from "./pages/MyPage";
 import {DashboardPage} from "./pages/DashboardPage";
 
-import SpeakerCreate from "./pages/speaker/Create";
 import Speakers from "./pages/speaker/List";
+import SpeakerCreate from "./pages/speaker/Create";
+import SpeakerEdit from "./pages/speaker/Edit";
 
 import Events from "./pages/event/List";
 import EventCreate from "./pages/event/Create";
@@ -42,9 +43,10 @@ export default function BasePage() {
                     <Redirect exact from="/" to="/dashboard"/>
                 }
                 <ContentRoute path="/dashboard" component={DashboardPage}/>
-                {/* Speaker Routes */}
+
+                <ContentRoute exact path="/speakers" component={Speakers}/>
                 <ContentRoute exact path="/speaker/create" component={SpeakerCreate}/>
-                <ContentRoute path="/speakers" component={Speakers}/>
+                <ContentRoute exact path="/speaker/:id" component={SpeakerEdit}/>
 
                 <ContentRoute exact path="/events" component={Events}/>
                 <ContentRoute exact path="/event/create" component={EventCreate}/>

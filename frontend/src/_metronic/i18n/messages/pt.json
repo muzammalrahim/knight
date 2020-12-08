@@ -142,6 +142,7 @@
   "Speaker.List.Column.Mobile_No": "Celular Não",
   "Speaker.List.Column.Email": "O email",
   "Speaker.List.Column.City": "Cidade",
+  "Speaker.List.Column.Action":"Açao",
 
   "User.Registration.Title": "Criar usuário",
   "User.Registration.Form.Email": "O email",
@@ -163,5 +164,6 @@
   "User.List.Column.First_Name":"Primeiro nome",
   "User.List.Column.Last_Name":"Último nome",
   "User.List.Column.Email":"O email",
-  "User.List.Column.Bus_Un":"unidade de negóc"
+  "User.List.Column.Bus_Un":"unidade de negóc",
+  "User.List.Column.Action":"Açao"
 }

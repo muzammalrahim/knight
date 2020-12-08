@@ -10,17 +10,16 @@ import Grid from '@material-ui/core/Grid';
 import {
 	getCurrentDate
   } from "../../../_metronic/_helpers";
-import {post} from '../helper/api';
+import list, {put} from '../helper/api';
 
-class SpeakerRegistrationForm extends React.Component{
+class SpeakerEditForm extends React.Component{
 	constructor(props){
 		super(props);
-		this.speaker={
-			foreignFlag: false,	accept_info: false,	name: "", father_name: "",	mother_name:"",	dob:"",
-			birthplace:"", civil_state:"", scholarity: "", social_number: "", service_provider: "", country: "Select Counrty ...",
-			state: "", city: "", neighborhood: "", cep: "", ddd: "", address:"", id_number: "", document_issue_date: "",
-			emitting_organ: "", email: "", mobile: "", fax: "", linkedin: "", lattes: "", orcid: "", registration_in_city: false,
-			social_security: false, person_type:""
+		this.speaker={ id: this.props.match.params.id, foreignFlag: false,	accept_info: false,	name: "", father_name: "",	
+			mother_name:"",	dob:"", birthplace:"", civil_state:"", scholarity: "", social_number: "", service_provider: "", 
+			country: "Select Counrty ...", state: "", city: "", neighborhood: "", cep: "", ddd: "", address:"", id_number: "", 
+			document_issue_date: "", emitting_organ: "", email: "", mobile: "", fax: "", linkedin: "", lattes: "", orcid: "", 
+			registration_in_city: false, social_security: false, person_type:""
 		}
 		this.state={
 			speaker: this.speaker,
@@ -59,14 +58,21 @@ class SpeakerRegistrationForm extends React.Component{
 	handleSubmit(){
 		let {speaker} = this.state;
 		if(speaker.name && speaker.dob && speaker.birthplace && speaker.civil_state && speaker.scholarity && speaker.service_provider && speaker.country && speaker.state && speaker.city){
-			post('api/speakers', speaker).then((response)=>{
+			put(`api/speaker/${speaker.id}`, speaker).then((response)=>{
 				this.props.history.push('/speakers')
 			}).catch((response)=>{
 				console.log('response error', response)
 			})
 		}
 	}
+	getSpeaker(){
+		let {speaker} = this.state;
+		list(`api/speaker/${speaker.id}`).then((response)=>{
+			this.setState({speaker: response.data})
+		})
+	}
 	componentDidMount(){
+		this.getSpeaker();
 		fetch('https://restcountries.eu/rest/v2/all')
 		.then(response => response.json())
 		.then((data) => {
@@ -788,7 +794,7 @@ class SpeakerRegistrationForm extends React.Component{
 	)};
 }
 
-export default SpeakerRegistrationForm;
+export default SpeakerEditForm;
 
 const civilStatus = [
 	{

@@ -96,6 +96,20 @@ class SpeakersViewSet(viewsets.ModelViewSet):
 	serializer_class = SpeakerSerializer
 	# permission_classes = [permissions.IsAuthenticated]
 
+	def retrieve(self, request: Request, *args, **kwargs):
+		instance = self.get_object()
+		serializer = self.get_serializer(instance)
+		data = serializer.data
+		return Response(data)
+	
+	def destroy(self, request, *args, **kwargs):
+		request_data = json.loads(request.body.decode('utf-8'))
+		if 'ids' in request_data:
+			Speaker.objects.filter(id__in=request_data['ids']).delete()
+			return Response(status=HTTP_204_NO_CONTENT)
+		else:
+			return super(SpeakersViewSet, self).destroy(request, *args, **kwargs)
+
 @api_view(['GET'])
 def api_root(request, format=None):
 	return Response({
