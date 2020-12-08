@@ -8,8 +8,9 @@ import {DashboardPage} from "./pages/DashboardPage";
 import SpeakerCreate from "./pages/speaker/Create";
 import Speakers from "./pages/speaker/List";
 
-import EventCreate from "./pages/event/Create";
 import Events from "./pages/event/List";
+import EventCreate from "./pages/event/Create";
+import EventEdit from "./pages/event/Edit";
 
 import UserCreate from "./pages/user/Create";
 import UserEdit from "./pages/user/Edit";
@@ -45,8 +46,9 @@ export default function BasePage() {
                 <ContentRoute exact path="/speaker/create" component={SpeakerCreate}/>
                 <ContentRoute path="/speakers" component={Speakers}/>
 
-                <ContentRoute path="/event/create" component={EventCreate}/>
-                <ContentRoute path="/events" component={Events}/>
+                <ContentRoute exact path="/events" component={Events}/>
+                <ContentRoute exact path="/event/create" component={EventCreate}/>
+                <ContentRoute exact path="/event/:id" component={EventEdit}/>
 
                 <ContentRoute exact path="/user/create" component={UserCreate}/>
                 <ContentRoute eaxct path="/user/:id" component={UserEdit}/>

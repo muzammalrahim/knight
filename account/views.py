@@ -1,8 +1,8 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
-from rest_framework import permissions
+from rest_framework import permissions, authentication
 from account.serializers import UserSerializer, GroupSerializer
-from rest_framework.decorators import api_view, action, permission_classes
+from rest_framework.decorators import api_view, action, permission_classes, authentication_classes
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import AllowAny
 from account.models import Event, Speaker, User as CustomUser
@@ -39,15 +39,13 @@ class UserViewSet(viewsets.ModelViewSet):
 		serializer = self.get_serializer(instance)
 		return Response(serializer.data)
 
-	def destroy(self, request, *args, **kwargs):
-		request_data = json.loads(request.body.decode('utf-8'))
-		if 'ids' in request_data:
-			CustomUser.objects.filter(id__in=request_data['ids']).delete()
-			return Response(status=HTTP_204_NO_CONTENT)
-		else:
-			return super(UserViewSet, self).destroy(request, *args, **kwargs)
-		# CustomUser.objects.filter(id__in=[i for i in request.body]).delete()
-		# return Response(response_data)
+	# def destroy(self, request, *args, **kwargs):
+	# 	request_data = json.loads(request.body.decode('utf-8'))
+	# 	if 'ids' in request_data:
+	# 		CustomUser.objects.filter(id__in=request_data['ids']).delete()
+	# 		return Response(status=HTTP_204_NO_CONTENT)
+	# 	else:
+	# 		return super(UserViewSet, self).destroy(request, *args, **kwargs)
 	
 
 
@@ -65,7 +63,19 @@ class EventsViewSet(viewsets.ModelViewSet):
 	"""
 	queryset = Event.objects.all()
 	serializer_class = EventSerializer
-	# permission_classes = [permissions.IsAuthenticated]
+	# authentication_classes = [authentication.TokenAuthentication]
+
+	def destroy(self, request, *args, **kwargs):
+		request_data = json.loads(request.body.decode('utf-8'))
+		if 'ids' in request_data:
+			Event.objects.filter(id__in=request_data['ids']).delete()
+			return Response(status=HTTP_204_NO_CONTENT)
+		else:
+			return super(EventsViewSet, self).destroy(request, *args, **kwargs)
+	
+	# def get_queryset(self):
+	#   queryset = Event.objects.filter(pk=self.kwargs['id'])
+	#   return queryset
 
 class SpeakersViewSet(viewsets.ModelViewSet):
 	"""
