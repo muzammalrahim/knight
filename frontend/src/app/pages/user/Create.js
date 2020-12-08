@@ -1,12 +1,10 @@
 import React from "react";
-import { TextField, Button, Icon } from "@material-ui/core";
+import { TextField, Button, Icon, Snackbar, withStyles } from "@material-ui/core";
 import { FormattedMessage } from "react-intl";
-import { withStyles } from '@material-ui/core/styles';
 import {connect} from 'react-redux';
 import {post} from '../helper/api';
+import { Alert, AlertTitle } from '@material-ui/lab';
 
-
-// Example 2
 const styles = theme => ({
 	container: {
 		display: "flex",
@@ -38,31 +36,78 @@ class Create extends React.Component {
             business_unit:'',
             username: '',
             email: '',
-            Password:''
+            password:''
+        }
+        this.userValidate={
+            business_unit:false,
+            username: false,
+            email: false,
+            password:false
+        }
+        this.alert={
+            open: false, 
+            severity: '',
+            message:''
         }
         this.state={
             user: this.user,
+            userValidate: this.userValidate,
+            alert: this.alert
         }
     }
     changeHandler(e){
-        let [key, value, {user}] = [e.target.id, e.target.value, this.state];
+        let [key, value, {user, userValidate}] = [e.target.id, e.target.value, this.state];
         user[key] = value;
-        this.setState({user});
-        console.log('user', this.state.user)
+        if(userValidate[key]){
+            if(key==='email'){
+                userValidate[key] = user[key] && this.validateEmail(user[key]) ? false : true;
+            }else{
+                userValidate[key] = user[key] && user[key].length > 3 ? false : true;
+            }
+        }
+        this.setState({user, userValidate});
     }
     submitHandler(){
-        let {user} = this.state;
-        if(user.email && user.password){
-            post('users/', user).then((response)=>{
-                this.props.history.push('/users')
+        let {user, userValidate} = this.state;
+        let isSubmit = null;
+        Object.keys(userValidate).map((key)=>{
+            isSubmit = user[key] && isSubmit !== false ? true : false;
+            if(key==='email'){
+                userValidate[key] = user[key] && this.validateEmail(user[key]) ? false : true;
+            }else{
+                userValidate[key] = user[key] && user[key].length > 3 ? false : true;
+            }
+        })
+        this.setState({userValidate});
+        isSubmit && post('users/', user).then((response)=>{
+            this.setState({alert:{open:true, severity:"success", message:'User Created Sucessfully'}})
+            setTimeout(()=>{this.props.history.push('/users')}, 1000)
+        }).catch((error)=>{
+            Object.keys(error.response.data).map((key)=>{
+                this.setState({alert:{open:true, severity:"error", message:`${key+": "+error.response.data[key][0]}`}})
             })
-        }
+        })
+    }   
+    handleClose(){
+        this.setState({alert:{open:false, severity: '', message:'' }})
+    }   
+    validateEmail(email){
+        var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
+            if (!pattern.test(email)) {
+                return false
+            }
+            return true
     }
 	render(){
         const { classes } = this.props;
-        let {user} = this.state;
+        let {user, userValidate, alert:{open, severity, message}} = this.state;
         return (
             <div className="row">
+                <Snackbar open={open} autoHideDuration={4000} anchorOrigin={{ vertical:'top', horizontal:'right' }} onClose={()=>{this.handleClose()}}>
+                    <Alert onClose={()=>{this.handleClose()}} severity={severity}>
+                        <strong>{message}</strong>
+                    </Alert>
+                </Snackbar> 
                 <div className={classes.root}>
                     <div className="col-md-12">
                         <h3 className="card-label pt-4 pb-2">
@@ -78,6 +123,8 @@ class Create extends React.Component {
                                     onChange={(e)=>{this.changeHandler(e)}}
                                     margin="normal"
                                     variant="outlined"
+                                    error={userValidate['email']}
+                                    helperText={userValidate['email'] && 'this field is required'}
                                 />
                             </div>
                             <div className="col-md-6">
@@ -89,6 +136,8 @@ class Create extends React.Component {
                                     onChange={(e)=>{this.changeHandler(e)}}
                                     margin="normal"
                                     variant="outlined"
+                                    error={userValidate['username']}
+                                    helperText={userValidate['username'] && 'this field is required'}
                                 />
                             </div>
                             <div className="col-md-6">
@@ -100,6 +149,8 @@ class Create extends React.Component {
                                     onChange={(e)=>{this.changeHandler(e)}}
                                     margin="normal"
                                     variant="outlined"
+                                    error={userValidate['business_unit']}
+                                    helperText={userValidate['business_unit'] && 'this field is required'}
                                 />
                             </div>
                             <div className="col-md-6">
@@ -113,6 +164,8 @@ class Create extends React.Component {
                                     onChange={(e)=>{this.changeHandler(e)}}
                                     margin="normal"
                                     variant="outlined"
+                                    error={userValidate['password']}
+                                    helperText={userValidate['password'] && 'this field is required'}
                                 />
                             </div>
                             <div className="col-md-12 text-right pt-4">
