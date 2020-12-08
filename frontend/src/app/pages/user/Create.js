@@ -47,7 +47,8 @@ class Create extends React.Component {
         this.alert={
             open: false, 
             severity: '',
-            message:''
+            message:'',
+            title:''
         }
         this.state={
             user: this.user,
@@ -80,11 +81,11 @@ class Create extends React.Component {
         })
         this.setState({userValidate});
         isSubmit && post('users/', user).then((response)=>{
-            this.setState({alert:{open:true, severity:"success", message:'User Created Sucessfully'}})
+            this.setState({alert:{open:true, severity:"success", title:"success", message:'User Created Sucessfully'}})
             setTimeout(()=>{this.props.history.push('/users')}, 1000)
         }).catch((error)=>{
             Object.keys(error.response.data).map((key)=>{
-                this.setState({alert:{open:true, severity:"error", message:`${key+": "+error.response.data[key][0]}`}})
+                this.setState({alert:{open:true, severity:"error", title:"Error", message:`${key+": "+error.response.data[key][0]}`}})
             })
         })
     }   
@@ -100,11 +101,12 @@ class Create extends React.Component {
     }
 	render(){
         const { classes } = this.props;
-        let {user, userValidate, alert:{open, severity, message}} = this.state;
+        let {user, userValidate, alert:{open, severity, message, title}} = this.state;
         return (
             <div className="row">
                 <Snackbar open={open} autoHideDuration={4000} anchorOrigin={{ vertical:'top', horizontal:'right' }} onClose={()=>{this.handleClose()}}>
                     <Alert onClose={()=>{this.handleClose()}} severity={severity}>
+                        <AlertTitle>{title}</AlertTitle>
                         <strong>{message}</strong>
                     </Alert>
                 </Snackbar> 
