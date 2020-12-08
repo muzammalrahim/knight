@@ -27,11 +27,11 @@ function createData(id, username, first_name, last_name, email, business_unit) {
 }
 const headRows = [
   { id: 'id', numeric: false, disablePadding: true, label: 'Id', hidden:true  },
-  { id: 'username', numeric: false, disablePadding: true, label: 'Username' },
-  { id: 'first_name', numeric: true, disablePadding: false, label: 'First Name' },
-  { id: 'last_name', numeric: true, disablePadding: false, label: 'Last Name' },
-  { id: 'email', numeric: true, disablePadding: false, label: 'Email' },
-  { id: 'business_unit', numeric: true, disablePadding: false, label: 'business_unit' },
+  { id: 'username', numeric: false, disablePadding: true, label:<FormattedMessage id="User.List.Column.User_Name"/> },
+  { id: 'first_name', numeric: true, disablePadding: false, label: <FormattedMessage id="User.List.Column.First_Name"/> },
+  { id: 'last_name', numeric: true, disablePadding: false, label: <FormattedMessage id="User.List.Column.Last_Name"/> },
+  { id: 'email', numeric: true, disablePadding: false, label: <FormattedMessage id="User.List.Column.Email"/> },
+  { id: 'business_unit', numeric: true, disablePadding: false, label: <FormattedMessage id="User.List.Column.Bus_Un"/> },
 ];
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {

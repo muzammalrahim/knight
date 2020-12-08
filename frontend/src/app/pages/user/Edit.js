@@ -98,7 +98,7 @@ class Create extends React.Component {
                             <div className="col-md-6">
                                 <TextField
                                     id="first_name"
-                                    label="First Name"
+                                    label={<FormattedMessage id="User.Edit.Form.F_Name"/>}
                                     className={classes.textField}
                                     value={user.first_name}
                                     onChange={(e)=>{this.changeHandler(e)}}
@@ -109,7 +109,7 @@ class Create extends React.Component {
                             <div className="col-md-6">
                                 <TextField
                                     id="last_name"
-                                    label="Last Name"
+                                    label={<FormattedMessage id="User.Edit.Form.L_Name"/>}
                                     className={classes.textField}
                                     value={user.last_name}
                                     onChange={(e)=>{this.changeHandler(e)}}
@@ -121,7 +121,7 @@ class Create extends React.Component {
                                 <TextField
                                     required
                                     id="email"
-                                    label="email"
+                                    label={<FormattedMessage id="User.Edit.Form.Email"/>}
                                     className={classes.textField}
                                     value={user.email}
                                     onChange={(e)=>{this.changeHandler(e)}}
@@ -133,7 +133,7 @@ class Create extends React.Component {
                                 <TextField
                                     required
                                     id="username"
-                                    label="Username"
+                                    label={<FormattedMessage id="User.Edit.Form.U_Name"/>}
                                     className={classes.textField}
                                     value={user.username}
                                     onChange={(e)=>{this.changeHandler(e)}}
@@ -144,7 +144,7 @@ class Create extends React.Component {
                             <div className="col-md-6">
                                 <TextField
                                     id="business_unit"
-                                    label="Business Unit"
+                                    label={<FormattedMessage id="User.Edit.Form.Business_Unit"/>}
                                     value={user.business_unit}
                                     className={classes.textField}
                                     onChange={(e)=>{this.changeHandler(e)}}
@@ -156,7 +156,7 @@ class Create extends React.Component {
                                 <TextField
                                     id="groups"
                                     select
-                                    label="Group"
+                                    label={<FormattedMessage id="User.Edit.Form.Group"/>}
                                     style={styles.textField}
                                     value={selected_group}
                                     onChange={(event)=>{this.changeHandler(event)}}

@@ -107,7 +107,7 @@ class SpeakerRegistrationForm extends React.Component{
 											'aria-label': 'primary checkbox',
 											}}
 										/>
-										<strong>Foreign Flag</strong>
+										<strong> {<FormattedMessage id="Speaker.Registration.Form.F_Flag"/>}</strong>
 									</div>
 									<div className="col-md-9">
 										<Checkbox
@@ -119,13 +119,13 @@ class SpeakerRegistrationForm extends React.Component{
 											'aria-label': 'primary checkbox',
 											}}
 										/>
-										<strong>Accept Information Rule</strong>
+										<strong>{<FormattedMessage id="Speaker.Registration.Form.Accept_Info"/>}</strong>
 									</div>
 									<div className="col-md-6">
 										<TextField
 											required
 											name="name"
-											label="Full Name"
+											label={<FormattedMessage id="Speaker.Registration.Form.F_Name"/>}
 											style={styles.textField}
 											defaultValue={speaker.name}
 											onBlur={(event)=>{this.handleChange(event)}}
@@ -137,7 +137,7 @@ class SpeakerRegistrationForm extends React.Component{
 									<div className="col-md-6">
 										<TextField
 											name="father_name"
-											label="Father's Name"
+											label={<FormattedMessage id="Speaker.Registration.Form.Fath_Name"/>}
 											required={!foreignFlag}
 											style={styles.textField}
 											defaultValue={speaker.father_name}
@@ -150,7 +150,7 @@ class SpeakerRegistrationForm extends React.Component{
 										<TextField
 											required={!foreignFlag}
 											name="mother_name"
-											label="Mother's Name"
+											label={<FormattedMessage id="Speaker.Registration.Form.moth_name"/>}
 											style={styles.textField}
 											defaultValue={speaker.mother_name}
 											onBlur={(event)=>{this.handleChange(event)}}
@@ -162,7 +162,7 @@ class SpeakerRegistrationForm extends React.Component{
 										<TextField
 											required
 											name="dob"
-											label="Birthday"
+											label={<FormattedMessage id="Speaker.Registration.Form.Birthday"/>}
 											type="date"
 											value={speaker.dob ? speaker.dob : getCurrentDate()}
 											style={styles.textField}
@@ -176,7 +176,7 @@ class SpeakerRegistrationForm extends React.Component{
 										<TextField
 											required
 											name="birthplace"
-											label="Birthplace"
+											label={<FormattedMessage id="Speaker.Registration.Form.Birth_p"/>}
 											style={styles.textField}
 											defaultValue={speaker.birthplace}
 											onBlur={(event)=>{this.handleChange(event)}}
@@ -189,7 +189,7 @@ class SpeakerRegistrationForm extends React.Component{
 											required
 											name="civil_state"
 											select
-											label="Civil State"
+											label={<FormattedMessage id="Speaker.Registration.Form.Civil_state"/>}
 											style={styles.textField}
 											value={speaker.civil_state}
 											onChange={(event)=>{this.handleChange(event)}}
@@ -214,7 +214,7 @@ class SpeakerRegistrationForm extends React.Component{
 										<TextField
 											required
 											name="scholarity"
-											label="Scholarity"
+											label={<FormattedMessage id="Speaker.Registration.Form.Scholarity"/>}
 											style={styles.textField}
 											value={speaker.scholarity}
 											onChange={(event)=>{this.handleChange(event)}}
@@ -226,7 +226,7 @@ class SpeakerRegistrationForm extends React.Component{
 										<TextField
 											required={!foreignFlag}
 											name="social_number"
-											label="Social Number"
+											label={<FormattedMessage id="Speaker.Registration.Form.Social_No"/>}
 											style={styles.textField}
 											defaultValue={speaker.social_number}
 											onBlur={(event)=>{this.handleChange(event)}}
@@ -238,7 +238,7 @@ class SpeakerRegistrationForm extends React.Component{
 									<TextField
 											required
 											name="service_provider"
-											label="Service Provider"
+											label={<FormattedMessage id="Speaker.Registration.Form.Service_prov"/>}
 											style={styles.textField}
 											defaultValue={speaker.service_provider}
 											onBlur={(event)=>{this.handleChange(event)}}
@@ -251,7 +251,7 @@ class SpeakerRegistrationForm extends React.Component{
 											required
 											select
 											name="country"
-											label="Country"
+											label={<FormattedMessage id="Speaker.Registration.Form.Country"/>}
 											style={styles.textField}
 											value={speaker.country}
 											onChange={(event)=>{this.handleChange(event)}}
@@ -276,7 +276,7 @@ class SpeakerRegistrationForm extends React.Component{
 										<TextField
 											required
 											name="state"
-											label="State / Province"
+											label={<FormattedMessage id="Speaker.Registration.Form.state_OR_province"/>}
 											defaultValue={speaker.state}
 											style={styles.textField}
 											margin="normal"
@@ -288,7 +288,7 @@ class SpeakerRegistrationForm extends React.Component{
 										<TextField
 											required
 											name="city"
-											label="City"
+											label={<FormattedMessage id="Speaker.Registration.Form.City"/>}
 											defaultValue={speaker.city}
 											style={styles.textField}
 											margin="normal"
@@ -300,7 +300,7 @@ class SpeakerRegistrationForm extends React.Component{
 										<TextField
 											required
 											name="neighborhood"
-											label="Neighborhood"
+											label={<FormattedMessage id="Speaker.Registration.Form.Neighborhood"/>}
 											defaultValue={speaker.neighborhood}
 											style={styles.textField}
 											margin="normal"
@@ -312,7 +312,7 @@ class SpeakerRegistrationForm extends React.Component{
 										<TextField
 											required
 											name="cep"
-											label="CEP/ZIP"
+											label={<FormattedMessage id="Speaker.Registration.Form.Cep_OR_Zip"/>}
 											defaultValue={speaker.cep}
 											style={styles.textField}
 											margin="normal"
@@ -324,7 +324,7 @@ class SpeakerRegistrationForm extends React.Component{
 										<TextField
 											required={!foreignFlag}
 											name="ddd"
-											label="DDD"
+											label={<FormattedMessage id="Speaker.Registration.Form.DDD"/>}
 											defaultValue={speaker.ddd}
 											style={styles.textField}
 											margin="normal"
@@ -336,7 +336,7 @@ class SpeakerRegistrationForm extends React.Component{
 										<TextField
 											required
 											name="address"
-											label="Address"
+											label={<FormattedMessage id="Speaker.Registration.Form.Address"/>}
 											defaultValue={speaker.address}
 											style={styles.textField}
 											margin="normal"
@@ -348,7 +348,7 @@ class SpeakerRegistrationForm extends React.Component{
 										<TextField
 											required={!foreignFlag}
 											name="id_number"
-											label="ID Number"
+											label={<FormattedMessage id="Speaker.Registration.Form.Id_No"/>}
 											style={styles.textField}
 											defaultValue={speaker.id_number}
 											type="number"
@@ -362,7 +362,7 @@ class SpeakerRegistrationForm extends React.Component{
 										<TextField
 											required
 											name="document_issue_date"
-											label="Document Issue Date"
+											label={<FormattedMessage id="Speaker.Registration.Form.Document_issue_Date"/>}
 											type="date"
 											value={speaker.document_issue_date ? speaker.document_issue_date : getCurrentDate()}
 											style={styles.textField}
@@ -376,7 +376,7 @@ class SpeakerRegistrationForm extends React.Component{
 										<TextField
 											required={!foreignFlag}
 											name="emitting_organ"
-											label="emitting organ"
+											label={<FormattedMessage id="Speaker.Registration.Form.Emitting_Organ"/>}
 											style={styles.textField}
 											defaultValue={speaker.emitting_organ}
 											type="text"
@@ -389,7 +389,7 @@ class SpeakerRegistrationForm extends React.Component{
 										<TextField
 											required
 											name="email"
-											label="Email"
+											label={<FormattedMessage id="Speaker.Registration.Form.Email"/>}
 											style={styles.textField}
 											defaultValue={speaker.email}
 											type="email"
@@ -402,7 +402,7 @@ class SpeakerRegistrationForm extends React.Component{
 									<div className="col-md-3">
 										<TextField
 											required
-											label="Mobile"
+											label={<FormattedMessage id="Speaker.Registration.Form.Mobile"/>}
 											style={styles.textField}
 											defaultValue={speaker.mobile}
 											type="number"
@@ -416,7 +416,7 @@ class SpeakerRegistrationForm extends React.Component{
 									<div className="col-md-3">
 										<TextField
 											name="fax"
-											label="FAX"
+											label={<FormattedMessage id="Speaker.Registration.Form.Fax"/>}
 											style={styles.textField}
 											defaultValue={speaker.fax}
 											type="number"
@@ -429,7 +429,7 @@ class SpeakerRegistrationForm extends React.Component{
 									<div className="col-md-4">
 										<TextField
 											name="linkedin"
-											label="LinkedIn URL"
+											label={<FormattedMessage id="Speaker.Registration.Form.Linkedin_Url"/>}
 											style={styles.textField}
 											defaultValue={speaker.linkedin}
 											type="text"
@@ -441,7 +441,7 @@ class SpeakerRegistrationForm extends React.Component{
 									<div className="col-md-4">
 										<TextField
 											name="lattes"
-											label="Lattes URL"
+											label={<FormattedMessage id="Speaker.Registration.Form.Latter_Url"/>}
 											style={styles.textField}
 											defaultValue={speaker.lattes}
 											type="text"
@@ -453,7 +453,7 @@ class SpeakerRegistrationForm extends React.Component{
 									<div className="col-md-4">
 										<TextField
 											name="orcid"
-											label="ORCID Link"
+											label={<FormattedMessage id="Speaker.Registration.Form.Orcid_Url"/>}
 											style={styles.textField}
 											defaultValue={speaker.orcid}
 											type="text"
@@ -471,7 +471,7 @@ class SpeakerRegistrationForm extends React.Component{
 											'aria-label': 'primary checkbox',
 											}}
 										/>
-										<strong>Registration in City</strong>
+						<strong> {<FormattedMessage id="Speaker.Registration.Form.Reg_City"/>}</strong>
 									</div>
 									<div className="col-md-4 mt-4">
 										<Checkbox
@@ -482,7 +482,7 @@ class SpeakerRegistrationForm extends React.Component{
 											'aria-label': 'primary checkbox',
 											}}
 										/>
-										<strong>Social Security Contributor</strong>
+										<strong> {<FormattedMessage id="Speaker.Registration.Form.Social_sec"/>} </strong>
 									</div>
 									<div className="col-md-12 text-right pt-4">
 										<Button variant="contained" color="primary" style={styles.button} onClick={()=>{this.handleTabChange(1)}}>

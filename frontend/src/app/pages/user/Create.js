@@ -72,7 +72,7 @@ class Create extends React.Component {
                             <div className="col-md-6">
                                 <TextField
                                     id="email"
-                                    label="email"
+                                    label=  {<FormattedMessage id="User.Registration.Form.Email"/>}
                                     className={classes.textField}
                                     value={user.email}
                                     onChange={(e)=>{this.changeHandler(e)}}
@@ -83,7 +83,7 @@ class Create extends React.Component {
                             <div className="col-md-6">
                                 <TextField
                                     id="username"
-                                    label="Username"
+                                    label= {<FormattedMessage id="User.Registration.Form.User_Name"/>}
                                     className={classes.textField}
                                     value={user.username}
                                     onChange={(e)=>{this.changeHandler(e)}}
@@ -94,7 +94,7 @@ class Create extends React.Component {
                             <div className="col-md-6">
                                 <TextField
                                     id="business_unit"
-                                    label="Business Unit"
+                                    label= {<FormattedMessage id="User.Registration.Form.Business_Unit"/>}
                                     value={user.business_unit}
                                     className={classes.textField}
                                     onChange={(e)=>{this.changeHandler(e)}}
@@ -106,7 +106,7 @@ class Create extends React.Component {
                                 <TextField
                                     required
                                     id="password"
-                                    label="Password"
+                                    label= {<FormattedMessage id="User.Registration.Form.Password"/>}
                                     value={user.password}
                                     type="password"
                                     className={classes.textField}
