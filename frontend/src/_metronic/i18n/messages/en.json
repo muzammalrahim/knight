@@ -130,6 +130,7 @@
   "Speaker.List.Column.Mobile_No": "Mobile No",
   "Speaker.List.Column.Email": "Email",
   "Speaker.List.Column.City": "City",
+  "Speaker.List.Column.Action":"Action",
 
   "User.Registration.Title": "Create User",
   "User.Registration.Form.Email": "Email",
@@ -151,5 +152,6 @@
   "User.List.Column.First_Name":"First Name",
   "User.List.Column.Last_Name":"Last Name",
   "User.List.Column.Email":"Email",
-  "User.List.Column.Bus_Un":"business unit"
+  "User.List.Column.Bus_Un":"business unit",
+  "User.List.Column.Action":"Action"
 }

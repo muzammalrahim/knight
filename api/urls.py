@@ -31,6 +31,12 @@ speakers_list = users_view.SpeakersViewSet.as_view({
 	'post': 'create'
 })
 
+speakers_detail = users_view.SpeakersViewSet.as_view({
+	'get': 'retrieve',
+	'put': 'update',
+	'delete': 'destroy'
+})
+
 urlpatterns = format_suffix_patterns([
 
 	# path('', users_view.api_root),
@@ -44,4 +50,5 @@ urlpatterns = format_suffix_patterns([
 	path('events/<pk>/', events_list, name='delete'),
 
 	path('speakers', speakers_list, name='speakers'),
+	path('speaker/<pk>', speakers_detail, name='speaker'),
 ])

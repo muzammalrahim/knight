@@ -11,7 +11,7 @@ import FormControl from '@material-ui/core/FormControl';
 import {
 	getCurrentDate
   } from "../../../_metronic/_helpers";
-  import list, {post, put} from '../helper/api';
+  import list, {put} from '../helper/api';
 
 class EventEditForm extends React.Component {
 	constructor(props){

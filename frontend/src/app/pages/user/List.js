@@ -12,15 +12,14 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
-import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
-import FilterListIcon from '@material-ui/icons/FilterList';
 import { FormattedMessage } from 'react-intl';
 import list, {del} from '../helper/api';
+import {Edit, Delete} from '@material-ui/icons';
 
 function createData(id, username, first_name, last_name, email, business_unit) {
   return { id, username, first_name, last_name, email, business_unit };
@@ -32,6 +31,7 @@ const headRows = [
   { id: 'last_name', numeric: true, disablePadding: false, label: <FormattedMessage id="User.List.Column.Last_Name"/> },
   { id: 'email', numeric: true, disablePadding: false, label: <FormattedMessage id="User.List.Column.Email"/> },
   { id: 'business_unit', numeric: true, disablePadding: false, label: <FormattedMessage id="User.List.Column.Bus_Un"/> },
+  { id: 'action', numeric: true, disablePadding: false, label: <FormattedMessage id="User.List.Column.Action"/> },
 ];
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -60,7 +60,7 @@ function getSorting(order, orderBy) {
 
 
 function EnhancedTableHead(props) {
-  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
+  const { order, orderBy, onRequestSort } = props;
   const createSortHandler = property => event => {
     onRequestSort(event, property);
   };
@@ -68,19 +68,9 @@ function EnhancedTableHead(props) {
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{ 'aria-label': 'Select all desserts' }}
-          />
-        </TableCell>
         {headRows.map((row, index) => (
           <TableCell
             key={index}
-            align={row.numeric ? 'right' : 'left'}
-            padding={row.disablePadding ? 'none' : 'default'}
             sortDirection={orderBy === row.id ? order : false}
             style={{display:row.id==='id' ? 'none' : ''}}
           >
@@ -99,12 +89,9 @@ function EnhancedTableHead(props) {
 }
 
 EnhancedTableHead.propTypes = {
-  numSelected: PropTypes.number.isRequired,
   onRequestSort: PropTypes.func.isRequired,
-  onSelectAllClick: PropTypes.func.isRequired,
   order: PropTypes.string.isRequired,
   orderBy: PropTypes.string.isRequired,
-  rowCount: PropTypes.number.isRequired,
 };
 
 const useToolbarStyles = makeStyles(theme => ({
@@ -135,49 +122,16 @@ const useToolbarStyles = makeStyles(theme => ({
 
 const EnhancedTableToolbar = props => {
   const classes = useToolbarStyles();
-  const { numSelected, selectedRows } = props;
 
   return (
     <Toolbar
-      className={clsx(classes.root, {
-        [classes.highlight]: numSelected > 0,
-      })}
+      className={clsx(classes.root)}
     >
-      <div className={classes.title}>
-        {selectedRows.length > 0 ? (
-          <Typography color="inherit" variant="subtitle1">
-            {selectedRows.length} selected
-          </Typography>
-        ) : (
-          <Typography variant="h6" id="tableTitle">
-            <FormattedMessage id="User.List.Title"/>
-          </Typography>
-        )}
-      </div>
-      <div className={classes.spacer} />
-      <div className={classes.actions}>
-        {numSelected > 0 ? (
-          <Tooltip title="Delete">
-            <IconButton aria-label="Delete" onClick={()=>{del(`api/users/${selectedRows[0]}`, selectedRows).then((response)=>{
-              console.log('response', response.data)
-            })}}>
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
-        ) : (
-          <Tooltip title="Filter list">
-            <IconButton aria-label="Filter list">
-              <FilterListIcon />
-            </IconButton>
-          </Tooltip>
-        )}
-      </div>
+      <Typography variant="h6" id="tableTitle">
+        <FormattedMessage id="User.List.Title"/>
+      </Typography>
     </Toolbar>
   );
-};
-
-EnhancedTableToolbar.propTypes = {
-  numSelected: PropTypes.number.isRequired,
 };
 
 const useStyles = makeStyles(theme => ({
@@ -201,53 +155,15 @@ export default function EnhancedTable(props) {
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
-  const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [rows, setRows] = React.useState([]);
-  const [selectedRows, setSelectedRows] = React.useState([]);
-  const [isSelectedAll, setIsSelectedAll] = React.useState(false);
 
   function handleRequestSort(event, property) {
     const isDesc = orderBy === property && order === 'desc';
     setOrder(isDesc ? 'asc' : 'desc');
     setOrderBy(property);
-  }
-
-  function handleSelectAllClick() {
-    let all_selected =[]
-    if (!isSelectedAll) {
-    setIsSelectedAll(!isSelectedAll)
-      rows.map((n) => {
-        all_selected.push(n.id)
-        console.log(n);
-      });
-    }else{
-      setIsSelectedAll(!isSelectedAll)
-    }
-    setSelectedRows(all_selected);
-    return all_selected;
-  }
-
-  function handleClick(event, id) {
-    const selectedIndex = selected.indexOf(id);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
-    }
-
-    setSelected(newSelected);
   }
 
   function handleChangePage(event, newPage) {
@@ -274,14 +190,13 @@ export default function EnhancedTable(props) {
     getUsers();
   },[]);
 
-  const isSelected = id => selected.indexOf(id) !== -1;
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selectedRows.length} selectedRows={selectedRows} />
+        <EnhancedTableToolbar />
         <div className={classes.tableWrapper}>
           <Table
             className={classes.table}
@@ -289,71 +204,54 @@ export default function EnhancedTable(props) {
             size={dense ? 'small' : 'medium'}
           >
             <EnhancedTableHead
-              numSelected={selectedRows.length}
               order={order}
               orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
             />
             <TableBody>
               {stableSort(rows, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.id);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <TableRow
                       hover
-                      onClick={event => handleClick(event, row.id)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
                       tabIndex={-1}
                       key={row.id}
-                      selected={isItemSelected}
                     >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          onChange={()=>{
-                            let selected = selectedRows;
-                            const index = selected.indexOf(row.id);
-                            if (index > -1) {
-                              selected.splice(index, 1);
-                            }else{
-                              selected.push(row.id)
-                            }
-                            if(selected.length < 1){
-                              setIsSelectedAll(false)
-                            }
-                            setSelectedRows(selected)
-                          }}
-                          checked={selectedRows.includes(row.id)}
-                          // inputProps={{ 'aria-labelledby': labelId }}
-                        />
-                      </TableCell>
-                      <TableCell align="right" style={{display:'none'}}>
+                      <TableCell style={{display:'none'}}>
                         {row.id}
                       </TableCell>
                       <TableCell 
-                        component="th" 
                         id={labelId} 
                         scope="row" 
-                        padding="none"
                         onClick={()=>{props.history.push(`user/${row.id}`)}} 
-                        style={{cursor:'pointer', color:'blue'}}>
+                        >
                         {row.username}
                       </TableCell>
-                      <TableCell align="right">{row.first_name}</TableCell>
-                      <TableCell align="right">{row.last_name}</TableCell>
-                      <TableCell align="right">{row.email}</TableCell>
-                      <TableCell align="right">{row.business_unit}</TableCell>
+                      <TableCell>{row.first_name}</TableCell>
+                      <TableCell>{row.last_name}</TableCell>
+                      <TableCell>{row.email}</TableCell>
+                      <TableCell>{row.business_unit}</TableCell>
+                      <TableCell>
+                        <Edit onClick={()=>{props.history.push(`/user/${row.id}`)}} style={{cursor:'pointer'}}/>
+                        <Delete 
+                          style={{cursor:'pointer'}}
+                          onClick={()=>{
+                            del(`users/${row.id}/`,[row.id]).then((response)=>{
+                              getUsers();
+                          })}}
+                        />
+                      </TableCell>
                     </TableRow>
                   );
                 })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 49 * emptyRows }}>
-                  <TableCell colSpan={6} />
+              {rows.length < 1 && (
+                <TableRow>
+                  <TableCell colSpan={6}>
+                    No Record Found
+                  </TableCell>
                 </TableRow>
               )}
             </TableBody>
