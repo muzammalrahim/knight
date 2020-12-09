@@ -147,8 +147,8 @@ export default function EnhancedTable(props) {
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [rows, setRows] = React.useState([]);
+  const [open, setOpen] = React.useState([]);
   const [alert, setAlert] = React.useState({
-    open: false, 
     severity: '',
     message:'',
     title:''
@@ -180,11 +180,12 @@ export default function EnhancedTable(props) {
       setRows(user_list);
     })
   }
-  function closeAlert(){
-    let data = alert;
-    data.open = false;
-    setAlert(data);
-  }
+  const closeAlert = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+  };
   useEffect(() => {
     getUsers();
   },[]);
@@ -192,13 +193,13 @@ export default function EnhancedTable(props) {
   return (
     <div className={classes.root}>
       <Snackbar 
-        open={alert.open} 
-        autoHideDuration={4000} 
+        open={open} 
+        autoHideDuration={1000} 
         anchorOrigin={{ vertical:'top', horizontal:'right' }}
-        onClose={()=>{closeAlert()}} 
+        onClose={closeAlert} 
       >
         <Alert 
-            onClose={()=>{closeAlert()}} 
+            onClose={closeAlert} 
             severity={alert.severity}
           >
           <AlertTitle>{alert.title}</AlertTitle>
@@ -251,13 +252,21 @@ export default function EnhancedTable(props) {
                           onClick={()=>{
                             del(`users/${row.id}/`,[row.id]).then((response)=>{
                               let data = alert;
-                              data.open = true;
                               data.severity = 'success';
                               data.title = "Success";
                               data.message = "Record has been successfully deleted";
                               setAlert(data);
+                              setOpen(true);
                               getUsers();
-                          })}}
+                          }).catch((error)=>{
+                            let data = alert;
+                              data.severity = 'error';
+                              data.title = "Error";
+                              data.message = "Something went wrong";
+                              setAlert(data);
+                              setOpen(true);
+                          })
+                        }}
                         />
                       </TableCell>
                     </TableRow>

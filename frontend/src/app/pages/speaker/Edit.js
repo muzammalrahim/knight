@@ -1,28 +1,40 @@
-/* eslint-disable no-restricted-imports */
 import React from "react";
-import { TextField, Button, Icon, AppBar, Tabs, Tab, Checkbox, Radio } from "@material-ui/core";
+import { TextField, Button, Icon, AppBar, Tabs, Tab, Checkbox, Radio, Grid, Typography, Snackbar } from "@material-ui/core";
 import { Dropdown, FormControl, InputGroup, DropdownButton } from "react-bootstrap";
-import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import {ChevronLeft} from '@material-ui/icons';
 import { FormattedMessage } from "react-intl";
-import Grid from '@material-ui/core/Grid';
 import {
 	getCurrentDate
   } from "../../../_metronic/_helpers";
 import list, {put} from '../helper/api';
+import { Alert, AlertTitle } from '@material-ui/lab';
 
 class SpeakerEditForm extends React.Component{
 	constructor(props){
 		super(props);
-		this.speaker={ id: this.props.match.params.id, foreignFlag: false,	accept_info: false,	name: "", father_name: "",	
+		this.speaker={ id: this.props.match.params.id, name: "", father_name: "",	
 			mother_name:"",	dob:"", birthplace:"", civil_state:"", scholarity: "", social_number: "", service_provider: "", 
 			country: "Select Counrty ...", state: "", city: "", neighborhood: "", cep: "", ddd: "", address:"", id_number: "", 
 			document_issue_date: "", emitting_organ: "", email: "", mobile: "", fax: "", linkedin: "", lattes: "", orcid: "", 
-			registration_in_city: false, social_security: false, person_type:""
+			person_type:""
 		}
+		this.validateSpeaker={ foreignFlag: false,	accept_info: false,	name: false, father_name: false,	
+			mother_name:false,	dob:false, birthplace:false, civil_state:false, scholarity: false, social_number: false, service_provider: false, 
+			country: false, state: false, city: false, neighborhood: false, cep: false, ddd: false, address:false, id_number: false, 
+			document_issue_date: false, emitting_organ: false, email: false, mobile: false, fax: false, linkedin: false, lattes: false, orcid: false, 
+			registration_in_city: false, social_security: false, person_type:false
+		}
+        this.alert={
+            open: false, 
+            severity: '',
+            message:'',
+            title:''
+        }
 		this.state={
 			speaker: this.speaker,
+			validateSpeaker: this.validateSpeaker,
+			alert: this.alert,
 			currentTab: 0,
 			onlyNums:'',
 			countries:[{value:'Select country ....', label:'Select country ....'}]
@@ -30,9 +42,7 @@ class SpeakerEditForm extends React.Component{
 	}
 
 	handleChange(event){
-		let key = event.target.name;
-		let value = event.target.value;
-		let {speaker} = this.state;
+		let [key, value, {speaker, validateSpeaker}] = [event.target.name, event.target.value, this.state];
 		if(key==="foreignFlag" || key==="accept_info" || key==="registration_in_city" || key==="social_security"){
 			speaker[key]=!(speaker[key])
 		}
@@ -48,22 +58,32 @@ class SpeakerEditForm extends React.Component{
 		else {
 			speaker[key]= value;
 		}
-		this.setState({speaker})
-		console.log(speaker)
+		if(validateSpeaker[key]){
+			validateSpeaker[key] = speaker[key] ? false : true;
+        }
+        this.setState({speaker, validateSpeaker});
 	}
 
 	handleTabChange(currentTab) {
 		this.setState({currentTab});
 	}
 	handleSubmit(){
-		let {speaker} = this.state;
-		if(speaker.name && speaker.dob && speaker.birthplace && speaker.civil_state && speaker.scholarity && speaker.service_provider && speaker.country && speaker.state && speaker.city){
-			put(`api/speaker/${speaker.id}`, speaker).then((response)=>{
-				this.props.history.push('/speakers')
-			}).catch((response)=>{
-				console.log('response error', response)
-			})
-		}
+		let {speaker, validateSpeaker} = this.state;
+        let isSubmit = null;
+		Object.keys(validateSpeaker).map((key)=>{
+			validateSpeaker[key] = speaker[key] ? false : true;
+        })
+        this.setState({validateSpeaker});
+		isSubmit && put(`api/speaker/${speaker.id}`, speaker).then((response)=>{
+				this.setState({alert:{open:true, severity:"success", title:"success", message:'User has been updated Sucessfully'}})
+				setTimeout(()=>{
+					this.props.history.push('/speakers')
+				}, 1000)
+				}).catch((error)=>{
+					Object.keys(error.response.data).map((key)=>{
+						this.setState({alert:{open:true, severity:"error", title:"Error", message:`${key+": "+error.response.data[key][0]}`}})
+					})
+				})
 	}
 	getSpeaker(){
 		let {speaker} = this.state;
@@ -83,10 +103,16 @@ class SpeakerEditForm extends React.Component{
 			this.setState({countries:list_data})});
 	}
 	render(){
-		let {speaker:{foreignFlag, accept_info, person_type}, speaker, currentTab, countries} = this.state;
+		let {speaker:{foreignFlag, accept_info, person_type}, speaker, currentTab, countries, validateSpeaker, alert:{severity, message, title, open}} = this.state;
 
 		return (
 			<div style={styles.root}>
+				<Snackbar open={open} autoHideDuration={4000} anchorOrigin={{ vertical:'top', horizontal:'right' }} onClose={()=>{this.handleClose()}}>
+					<Alert onClose={()=>{this.handleClose()}} severity={severity}>
+						<AlertTitle>{title}</AlertTitle>
+						<strong>{message}</strong>
+					</Alert>
+				</Snackbar>
 				<Grid container spacing={3}>
         			<Grid item xs={12}>	
 						<h3 className="card-label text-center pt-4 pb-2">
@@ -137,6 +163,8 @@ class SpeakerEditForm extends React.Component{
 											onChange={(event)=>{this.handleChange(event)}}
 											margin="normal"
 											variant="outlined"
+											error={validateSpeaker['name']}
+											helperText={validateSpeaker['name'] && 'this field is required'}
 										/>
 									</div>
 									
@@ -150,6 +178,8 @@ class SpeakerEditForm extends React.Component{
 											onChange={(event)=>{this.handleChange(event)}}
 											margin="normal"
 											variant="outlined"
+											error={validateSpeaker['father_name']}
+											helperText={validateSpeaker['father_name'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-6">
@@ -162,6 +192,8 @@ class SpeakerEditForm extends React.Component{
 											onChange={(event)=>{this.handleChange(event)}}
 											margin="normal"
 											variant="outlined"
+											error={validateSpeaker['mother_name']}
+											helperText={validateSpeaker['mother_name'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-3">
@@ -176,6 +208,8 @@ class SpeakerEditForm extends React.Component{
 												shrink: true
 											}}
 											onChange={(event) =>{this.handleChange(event)}}
+											error={validateSpeaker['dob']}
+											helperText={validateSpeaker['dob'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-3">
@@ -188,6 +222,8 @@ class SpeakerEditForm extends React.Component{
 											onChange={(event)=>{this.handleChange(event)}}
 											margin="normal"
 											variant="outlined"
+											error={validateSpeaker['birthplace']}
+											helperText={validateSpeaker['birthplace'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-3">
@@ -205,7 +241,8 @@ class SpeakerEditForm extends React.Component{
 													style: styles.menu
 												}
 											}}
-											// helperText="Please select your currency"
+											error={validateSpeaker['civil_state']}
+											helperText={validateSpeaker['civil_state'] && 'this field is required'}
 											margin="normal"
 											variant="outlined"
 										>
@@ -226,6 +263,8 @@ class SpeakerEditForm extends React.Component{
 											onChange={(event)=>{this.handleChange(event)}}
 											margin="normal"
 											variant="outlined"
+											error={validateSpeaker['scholarity']}
+											helperText={validateSpeaker['scholarity'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-3">
@@ -238,6 +277,8 @@ class SpeakerEditForm extends React.Component{
 											onChange={(event)=>{this.handleChange(event)}}
 											margin="normal"
 											variant="outlined"
+											error={validateSpeaker['social_number']}
+											helperText={validateSpeaker['social_number'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-3">
@@ -250,6 +291,8 @@ class SpeakerEditForm extends React.Component{
 											onChange={(event)=>{this.handleChange(event)}}
 											margin="normal"
 											variant="outlined"
+											error={validateSpeaker['service_provider']}
+											helperText={validateSpeaker['service_provider'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-4">
@@ -267,7 +310,8 @@ class SpeakerEditForm extends React.Component{
 													style: styles.menu
 												}
 											}}
-											// helperText="Please select your currency"
+											error={validateSpeaker['country']}
+											helperText={validateSpeaker['country'] && 'this field is required'}
 											margin="normal"
 											variant="outlined"
 										>
@@ -288,6 +332,8 @@ class SpeakerEditForm extends React.Component{
 											margin="normal"
 											variant="outlined"
 											onChange={(event)=>{this.handleChange(event)}}
+											error={validateSpeaker['state']}
+											helperText={validateSpeaker['state'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-4">
@@ -300,6 +346,8 @@ class SpeakerEditForm extends React.Component{
 											margin="normal"
 											variant="outlined"
 											onChange={(event)=>{this.handleChange(event)}}
+											error={validateSpeaker['city']}
+											helperText={validateSpeaker['city'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-5">
@@ -312,6 +360,8 @@ class SpeakerEditForm extends React.Component{
 											margin="normal"
 											variant="outlined"
 											onChange={(event)=>{this.handleChange(event)}}
+											error={validateSpeaker['neighborhood']}
+											helperText={validateSpeaker['neighborhood'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-5">
@@ -324,6 +374,8 @@ class SpeakerEditForm extends React.Component{
 											margin="normal"
 											variant="outlined"
 											onChange={(event)=>{this.handleChange(event)}}
+											error={validateSpeaker['cep']}
+											helperText={validateSpeaker['cep'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-2">
@@ -336,6 +388,8 @@ class SpeakerEditForm extends React.Component{
 											margin="normal"
 											variant="outlined"
 											onChange={(event)=>{this.handleChange(event)}}
+											error={!foreignFlag && validateSpeaker['cep']}
+											helperText={!foreignFlag && validateSpeaker['cep'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-12">
@@ -348,6 +402,8 @@ class SpeakerEditForm extends React.Component{
 											margin="normal"
 											variant="outlined"
 											onChange={(event)=>{this.handleChange(event)}}
+											error={validateSpeaker['address']}
+											helperText={validateSpeaker['address'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-4">
@@ -360,7 +416,8 @@ class SpeakerEditForm extends React.Component{
 											type="number"
 											margin="normal"
 											variant="outlined"
-											// onKeyUp={(e)=>{this.numberChange(e)}}
+											error={validateSpeaker['id_number']}
+											helperText={validateSpeaker['id_number'] && 'this field is required'}
 											onKeyUp={(event)=>{this.handleChange(event)}}
 										/>
 									</div>
@@ -376,6 +433,8 @@ class SpeakerEditForm extends React.Component{
 												shrink: true
 											}}
 											onChange={(event) =>{this.handleChange(event)}}
+											error={validateSpeaker['document_issue_date']}
+											helperText={validateSpeaker['document_issue_date'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-4">
@@ -389,6 +448,8 @@ class SpeakerEditForm extends React.Component{
 											margin="normal"
 											variant="outlined"
 											onChange={(event)=>{this.handleChange(event)}}
+											error={validateSpeaker['emitting_organ']}
+											helperText={validateSpeaker['emitting_organ'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-6">
@@ -403,6 +464,8 @@ class SpeakerEditForm extends React.Component{
 											margin="normal"
 											variant="outlined"
 											onChange={(event)=>{this.handleChange(event)}}
+											error={validateSpeaker['email']}
+											helperText={validateSpeaker['email'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-3">
@@ -415,7 +478,8 @@ class SpeakerEditForm extends React.Component{
 											name="mobile"
 											margin="normal"
 											variant="outlined"
-											// onKeyUp={(e)=>{this.numberChange(e)}}
+											error={validateSpeaker['mobile']}
+											helperText={validateSpeaker['mobile'] && 'this field is required'}
 											onKeyUp={(event)=>{this.handleChange(event)}}
 										/>
 									</div>

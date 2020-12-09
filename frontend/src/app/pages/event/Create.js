@@ -1,17 +1,13 @@
 import React from "react";
-import { TextField, Button, Icon, AppBar, Tabs, Tab } from "@material-ui/core";
-import Typography from '@material-ui/core/Typography';
+import { TextField, Button, Icon, AppBar, Tabs, Tab, Typography, Radio, RadioGroup, FormControlLabel, FormControl, Snackbar } from "@material-ui/core";
 import PropTypes from 'prop-types';
 import {ChevronLeft} from '@material-ui/icons';
 import { FormattedMessage } from "react-intl";
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
 import {
 	getCurrentDate
   } from "../../../_metronic/_helpers";
   import list, {post} from '../helper/api';
+  import { Alert, AlertTitle } from '@material-ui/lab';
 
 class EventRegistrationForm extends React.Component {
 	constructor(props){
@@ -21,8 +17,21 @@ class EventRegistrationForm extends React.Component {
 			city:"", address:"", solicitant:"", business_unit:"", despartment:"", cost_center:"",
 			speaker_name:"", virtual_presential:"", _duration:"", displacement:''
 		}
+		this.validateEvent={
+			name:false, _type:false, date:false, duration:false, web_presential:false, country:false,	state:false,
+			city:false, address:false, solicitant:false, business_unit:false, despartment:false, cost_center:false,
+			speaker_name:false, virtual_presential:false, _duration:false, displacement:false
+		}
+		this.alert={
+            open: false, 
+            severity: '',
+            message:'',
+            title:''
+        }
 		this.state={
 			event: this.event,
+			validateEvent: this.validateEvent,
+			alert: this.alert,
 			currentTab: 0,
 			speaker_list:[],
 			countries:[]
@@ -30,23 +39,33 @@ class EventRegistrationForm extends React.Component {
 	}
 
 	handleChange(e){
-		let key = e.target.name;
-		let value = e.target.value;
-		let {event} = this.state;
+		let [key, value, {event, validateEvent}] = [e.target.name, e.target.value, this.state];
 		event[key]=value;
-		this.setState({event})
+		if(validateEvent[key]){
+            validateEvent[key] = event[key] ? false : true;
+        }
+        this.setState({event, validateEvent});
 	}
 
 	handleTabChange(value) {
 		this.setState({currentTab:value});
 	}
 	submitHandler(){
-        let {event} = this.state;
-        if(event.name && event._type && event.date && event.country && event.city){
-            post('api/events', event).then((response)=>{
-                this.props.history.push('/events')
-            })
-        }
+		let {event, validateEvent} = this.state;
+		let isSubmit = null;
+		Object.keys(validateEvent).map((key)=>{
+            isSubmit = event[key] && isSubmit !== false ? true : false;
+            validateEvent[key] = event[key] ? false : true;
+        })
+        this.setState({validateEvent});
+        isSubmit && post('api/events', event).then((response)=>{
+                this.setState({alert:{open:true, severity:"success", title:"success", message:'User Created Sucessfully'}})
+				setTimeout(()=>{this.props.history.push('/events')}, 1000)
+			}).catch((error)=>{
+				Object.keys(error.response.data).map((key)=>{
+					this.setState({alert:{open:true, severity:"error", title:"Error", message:`${key+": "+error.response.data[key][0]}`}})
+				})
+			})
     }
 	getSpeakers (){
 		list('api/speakers').then((response)=>{
@@ -56,7 +75,10 @@ class EventRegistrationForm extends React.Component {
 		  })
 		  this.setState({speaker_list});
 		})
-	  }
+	}
+	handleClose(){
+        this.setState({alert:{open:false, severity: '', message:'' }})
+    }   
 	componentDidMount(){
 		this.getSpeakers();
 		fetch('https://restcountries.eu/rest/v2/all')
@@ -69,9 +91,15 @@ class EventRegistrationForm extends React.Component {
 			this.setState({countries:list_data})});
 	}
 	render(){
-		let {event:{web_presential}, event, currentTab, speaker_list, countries} = this.state;
+		let {event:{web_presential}, event, currentTab, speaker_list, countries, validateEvent, alert:{open, severity, message, title}} = this.state;
 		return (
 			<div className="row">
+				<Snackbar open={open} autoHideDuration={4000} anchorOrigin={{ vertical:'top', horizontal:'right' }} onClose={()=>{this.handleClose()}}>
+                    <Alert onClose={()=>{this.handleClose()}} severity={severity}>
+                        <AlertTitle>{title}</AlertTitle>
+                        <strong>{message}</strong>
+                    </Alert>
+                </Snackbar>
 				<div style={styles.root}>
 					<div className="col-md-12">
 						<h3 className="card-label text-center pt-4 pb-2">
@@ -96,6 +124,8 @@ class EventRegistrationForm extends React.Component {
 											onChange={(e)=>{this.handleChange(e)}}
 											margin="normal"
 											variant="outlined"
+											error={validateEvent['name']}
+                                    		helperText={validateEvent['name'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-6">
@@ -113,10 +143,14 @@ class EventRegistrationForm extends React.Component {
 													className: styles.menu
 												}
 											}}
-											// helperText="Please select your currency"
+											error={validateEvent['_type']}
+                                    		helperText={validateEvent['_type'] && 'this field is required'}
 											margin="normal"
 											variant="outlined"
 											>
+											<option value={null}>
+												Select Type....
+											</option>
 											{type.map(option => (
 												<option key={option.value} value={option.value}>
 												{option.label}
@@ -136,6 +170,8 @@ class EventRegistrationForm extends React.Component {
 											InputLabelProps={{
 												shrink: true
 											}}
+											error={validateEvent['date']}
+                                    		helperText={validateEvent['date'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-6">
@@ -149,6 +185,8 @@ class EventRegistrationForm extends React.Component {
 											onChange={(e)=>{this.handleChange(e)}}
 											margin="normal"
 											variant="outlined"
+											error={validateEvent['duration']}
+                                    		helperText={validateEvent['duration'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-6">
@@ -169,7 +207,12 @@ class EventRegistrationForm extends React.Component {
 											// helperText="Please select your currency"
 											margin="normal"
 											variant="outlined"
+											error={validateEvent['web_presential']}
+                                    		helperText={validateEvent['web_presential'] && 'this field is required'}
 											>
+											<option value={null}>
+												Select Web / Presential....
+											</option>
 											{web_presential_options.map(option => (
 												<option key={option.value} value={option.value}>
 												{option.label}
@@ -197,7 +240,12 @@ class EventRegistrationForm extends React.Component {
 												helperText="Please select your currency"
 												margin="normal"
 												variant="outlined"
+												error={validateEvent['country']}
+												helperText={validateEvent['country'] && 'this field is required'}
 												>
+												<option value={null}>
+													Select Country....
+												</option>
 												{countries.map(option => (
 													<option key={option.value} value={option.value}>
 													{option.label}
@@ -220,13 +268,17 @@ class EventRegistrationForm extends React.Component {
 													className: styles.menu
 													}
 												}}
-												helperText="Please select your currency"
+												error={validateEvent['state']}
+												helperText={validateEvent['state'] && 'this field is required'}
 												margin="normal"
 												variant="outlined"
 												>
+												<option value={null}>
+													Select State / Province....
+												</option>
 												{province.map(option => (
 													<option key={option.value} value={option.value}>
-													{option.label}
+														{option.label}
 													</option>
 												))}
 											</TextField>
@@ -241,6 +293,8 @@ class EventRegistrationForm extends React.Component {
 												onChange={(e)=>{this.handleChange(e)}}
 												margin="normal"
 												variant="outlined"
+												error={validateEvent['city']}
+												helperText={validateEvent['city'] && 'this field is required'}
 											/>
 										</div>
 										<div className="col-md-6">
@@ -253,6 +307,8 @@ class EventRegistrationForm extends React.Component {
 											onChange={(e)=>{this.handleChange(e)}}
 											margin="normal"
 											variant="outlined"
+											error={validateEvent['address']}
+											helperText={validateEvent['address'] && 'this field is required'}
 										/>
 									</div>
 									</>}
@@ -275,6 +331,8 @@ class EventRegistrationForm extends React.Component {
 											onChange={(e)=>{this.handleChange(e)}}
 											margin="normal"
 											variant="outlined"
+											error={validateEvent['solicitant']}
+											helperText={validateEvent['solicitant'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-6">
@@ -292,10 +350,14 @@ class EventRegistrationForm extends React.Component {
 													className: styles.menu
 												}
 											}}
-											// helperText="Please select your currency"
+											error={validateEvent['business_unit']}
+											helperText={validateEvent['business_unit'] && 'this field is required'}
 											margin="normal"
 											variant="outlined"
-										>
+										>	
+											<option value={null}>
+												Select Business Unit....
+											</option>
 											{b_unit.map(option => (
 												<option key={option.value} value={option.value}>
 													{option.label}
@@ -318,10 +380,14 @@ class EventRegistrationForm extends React.Component {
 													className: styles.menu
 												}
 											}}
-											// helperText="Please select your currency"
+											error={validateEvent['despartment']}
+											helperText={validateEvent['despartment'] && 'this field is required'}
 											margin="normal"
 											variant="outlined"
 										>
+											<option value={null}>
+												Select Department....
+											</option>
 											{department.map(option => (
 												<option key={option.value} value={option.value}>
 													{option.label}
@@ -339,6 +405,8 @@ class EventRegistrationForm extends React.Component {
 											onChange={(e)=>{this.handleChange(e)}}
 											margin="normal"
 											variant="outlined"
+											error={validateEvent['cost_center']}
+											helperText={validateEvent['cost_center'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-6">
@@ -356,10 +424,14 @@ class EventRegistrationForm extends React.Component {
 													className: styles.menu
 												}
 											}}
-											// helperText="Please select your currency"
+											error={validateEvent['speaker_name']}
+											helperText={validateEvent['speaker_name'] && 'this field is required'}
 											margin="normal"
 											variant="outlined"
 										>
+											<option value={null}>
+												Select Speaker....
+											</option>
 											{speaker_list.map(option => (
 												<option key={option.value} value={option.value}>
 													{option.label}
@@ -382,10 +454,14 @@ class EventRegistrationForm extends React.Component {
 													className: styles.menu
 												}
 											}}
-											// helperText="Please select your currency"
+											error={validateEvent['virtual_presential']}
+											helperText={validateEvent['virtual_presential'] && 'this field is required'}
 											margin="normal"
 											variant="outlined"
-										>
+										>	
+											<option value={null}>
+												Select Virtual / Presential....
+											</option>
 											{virtual_presential.map(option => (
 												<option key={option.value} value={option.value}>
 													{option.label}
@@ -408,10 +484,14 @@ class EventRegistrationForm extends React.Component {
 													className: styles.menu
 												}
 											}}
-											// helperText="Please select your currency"
+											error={validateEvent['_duration']}
+											helperText={validateEvent['_duration'] && 'this field is required'}
 											margin="normal"
 											variant="outlined"
 										>
+											<option value={null}>
+												Select Duration....
+											</option>
 											{country.map(option => (
 												<option key={option.value} value={option.value}>
 													{option.label}

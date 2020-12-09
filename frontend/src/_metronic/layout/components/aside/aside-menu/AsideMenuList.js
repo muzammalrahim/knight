@@ -12,11 +12,11 @@ export function AsideMenuList({ layoutProps }) {
         ? ` ${!hasSubmenu && "menu-item-active"} menu-item-open `
         : "";
   };
-  // useEffect(() => {
-  //   let User = localStorage.getItem('persist:v705-demo1-auth') && JSON.parse(localStorage.getItem('persist:v705-demo1-auth')).user;
-  //   User = JSON.parse(User)
-  //   User && User.groups.length > 0 && setUser(User.groups[0])
-  // },[]);
+  useEffect(() => {
+    let User = localStorage.getItem('persist:v705-demo1-auth') && JSON.parse(localStorage.getItem('persist:v705-demo1-auth')).user;
+    User = JSON.parse(User)
+    User && User.groups.length > 0 && setUser(User.groups[0])
+  },[]);
   return (
       <>
         {/* begin::Menu Nav */}
@@ -150,7 +150,7 @@ export function AsideMenuList({ layoutProps }) {
             </div>
           </li>
           {/* {user && user === 1 && */}
-          <li
+          {user === 1 &&<li
               className={`menu-item menu-item-submenu ${getMenuItemActive(
                   "/google-material", true
               )}`}
@@ -207,6 +207,7 @@ export function AsideMenuList({ layoutProps }) {
               </ul>
             </div>
           </li>
+          }
           {/* } */}
           <li
               className={`menu-item menu-item-submenu ${getMenuItemActive(

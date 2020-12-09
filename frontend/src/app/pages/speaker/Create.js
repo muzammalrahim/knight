@@ -38,8 +38,11 @@ class SpeakerRegistrationForm extends React.Component{
 			speaker[key]=!(speaker[key])
 		}
 		else if(key==="id_number" || key==="fax" || key==="mobile"){
+			
+		console.log('enterd')
 			if(event.keyCode !== 107 && event.keyCode !== 109){
 				speaker[key]=value;
+				console.log('speaker',speaker)
 				this.setState({speaker});
 			}
 			else {
@@ -50,7 +53,6 @@ class SpeakerRegistrationForm extends React.Component{
 			speaker[key]= value;
 		}
 		this.setState({speaker})
-		console.log(speaker)
 	}
 
 	handleTabChange(currentTab) {
@@ -402,11 +404,11 @@ class SpeakerRegistrationForm extends React.Component{
 									<div className="col-md-3">
 										<TextField
 											required
+											name="mobile"
 											label={<FormattedMessage id="Speaker.Registration.Form.Mobile"/>}
 											style={styles.textField}
-											value={speaker.mobile}
+											// value={speaker.mobile}
 											type="number"
-											name="mobile"
 											margin="normal"
 											variant="outlined"
 											// onKeyUp={(e)=>{this.numberChange(e)}}
@@ -663,7 +665,7 @@ class SpeakerRegistrationForm extends React.Component{
 													<InputGroup.Prepend>
 														<InputGroup.Text>UF / City</InputGroup.Text>
 													</InputGroup.Prepend>
-													<DropdownButton
+													{/* <DropdownButton
 														disabled={person_type !== "juridcal"}
 														as={InputGroup.Prepend}
 														variant="outlined"
@@ -675,7 +677,7 @@ class SpeakerRegistrationForm extends React.Component{
 														<Dropdown.Item href="#">Something else here</Dropdown.Item>
 														<Dropdown.Divider />
 														<Dropdown.Item href="#">Separated link</Dropdown.Item>
-													</DropdownButton>
+													</DropdownButton> */}
 													<FormControl aria-describedby="basic-addon1" disabled={person_type !== "juridcal"}/>
 												</InputGroup>
 												<TextField
