@@ -46,11 +46,34 @@ class SpeakerEditForm extends React.Component{
 
 	handleChange(event){
 		let [key, value, {speaker, validateSpeaker}] = [event.target.name, event.target.value, this.state];
+		console.log(key, value)
+		if(speaker['person_type'] === "juridcal"){
+			validateSpeaker['national_id'] = false;
+			validateSpeaker['cpf'] = false;
+			validateSpeaker['uf_crm'] = false;
+			validateSpeaker['specialty'] = false;
+
+			speaker['national_id'] = "";
+			speaker['cpf'] = "";
+			speaker['uf_crm'] = "";
+			speaker['specialty'] = "";
+
+		}else if (speaker['person_type'] === "physical"){
+			validateSpeaker['company_name'] = false;
+			validateSpeaker['cnpj'] = false;
+			validateSpeaker['uf_city'] = false;
+			validateSpeaker['juridical_address'] = false;
+
+			speaker['company_name'] = "";
+			speaker['cnpj'] = "";
+			speaker['uf_city'] = "";
+			speaker['juridical_address'] = "";
+		}
 		if(key==="foreignFlag" || key==="accept_info" || key==="registration_in_city" || key==="social_security"){
 			speaker[key]=!(speaker[key])
 		}
 		else if(key==="id_number" || key==="fax" || key==="mobile"){
-			if(event.keyCode !== 107 && event.keyCode !== 109){
+			if(event.keyCode !== 107 && event.keyCode !== 109 && event.keyCode !== 187 && event.keyCode !== 189){
 				speaker[key]=value;
 			}
 			else {
@@ -63,28 +86,6 @@ class SpeakerEditForm extends React.Component{
 		if(validateSpeaker[key]){
 			validateSpeaker[key] = speaker[key] ? false : true;
 		}
-		if(speaker['person_type'] === "juridcal"){
-			validateSpeaker['national_id'] = false;
-			validateSpeaker['cpf'] = false;
-			validateSpeaker['uf_crm'] = false;
-			validateSpeaker['specialty'] = false;
-
-			speaker['company_name'] = "";
-			speaker['cnpj'] = "";
-			speaker['uf_city'] = "";
-			speaker['juridical_address'] = "";
-
-		}else if (speaker['person_type'] === "physical"){
-			validateSpeaker['company_name'] = false;
-			validateSpeaker['cnpj'] = false;
-			validateSpeaker['uf_city'] = false;
-			validateSpeaker['juridical_address'] = false;
-
-			speaker['national_id'] = "";
-			speaker['cpf'] = "";
-			speaker['uf_crm'] = "";
-			speaker['specialty'] = "";
-		}
 		this.setState({speaker, validateSpeaker});
 	}
 
@@ -96,17 +97,18 @@ class SpeakerEditForm extends React.Component{
 		let isSubmit = null;
 		
 		Object.keys(validateSpeaker).map((key)=>{
-			if(speaker['person_type'] === "juridcal" && key === "national_id" || key === "cpf" || key === "uf_crm" || key === "specialty" ){
+			if(speaker['person_type'] === "juridcal" && (key === "national_id" || key === "cpf" || key === "uf_crm" || key === "specialty" )){
 				validateSpeaker[key] = false;
-				isSubmit = speaker[key] && isSubmit !== false ? true : false;
-			}else if(speaker['person_type'] === "physical" && key === "company_name" || key === "cnpj" || key === "uf_city" || key === "juridical_address" ){
+			}else if(speaker['person_type'] === "physical" && (key === "company_name" || key === "cnpj" || key === "uf_city" || key === "juridical_address" )){
 				validateSpeaker[key] = false;
-				isSubmit = speaker[key] && isSubmit !== false ? true : false;
+			}else if(key === "lattes" || key === "linkedin" || key === "ddd" || key === "fax" || key === "orcid"){
+				validateSpeaker[key] = false;
 			}else{
 				validateSpeaker[key] = speaker[key] ? false : true;
 				isSubmit = speaker[key] && isSubmit !== false ? true : false;
 			}
 		})
+		console.log('validation', validateSpeaker)
         this.setState({validateSpeaker});
 		isSubmit && put(`api/speaker/${speaker.id}`, speaker).then((response)=>{
 			this.setState({alert:{open:true, severity:"success", title:"success", message:'User has been updated Sucessfully'}})
@@ -138,7 +140,7 @@ class SpeakerEditForm extends React.Component{
 	}
 	render(){
 		let {speaker:{foreignFlag, accept_info, person_type}, speaker, currentTab, countries, validateSpeaker, alert:{severity, message, title, open}, show} = this.state;
-
+		console.log('person_ type', person_type)
 		return (
 			<div style={styles.root}>
 				<Snackbar open={open} autoHideDuration={4000} anchorOrigin={{ vertical:'top', horizontal:'right' }} onClose={()=>{this.handleClose()}}>

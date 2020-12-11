@@ -1,42 +1,29 @@
+/* eslint-disable no-restricted-imports */
 import React from "react";
-import { TextField, Button, Icon, AppBar, Tabs, Tab, Checkbox, Radio, Grid, Typography, Snackbar } from "@material-ui/core";
-import { Dropdown, FormControl, InputGroup, DropdownButton, FormText } from "react-bootstrap";
+import { TextField, Button, Icon, AppBar, Tabs, Tab, Checkbox, Radio } from "@material-ui/core";
+import { Dropdown, FormControl, InputGroup, DropdownButton } from "react-bootstrap";
+import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import {ChevronLeft} from '@material-ui/icons';
 import { FormattedMessage } from "react-intl";
+import Grid from '@material-ui/core/Grid';
 import {
 	getCurrentDate
   } from "../../../_metronic/_helpers";
-import list, {post} from '../helper/api';
-import { Alert, AlertTitle } from '@material-ui/lab';
+import {post} from '../helper/api';
 
-class SpeakerEditForm extends React.Component{
+class SpeakerRegistrationForm extends React.Component{
 	constructor(props){
 		super(props);
-		this.speaker={ id: this.props.match.params.id, name: "", father_name: "", mother_name:"", dob:"", birthplace:"", civil_state:"", 
-			scholarity: "", social_number: "", service_provider: "", country: "Select Counrty ...", state: "", city: "", neighborhood: "",
-			cep: "", ddd: "", address:"", id_number: "", document_issue_date: "", emitting_organ: "", email: "", mobile: "", fax: "", 
-			linkedin: "", lattes: "", orcid: "", person_type:null, national_id:"", company_name:"", cpf:"", cnpj:"", uf_crm:"", uf_city:"", 
-			specialty:"", juridical_address:"",	account_owner: "", bank_name: "", bank_address: "", swift_bic: "", iban_account: "", agency: ""
+		this.speaker={
+			foreignFlag: false,	accept_info: false,	name: "", father_name: "",	mother_name:"",	dob:"",
+			birthplace:"", civil_state:"", scholarity: "", social_number: "", service_provider: "", country: "Select Counrty ...",
+			state: "", city: "", neighborhood: "", cep: "", ddd: "", address:"", id_number: "", document_issue_date: "",
+			emitting_organ: "", email: "", mobile: "", fax: "", linkedin: "", lattes: "", orcid: "", registration_in_city: false,
+			social_security: false, person_type:""
 		}
-		this.validateSpeaker={ foreignFlag: false,	accept_info: false,	name: false, father_name: false,	
-			mother_name: false,	dob: false, birthplace: false, civil_state: false, scholarity: false, social_number: false, service_provider: false, 
-			country: false, state: false, city: false, neighborhood: false, cep: false, ddd: false, address: false, id_number: false, 
-			document_issue_date: false, emitting_organ: false, email: false, mobile: false, fax: false, linkedin: false, lattes: false, orcid: false, 
-			registration_in_city: false, social_security: false, person_type: false, national_id: false, company_name: false, cpf: false, cnpj: false,
-			uf_crm: false, uf_city: false, specialty: false, juridical_address:false, account_owner: false, bank_name: false, bank_address: false, 
-			swift_bic: false, iban_account: false, agency: false
-		}
-        this.alert={
-            open: false, 
-            severity: '',
-            message:'',
-            title:''
-        }
 		this.state={
 			speaker: this.speaker,
-			validateSpeaker: this.validateSpeaker,
-			alert: this.alert,
 			currentTab: 0,
 			onlyNums:'',
 			countries:[{value:'Select country ....', label:'Select country ....'}]
@@ -44,36 +31,19 @@ class SpeakerEditForm extends React.Component{
 	}
 
 	handleChange(event){
-		let [key, value, {speaker, validateSpeaker}] = [event.target.name, event.target.value, this.state];
-		console.log(key, value)
-		if(speaker['person_type'] === "juridcal"){
-			validateSpeaker['national_id'] = false;
-			validateSpeaker['cpf'] = false;
-			validateSpeaker['uf_crm'] = false;
-			validateSpeaker['specialty'] = false;
-
-			speaker['national_id'] = "";
-			speaker['cpf'] = "";
-			speaker['uf_crm'] = "";
-			speaker['specialty'] = "";
-
-		}else if (speaker['person_type'] === "physical"){
-			validateSpeaker['company_name'] = false;
-			validateSpeaker['cnpj'] = false;
-			validateSpeaker['uf_city'] = false;
-			validateSpeaker['juridical_address'] = false;
-
-			speaker['company_name'] = "";
-			speaker['cnpj'] = "";
-			speaker['uf_city'] = "";
-			speaker['juridical_address'] = "";
-		}
+		let key = event.target.name;
+		let value = event.target.value;
+		let {speaker} = this.state;
 		if(key==="foreignFlag" || key==="accept_info" || key==="registration_in_city" || key==="social_security"){
 			speaker[key]=!(speaker[key])
 		}
 		else if(key==="id_number" || key==="fax" || key==="mobile"){
-			if(event.keyCode !== 107 && event.keyCode !== 109 && event.keyCode !== 187 && event.keyCode !== 189){
+			
+		console.log('enterd')
+			if(event.keyCode !== 107 && event.keyCode !== 109){
 				speaker[key]=value;
+				console.log('speaker',speaker)
+				this.setState({speaker});
 			}
 			else {
 				event.target.value = speaker[key];
@@ -82,43 +52,21 @@ class SpeakerEditForm extends React.Component{
 		else {
 			speaker[key]= value;
 		}
-		if(validateSpeaker[key]){
-			validateSpeaker[key] = speaker[key] ? false : true;
-		}
-		this.setState({speaker, validateSpeaker});
+		this.setState({speaker})
 	}
 
 	handleTabChange(currentTab) {
 		this.setState({currentTab});
 	}
 	handleSubmit(){
-		let {speaker, validateSpeaker} = this.state;
-		let isSubmit = null;
-		
-		Object.keys(validateSpeaker).map((key)=>{
-			if(speaker['person_type'] === "juridcal" && (key === "national_id" || key === "cpf" || key === "uf_crm" || key === "specialty" )){
-				validateSpeaker[key] = false;
-			}else if(speaker['person_type'] === "physical" && (key === "company_name" || key === "cnpj" || key === "uf_city" || key === "juridical_address" )){
-				validateSpeaker[key] = false;
-			}else if(key === "lattes" || key === "linkedin" || key === "ddd" || key === "fax" || key === "orcid"){
-				validateSpeaker[key] = false;
-			}else{
-				validateSpeaker[key] = speaker[key] ? false : true;
-				isSubmit = speaker[key] && isSubmit !== false ? true : false;
-			}
-		})
-		console.log('validation', validateSpeaker)
-        this.setState({validateSpeaker});
-		isSubmit && post(`api/speakers`, speaker).then((response)=>{
-			this.setState({alert:{open:true, severity:"success", title:"success", message:'User has been updated Sucessfully'}})
-			setTimeout(()=>{
+		let {speaker} = this.state;
+		if(speaker.name && speaker.dob && speaker.birthplace && speaker.civil_state && speaker.scholarity && speaker.service_provider && speaker.country && speaker.state && speaker.city){
+			post('api/speakers', speaker).then((response)=>{
 				this.props.history.push('/speakers')
-			}, 1000)
-			}).catch((error)=>{
-				Object.keys(error.response.data).map((key)=>{
-					this.setState({alert:{open:true, severity:"error", title:"Error", message:`${key+": "+error.response.data[key][0]}`}})
-				})
+			}).catch((response)=>{
+				console.log('response error', response)
 			})
+		}
 	}
 	componentDidMount(){
 		fetch('https://restcountries.eu/rest/v2/all')
@@ -131,15 +79,10 @@ class SpeakerEditForm extends React.Component{
 			this.setState({countries:list_data})});
 	}
 	render(){
-		let {speaker:{foreignFlag, accept_info, person_type}, speaker, currentTab, countries, validateSpeaker, alert:{severity, message, title, open}} = this.state;
+		let {speaker:{foreignFlag, accept_info, person_type}, speaker, currentTab, countries} = this.state;
+
 		return (
 			<div style={styles.root}>
-				<Snackbar open={open} autoHideDuration={4000} anchorOrigin={{ vertical:'top', horizontal:'right' }} onClose={()=>{this.handleClose()}}>
-					<Alert onClose={()=>{this.handleClose()}} severity={severity}>
-						<AlertTitle>{title}</AlertTitle>
-						<strong>{message}</strong>
-					</Alert>
-				</Snackbar>
 				<Grid container spacing={3}>
         			<Grid item xs={12}>	
 						<h3 className="card-label text-center pt-4 pb-2">
@@ -190,8 +133,6 @@ class SpeakerEditForm extends React.Component{
 											onChange={(event)=>{this.handleChange(event)}}
 											margin="normal"
 											variant="outlined"
-											error={validateSpeaker['name']}
-											helperText={validateSpeaker['name'] && 'this field is required'}
 										/>
 									</div>
 									
@@ -205,22 +146,18 @@ class SpeakerEditForm extends React.Component{
 											onChange={(event)=>{this.handleChange(event)}}
 											margin="normal"
 											variant="outlined"
-											error={validateSpeaker['father_name']}
-											helperText={validateSpeaker['father_name'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-6">
 										<TextField
 											required={!foreignFlag}
 											name="mother_name"
-											label={<FormattedMessage id="Speaker.Registration.Form.Moth_Name"/>}
+											label={<FormattedMessage id="Speaker.Registration.Form.moth_name"/>}
 											style={styles.textField}
 											value={speaker.mother_name}
 											onChange={(event)=>{this.handleChange(event)}}
 											margin="normal"
 											variant="outlined"
-											error={validateSpeaker['mother_name']}
-											helperText={validateSpeaker['mother_name'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-3">
@@ -235,8 +172,6 @@ class SpeakerEditForm extends React.Component{
 												shrink: true
 											}}
 											onChange={(event) =>{this.handleChange(event)}}
-											error={validateSpeaker['dob']}
-											helperText={validateSpeaker['dob'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-3">
@@ -249,8 +184,6 @@ class SpeakerEditForm extends React.Component{
 											onChange={(event)=>{this.handleChange(event)}}
 											margin="normal"
 											variant="outlined"
-											error={validateSpeaker['birthplace']}
-											helperText={validateSpeaker['birthplace'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-3">
@@ -268,14 +201,10 @@ class SpeakerEditForm extends React.Component{
 													style: styles.menu
 												}
 											}}
-											error={validateSpeaker['civil_state']}
-											helperText={validateSpeaker['civil_state'] && 'this field is required'}
+											// helperText="Please select your currency"
 											margin="normal"
 											variant="outlined"
 										>
-										<option value={null}>
-											Select Civil State....
-										</option>
 											{civilStatus.map(option => (
 												<option key={option.value} value={option.value}>
 													{option.label}
@@ -293,8 +222,6 @@ class SpeakerEditForm extends React.Component{
 											onChange={(event)=>{this.handleChange(event)}}
 											margin="normal"
 											variant="outlined"
-											error={validateSpeaker['scholarity']}
-											helperText={validateSpeaker['scholarity'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-3">
@@ -307,8 +234,6 @@ class SpeakerEditForm extends React.Component{
 											onChange={(event)=>{this.handleChange(event)}}
 											margin="normal"
 											variant="outlined"
-											error={validateSpeaker['social_number']}
-											helperText={validateSpeaker['social_number'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-3">
@@ -321,8 +246,6 @@ class SpeakerEditForm extends React.Component{
 											onChange={(event)=>{this.handleChange(event)}}
 											margin="normal"
 											variant="outlined"
-											error={validateSpeaker['service_provider']}
-											helperText={validateSpeaker['service_provider'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-4">
@@ -340,14 +263,10 @@ class SpeakerEditForm extends React.Component{
 													style: styles.menu
 												}
 											}}
-											error={validateSpeaker['country']}
-											helperText={validateSpeaker['country'] && 'this field is required'}
+											// helperText="Please select your currency"
 											margin="normal"
 											variant="outlined"
 										>
-										<option value={null}>
-											Select Country....
-										</option>
 											{countries.map(option => (
 												<option key={option.value} value={option.value}>
 													{option.label}
@@ -365,8 +284,6 @@ class SpeakerEditForm extends React.Component{
 											margin="normal"
 											variant="outlined"
 											onChange={(event)=>{this.handleChange(event)}}
-											error={validateSpeaker['state']}
-											helperText={validateSpeaker['state'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-4">
@@ -379,8 +296,6 @@ class SpeakerEditForm extends React.Component{
 											margin="normal"
 											variant="outlined"
 											onChange={(event)=>{this.handleChange(event)}}
-											error={validateSpeaker['city']}
-											helperText={validateSpeaker['city'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-5">
@@ -393,8 +308,6 @@ class SpeakerEditForm extends React.Component{
 											margin="normal"
 											variant="outlined"
 											onChange={(event)=>{this.handleChange(event)}}
-											error={validateSpeaker['neighborhood']}
-											helperText={validateSpeaker['neighborhood'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-5">
@@ -407,8 +320,6 @@ class SpeakerEditForm extends React.Component{
 											margin="normal"
 											variant="outlined"
 											onChange={(event)=>{this.handleChange(event)}}
-											error={validateSpeaker['cep']}
-											helperText={validateSpeaker['cep'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-2">
@@ -421,8 +332,6 @@ class SpeakerEditForm extends React.Component{
 											margin="normal"
 											variant="outlined"
 											onChange={(event)=>{this.handleChange(event)}}
-											error={!foreignFlag && validateSpeaker['cep']}
-											helperText={!foreignFlag && validateSpeaker['cep'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-12">
@@ -435,8 +344,6 @@ class SpeakerEditForm extends React.Component{
 											margin="normal"
 											variant="outlined"
 											onChange={(event)=>{this.handleChange(event)}}
-											error={validateSpeaker['address']}
-											helperText={validateSpeaker['address'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-4">
@@ -445,12 +352,11 @@ class SpeakerEditForm extends React.Component{
 											name="id_number"
 											label={<FormattedMessage id="Speaker.Registration.Form.Id_No"/>}
 											style={styles.textField}
-											defaultValue={speaker.id_number}
+											value={speaker.id_number}
 											type="number"
 											margin="normal"
 											variant="outlined"
-											error={validateSpeaker['id_number']}
-											helperText={validateSpeaker['id_number'] && 'this field is required'}
+											// onKeyUp={(e)=>{this.numberChange(e)}}
 											onKeyUp={(event)=>{this.handleChange(event)}}
 										/>
 									</div>
@@ -466,8 +372,6 @@ class SpeakerEditForm extends React.Component{
 												shrink: true
 											}}
 											onChange={(event) =>{this.handleChange(event)}}
-											error={validateSpeaker['document_issue_date']}
-											helperText={validateSpeaker['document_issue_date'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-4">
@@ -481,8 +385,6 @@ class SpeakerEditForm extends React.Component{
 											margin="normal"
 											variant="outlined"
 											onChange={(event)=>{this.handleChange(event)}}
-											error={validateSpeaker['emitting_organ']}
-											helperText={validateSpeaker['emitting_organ'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-6">
@@ -497,22 +399,19 @@ class SpeakerEditForm extends React.Component{
 											margin="normal"
 											variant="outlined"
 											onChange={(event)=>{this.handleChange(event)}}
-											error={validateSpeaker['email']}
-											helperText={validateSpeaker['email'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-3">
 										<TextField
 											required
+											name="mobile"
 											label={<FormattedMessage id="Speaker.Registration.Form.Mobile"/>}
 											style={styles.textField}
-											defaultValue={speaker.mobile}
+											// value={speaker.mobile}
 											type="number"
-											name="mobile"
 											margin="normal"
 											variant="outlined"
-											error={validateSpeaker['mobile']}
-											helperText={validateSpeaker['mobile'] && 'this field is required'}
+											// onKeyUp={(e)=>{this.numberChange(e)}}
 											onKeyUp={(event)=>{this.handleChange(event)}}
 										/>
 									</div>
@@ -521,7 +420,7 @@ class SpeakerEditForm extends React.Component{
 											name="fax"
 											label={<FormattedMessage id="Speaker.Registration.Form.Fax"/>}
 											style={styles.textField}
-											defaultValue={speaker.fax}
+											value={speaker.fax}
 											type="number"
 											margin="normal"
 											variant="outlined"
@@ -558,7 +457,7 @@ class SpeakerEditForm extends React.Component{
 											name="orcid"
 											label={<FormattedMessage id="Speaker.Registration.Form.Orcid_Url"/>}
 											style={styles.textField}
-											defaultValue={speaker.orcid}
+											value={speaker.orcid}
 											type="text"
 											margin="normal"
 											variant="outlined"
@@ -596,92 +495,35 @@ class SpeakerEditForm extends React.Component{
 									</div>
 								</>}
 								{currentTab === 1 && <>
-										<div className="col-md-12 text-center">
-										<Radio name="person_type" value="physical" checked={person_type==="physical"} onClick={(event)=>{this.handleChange(event)}}/><strong>Physical Person Data</strong>
-										<Radio name="person_type" value="juridcal" checked={person_type==="juridcal"} onClick={(event)=>{this.handleChange(event)}}/><strong>Juridical Person Data</strong>
-											<div style={{opacity: person_type!=="physical" && person_type!=="juridcal" && "0.5"}}>
-												{person_type==="physical" ? <TextField
+										<div className="col-md-6 text-center">
+										<Radio checked={person_type==="physical"} onClick={()=>{speaker['person_type']="physical"; this.setState({speaker})}}/><strong>Physical Person Data</strong>
+											<div style={{opacity: person_type!=="physical" && "0.5"}}>
+												<TextField
 													disabled={person_type !== "physical"}
-													name="national_id"
+													id="outlined-name"
 													label="National ID"
 													style={styles.textField}
-													value={speaker.national_id}
-													onChange={(event)=>{this.handleChange(event)}}
+													value={speaker.name}
+													onChange={(event)=>{this.handleChange('foreignFlag', null, event)}}
 													margin="normal"
 													variant="outlined"
-													error={validateSpeaker['national_id']}
-													helperText={validateSpeaker['national_id'] && 'this field is required'}
-												/> :
+												/>
 												<TextField
-													disabled={person_type !== "juridcal"}
-													name="company_name"
-													label="Company Name"
-													style={styles.textField}
-													defaultValue={speaker.company_name}
-													onChange={(event)=>{this.handleChange(event)}}
-													margin="normal"
-													variant="outlined"
-													error={validateSpeaker['company_name']}
-													helperText={validateSpeaker['company_name'] && 'this field is required'}
-												/>}
-												{person_type==="physical" ? <TextField
 													disabled={person_type !== "physical"}
-													name="cpf"
+													id="outlined-name"
 													label="CPF (Brazilian only)"
 													style={styles.textField}
-													value={speaker.cpf}
-													onChange={(event)=>{this.handleChange(event)}}
+													value={speaker.name}
+													onChange={(event)=>{this.handleChange('foreignFlag', null, event)}}
 													margin="normal"
 													variant="outlined"
-													error={validateSpeaker['cpf']}
-													helperText={validateSpeaker['cpf'] && 'this field is required'}
-												/> :
-												<TextField
-													disabled={person_type !== "juridcal"}
-													name="cnpj"
-													label="CNPJ (Brazilian only)"
-													style={styles.textField}
-													value={speaker.cnpj}
-													onChange={(event)=>{this.handleChange(event)}}
-													margin="normal"
-													variant="outlined"
-													error={validateSpeaker['cnpj']}
-													helperText={validateSpeaker['cnpj'] && 'this field is required'}
-												/>}
-												{person_type==="physical" ? <>
-													<InputGroup className="pt-4 ml-2">
-														<InputGroup.Prepend>
-															<InputGroup.Text>UF - CRM</InputGroup.Text>
-														</InputGroup.Prepend>
-														<DropdownButton
-															disabled={person_type !== "physical"}
-															as={InputGroup.Prepend}
-															variant="outlined"
-															title=""
-															id="input-group-dropdown-1"
-														>
-															<Dropdown.Item href="#">Action</Dropdown.Item>
-															<Dropdown.Item href="#">Another action</Dropdown.Item>
-															<Dropdown.Item href="#">Something else here</Dropdown.Item>
-															<Dropdown.Divider />
-															<Dropdown.Item href="#">Separated link</Dropdown.Item>
-														</DropdownButton>
-														<FormControl 
-															name="uf_crm"
-															aria-describedby="basic-addon1" 
-															disabled={person_type !== "physical"} 
-															value={speaker.uf_crm}
-															onChange={(event)=>{this.handleChange(event)}}
-														/>
-													</InputGroup> 
-													{validateSpeaker['uf_crm'] && <FormText className="text-danger">this field is required</FormText>}</>
-													:<>
-													<InputGroup className="pt-4 ml-2">
+												/>
+												<InputGroup className="pt-4 ml-2">
 													<InputGroup.Prepend>
-														<InputGroup.Text>UF / City</InputGroup.Text>
+														<InputGroup.Text>UF - CRM</InputGroup.Text>
 													</InputGroup.Prepend>
 													<DropdownButton
-														disabled={person_type !== "juridcal"}
+														disabled={person_type !== "physical"}
 														as={InputGroup.Prepend}
 														variant="outlined"
 														title=""
@@ -693,90 +535,61 @@ class SpeakerEditForm extends React.Component{
 														<Dropdown.Divider />
 														<Dropdown.Item href="#">Separated link</Dropdown.Item>
 													</DropdownButton>
-													<FormControl 
-														name="uf_city"
-														aria-describedby="basic-addon1" 
-														disabled={person_type !== "juridcal"}
-														value={speaker.uf_city}
-														onChange={(event)=>{this.handleChange(event)}}/>
+													<FormControl aria-describedby="basic-addon1" disabled={person_type !== "physical"}/>
 												</InputGroup>
-												{validateSpeaker['uf_city'] && <FormText className="text-danger">this field is required</FormText>}</>
-												}
-												{person_type==="physical" ? 
 												<TextField
 													disabled={person_type !== "physical"}
-													name="specialty"
+													id="outlined-country"
 													select
-													label="specialty"
+													label="Specialty"
 													style={styles.textField}
-													value={speaker.specialty}
-													onChange={(event)=>{this.handleChange(event)}}
+													value={speaker.currency}
+													onChange={(event)=>{this.handleChange('foreignFlag', null, event)}}
 													SelectProps={{
 														native: true,
 														MenuProps: {
 															style: styles.menu
 														}
 													}}
-													error={validateSpeaker['specialty']}
-													helperText={validateSpeaker['specialty'] && 'this field is required'}
+													// helperText="Please select your currency"
 													margin="normal"
 													variant="outlined"
 													>
-													<option value={null}>
-														Select Specialty....
-													</option>
 													{countries.map(option => (
 														<option key={option.value} value={option.value}>
 															{option.label}
 														</option>
 													))}
-												</TextField> :
-												<TextField
-													disabled={person_type !== "juridcal"}
-													name="juridical_address"
-													label="Address"
-													style={styles.textField}
-													value={speaker.juridical_address}
-													onChange={(event)=>{this.handleChange(event)}}
-													margin="normal"
-													variant="outlined"
-													error={validateSpeaker['juridical_address']}
-													helperText={validateSpeaker['juridical_address'] && 'this field is required'}
-												/>}
+												</TextField>
+											
 												<TextField
 													disabled={person_type !== "physical"}
-													name="account_owner"
+													id="outlined-name"
 													label="Account Owner"
 													style={styles.textField}
-													value={speaker.account_owner}
-													onChange={(event)=>{this.handleChange(event)}}
+													value={speaker.name}
+													onChange={(event)=>{this.handleChange('foreignFlag', null, event)}}
 													margin="normal"
 													variant="outlined"
-													error={validateSpeaker['account_owner']}
-													helperText={validateSpeaker['account_owner'] && 'this field is required'}
 												/>
 												<TextField
 													disabled={person_type !== "physical"}
-													name="bank_name"
+													id="outlined-country"
 													select
 													label="Bank Name"
 													style={styles.textField}
-													value={speaker.bank_name}
-													onChange={(event)=>{this.handleChange(event)}}
+													value={speaker.currency}
+													onChange={(event)=>{this.handleChange('foreignFlag', null, event)}}
 													SelectProps={{
 														native: true,
 														MenuProps: {
 															style: styles.menu
 														}
 													}}
-													error={validateSpeaker['bank_name']}
-													helperText={validateSpeaker['bank_name'] && 'this field is required'}
+													// helperText="Please select your currency"
 													margin="normal"
 													variant="outlined"
 													>
-													<option value={null}>
-														Select Bank Name....
-													</option>
 													{countries.map(option => (
 														<option key={option.value} value={option.value}>
 															{option.label}
@@ -785,51 +598,171 @@ class SpeakerEditForm extends React.Component{
 												</TextField>
 												<TextField
 													disabled={person_type !== "physical"}
-													name="bank_address"
+													id="outlined-name"
 													label="Bank Address"
 													style={styles.textField}
-													value={speaker.bank_address}
-													onChange={(event)=>{this.handleChange(event)}}
+													value={speaker.name}
+													onChange={(event)=>{this.handleChange('foreignFlag', null, event)}}
 													margin="normal"
 													variant="outlined"
-													error={validateSpeaker['bank_address']}
-													helperText={validateSpeaker['bank_address'] && 'this field is required'}
 												/>
 												<TextField
 													disabled={person_type !== "physical"}
-													name="swift_bic"
+													id="outlined-name"
 													label="Swift / BIC"
 													style={styles.textField}
-													value={speaker.swift_bic}
-													onChange={(event)=>{this.handleChange(event)}}
+													value={speaker.name}
+													onChange={(event)=>{this.handleChange('foreignFlag', null, event)}}
 													margin="normal"
 													variant="outlined"
-													error={validateSpeaker['swift_bic']}
-													helperText={validateSpeaker['swift_bic'] && 'this field is required'}
 												/>
 												<TextField
 													disabled={person_type !== "physical"}
-													name="iban_account"
+													id="outlined-name"
 													label="IBAN / Account"
 													style={styles.textField}
-													value={speaker.iban_account}
-													onChange={(event)=>{this.handleChange(event)}}
+													value={speaker.name}
+													onChange={(event)=>{this.handleChange('foreignFlag', null, event)}}
 													margin="normal"
 													variant="outlined"
-													error={validateSpeaker['iban_account']}
-													helperText={validateSpeaker['iban_account'] && 'this field is required'}
 												/>
 												<TextField
 													disabled={person_type !== "physical"}
-													name="agency"
+													id="outlined-name"
 													label="Agency"
 													style={styles.textField}
-													value={speaker.agency}
-													onChange={(event)=>{this.handleChange(event)}}
+													value={speaker.name}
+													onChange={(event)=>{this.handleChange('foreignFlag', null, event)}}
 													margin="normal"
 													variant="outlined"
-													error={validateSpeaker['agency']}
-													helperText={validateSpeaker['agency'] && 'this field is required'}
+												/>
+											</div>
+										</div>
+										<div className="col-md-6 text-center">
+										<Radio checked={person_type==="juridcal"} onClick={()=>{speaker['person_type']="juridcal"; this.setState({speaker})}}/><strong>Juridical Person Data</strong>
+											<div style={{opacity: person_type!=="juridcal" && "0.5"}}>
+												<TextField
+													disabled={person_type !== "juridcal"}
+													id="outlined-name"
+													label="Company Name"
+													style={styles.textField}
+													value={speaker.name}
+													onChange={(event)=>{this.handleChange('foreignFlag', null, event)}}
+													margin="normal"
+													variant="outlined"
+												/>
+												<TextField
+													disabled={person_type !== "juridcal"}
+													id="outlined-name"
+													label="CNPJ (Brazilian only)"
+													style={styles.textField}
+													value={speaker.name}
+													onChange={(event)=>{this.handleChange('foreignFlag', null, event)}}
+													margin="normal"
+													variant="outlined"
+												/>
+												<InputGroup className="pt-4 ml-2">
+													<InputGroup.Prepend>
+														<InputGroup.Text>UF / City</InputGroup.Text>
+													</InputGroup.Prepend>
+													{/* <DropdownButton
+														disabled={person_type !== "juridcal"}
+														as={InputGroup.Prepend}
+														variant="outlined"
+														title=""
+														id="input-group-dropdown-1"
+													>
+														<Dropdown.Item href="#">Action</Dropdown.Item>
+														<Dropdown.Item href="#">Another action</Dropdown.Item>
+														<Dropdown.Item href="#">Something else here</Dropdown.Item>
+														<Dropdown.Divider />
+														<Dropdown.Item href="#">Separated link</Dropdown.Item>
+													</DropdownButton> */}
+													<FormControl aria-describedby="basic-addon1" disabled={person_type !== "juridcal"}/>
+												</InputGroup>
+												<TextField
+													disabled={person_type !== "juridcal"}
+													id="outlined-name"
+													label="Address"
+													style={styles.textField}
+													value={speaker.name}
+													onChange={(event)=>{this.handleChange('foreignFlag', null, event)}}
+													margin="normal"
+													variant="outlined"
+												/>
+												<TextField
+													disabled={person_type !== "juridcal"}
+													id="outlined-name"
+													label="Account Owner"
+													style={styles.textField}
+													value={speaker.name}
+													onChange={(event)=>{this.handleChange('foreignFlag', null, event)}}
+													margin="normal"
+													variant="outlined"
+												/>
+												<TextField
+													disabled={person_type !== "juridcal"}
+													id="outlined-country"
+													select
+													label="Bank Name"
+													style={styles.textField}
+													value={speaker.currency}
+													onChange={(event)=>{this.handleChange('foreignFlag', null, event)}}
+													SelectProps={{
+														native: true,
+														MenuProps: {
+															style: styles.menu
+														}
+													}}
+													// helperText="Please select your currency"
+													margin="normal"
+													variant="outlined"
+												>
+												{countries.map(option => (
+													<option key={option.value} value={option.value}>
+														{option.label}
+													</option>
+												))}
+											</TextField>
+												<TextField
+													disabled={person_type !== "juridcal"}
+													id="outlined-name"
+													label="Bank Address"
+													style={styles.textField}
+													value={speaker.name}
+													onChange={(event)=>{this.handleChange('foreignFlag', null, event)}}
+													margin="normal"
+													variant="outlined"
+												/>
+												<TextField
+													disabled={person_type !== "juridcal"}
+													id="outlined-name"
+													label="Swift / BIC"
+													style={styles.textField}
+													value={speaker.name}
+													onChange={(event)=>{this.handleChange('foreignFlag', null, event)}}
+													margin="normal"
+													variant="outlined"
+												/>
+												<TextField
+													disabled={person_type !== "juridcal"}
+													id="outlined-name"
+													label="IBAN / Account"
+													style={styles.textField}
+													value={speaker.name}
+													onChange={(event)=>{this.handleChange('foreignFlag', null, event)}}
+													margin="normal"
+													variant="outlined"
+												/>
+												<TextField
+													disabled={person_type !== "juridcal"}
+													id="outlined-name"
+													label="Agency"
+													style={styles.textField}
+													value={speaker.name}
+													onChange={(event)=>{this.handleChange('foreignFlag', null, event)}}
+													margin="normal"
+													variant="outlined"
 												/>
 											</div>
 										</div>
@@ -857,7 +790,7 @@ class SpeakerEditForm extends React.Component{
 	)};
 }
 
-export default SpeakerEditForm;
+export default SpeakerRegistrationForm;
 
 const civilStatus = [
 	{
