@@ -42,11 +42,13 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 		model = Group
 		fields = ['id', 'name']
 
-class EventSerializer(serializers.HyperlinkedModelSerializer):
+class EventSerializer(serializers.ModelSerializer):
+	def __init__(self, *args, **kwargs):
+		super(EventSerializer, self).__init__(*args, **kwargs)
+		self.fields['speaker'].required = True
 	class Meta:
 		model = Event
-		fields = ['id','name', '_type', 'date', 'duration', 'web_presential', 'country', 'state', 'city', 'address', 'solicitant', 'business_unit', 'despartment',
-		'cost_center','virtual_presential', 'displacement', 'created_at']
+		fields = '__all__'
 
 class SpeakerSerializer(serializers.ModelSerializer):
 	class Meta:

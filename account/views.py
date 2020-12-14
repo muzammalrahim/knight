@@ -77,14 +77,6 @@ class EventsViewSet(viewsets.ModelViewSet):
 		instance = self.get_object()
 		serializer = self.get_serializer(instance)
 		data = serializer.data
-		
-		related_models = ['speaker']
-		
-		for model in related_models:
-			try:
-				data[model] = to_dict(getattr(instance, model))
-			except:
-				data[model] = None
 
 		return Response(data)
 

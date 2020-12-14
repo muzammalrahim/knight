@@ -15,12 +15,12 @@ class EventRegistrationForm extends React.Component {
 		this.event={
 			name:"", _type:"", date:"", duration:"", web_presential:"", country:"",	state:"",
 			city:"", address:"", solicitant:"", business_unit:"", despartment:"", cost_center:"",
-			speaker_name:"", virtual_presential:"", _duration:"", displacement:''
+			speaker:"", virtual_presential:"", displacement:''
 		}
 		this.validateEvent={
 			name:false, _type:false, date:false, duration:false, web_presential:false, country:false,	state:false,
 			city:false, address:false, solicitant:false, business_unit:false, despartment:false, cost_center:false,
-			speaker_name:false, virtual_presential:false, _duration:false, displacement:false
+			speaker:false, virtual_presential:false, displacement:false
 		}
 		this.alert={
             open: false, 
@@ -42,7 +42,19 @@ class EventRegistrationForm extends React.Component {
 		let [key, value, {event, validateEvent}] = [e.target.name, e.target.value, this.state];
 		event[key]=value;
 		if(validateEvent[key]){
-            validateEvent[key] = event[key] ? false : true;
+			if(key === "web_presential" && value==="web"){
+				validateEvent["country"] = false;
+				validateEvent["state"] = false;
+				validateEvent["cit"] = false;
+				validateEvent["address"] = false;
+
+				event["country"] = "";
+				event["state"] = "";
+				event["cit"] = "";
+				event["address"] = "";
+			}else{
+            	validateEvent[key] = event[key] ? false : true;
+			}
         }
         this.setState({event, validateEvent});
 	}
@@ -54,8 +66,12 @@ class EventRegistrationForm extends React.Component {
 		let {event, validateEvent} = this.state;
 		let isSubmit = null;
 		Object.keys(validateEvent).map((key)=>{
-            isSubmit = event[key] && isSubmit !== false ? true : false;
-            validateEvent[key] = event[key] ? false : true;
+			if(event["web_presential"]!=="Presential" && (key === "country" || key === "state" || key ==="city" || key === "address")){
+				validateEvent[key] = false;
+			}else{
+				validateEvent[key] = event[key] ? false : true;
+				isSubmit = event[key] && isSubmit !== false ? true : false;
+			}
         })
         this.setState({validateEvent});
         isSubmit && post('api/events', event).then((response)=>{
@@ -227,7 +243,7 @@ class EventRegistrationForm extends React.Component {
 												required
 												select
 												name="country"
-												label="Country"
+												label={<FormattedMessage id="Event.List.Column.Country"/>}
 												style={styles.textField}
 												value={event.country}
 												onChange={(e)=>{this.handleChange(e)}}
@@ -258,7 +274,7 @@ class EventRegistrationForm extends React.Component {
 												required
 												select
 												name="state"
-												label="State / Province"
+												label={<FormattedMessage id="Speaker.Registration.Form.state_OR_province"/>}
 												style={styles.textField}
 												value={event.state}
 												onChange={(e)=>{this.handleChange(e)}}
@@ -287,7 +303,7 @@ class EventRegistrationForm extends React.Component {
 											<TextField
 												required
 												name="city"
-												label="City"
+												label={<FormattedMessage id="Speaker.Registration.Form.City"/>}
 												value={event.city}
 												style={styles.textField}
 												onChange={(e)=>{this.handleChange(e)}}
@@ -301,7 +317,7 @@ class EventRegistrationForm extends React.Component {
 										<TextField
 											required
 											name="address"
-											label="Address"
+											label={<FormattedMessage id="Speaker.Registration.Form.Address"/>}
 											value={event.address}
 											style={styles.textField}
 											onChange={(e)=>{this.handleChange(e)}}
@@ -325,6 +341,7 @@ class EventRegistrationForm extends React.Component {
 										<TextField
 											required
 											name="solicitant"
+											label={<FormattedMessage id="Event.List.Column.Solicitant"/>}
 											label="Solicitant Name"
 											style={styles.textField}
 											value={event.solicitant}
@@ -340,7 +357,7 @@ class EventRegistrationForm extends React.Component {
 											required
 											select
 											name="business_unit"
-											label="Business Unit"
+											label={<FormattedMessage id="User.Registration.Form.Business_Unit"/>}
 											style={styles.textField}
 											value={event.business_unit}
 											onChange={(e)=>{this.handleChange(e)}}
@@ -370,7 +387,7 @@ class EventRegistrationForm extends React.Component {
 											required
 											select
 											name="despartment"
-											label="Department"
+											label={<FormattedMessage id="Event.List.Column.Department"/>}
 											style={styles.textField}
 											value={event.despartment}
 											onChange={(e)=>{this.handleChange(e)}}
@@ -399,7 +416,7 @@ class EventRegistrationForm extends React.Component {
 										<TextField
 											required
 											name="cost_center"
-											label="Cost Center"
+											label={<FormattedMessage id="Event.List.Column.Cost"/>}
 											style={styles.textField}
 											value={event.cost_center}
 											onChange={(e)=>{this.handleChange(e)}}
@@ -413,10 +430,10 @@ class EventRegistrationForm extends React.Component {
 										<TextField
 											required
 											select
-											name="speaker_name"
-											label="Speaker Name"
+											name="speaker"
+											label={<FormattedMessage id="Event.List.Column.Speaker"/>}
 											style={styles.textField}
-											value={event.speaker_name}
+											value={event.speaker}
 											onChange={(e)=>{this.handleChange(e)}}
 											SelectProps={{
 												native: true,
@@ -424,8 +441,8 @@ class EventRegistrationForm extends React.Component {
 													className: styles.menu
 												}
 											}}
-											error={validateEvent['speaker_name']}
-											helperText={validateEvent['speaker_name'] && 'this field is required'}
+											error={validateEvent['speaker']}
+											helperText={validateEvent['speaker'] && 'this field is required'}
 											margin="normal"
 											variant="outlined"
 										>
@@ -444,7 +461,7 @@ class EventRegistrationForm extends React.Component {
 											required
 											select
 											name="virtual_presential"
-											label="Virtual / Presential"
+											label={<FormattedMessage id="Event.List.Column.Virtual"/>}
 											style={styles.textField}
 											value={event.virtual_presential}
 											onChange={(e)=>{this.handleChange(e)}}
@@ -469,7 +486,7 @@ class EventRegistrationForm extends React.Component {
 											))}
 										</TextField>
 									</div>
-									<div className="col-md-6">
+									{/* <div className="col-md-6">
 										<TextField
 											required
 											select
@@ -498,7 +515,7 @@ class EventRegistrationForm extends React.Component {
 												</option>
 											))}
 										</TextField>
-									</div>
+									</div> */}
 									<div className="col-md-12 pt-4 ml-4">
 										<h5>Displacement</h5>
 										<div className="col-md-12 pt-4 ml-4">

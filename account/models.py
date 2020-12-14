@@ -2,8 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class User(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    business_unit = models.CharField(max_length=191, blank=True, null=True)
+	user = models.OneToOneField(User, on_delete=models.CASCADE)
+	business_unit = models.CharField(max_length=191, blank=True, null=True)
 
 class Speaker(models.Model):
 	foreign_flag = models.BooleanField(default=False)
@@ -31,7 +31,23 @@ class Speaker(models.Model):
 	fax = models.IntegerField(blank=True, null=True)
 	linkedin = models.CharField(max_length=191, blank=True, null=True)
 	lattes = models.CharField(max_length=191, blank=True, null=True)
-	orcid = models.CharField(max_length=191)
+	orcid = models.CharField(max_length=191, blank=True, null=True)
+	account_owner = models.CharField(max_length=191, blank=True, null=True)
+	address = models.CharField(max_length=191, blank=True, null=True)
+	agency = models.CharField(max_length=191, blank=True, null=True)
+	bank_address = models.CharField(max_length=191, blank=True, null=True)
+	bank_name = models.CharField(max_length=191, blank=True, null=True)
+	cnpj = models.CharField(max_length=191, blank=True, null=True)
+	company_name = models.CharField(max_length=191, blank=True, null=True)
+	cpf = models.CharField(max_length=191, blank=True, null=True)
+	iban_account = models.CharField(max_length=191, blank=True, null=True)
+	juridical_address = models.CharField(max_length=191, blank=True, null=True)
+	national_id = models.CharField(max_length=191, blank=True, null=True)
+	person_type = models.CharField(max_length=191, blank=True, null=True)
+	specialty = models.CharField(max_length=191, blank=True, null=True)
+	swift_bic = models.CharField(max_length=191, blank=True, null=True)
+	uf_city = models.CharField(max_length=191, blank=True, null=True)
+	uf_crm = models.CharField(max_length=191, blank=True, null=True)
 	registration_in_city = models.BooleanField(null=True, default=False)
 	social_security = models.BooleanField(null=True, default=False)
 
@@ -46,7 +62,7 @@ class Event(models.Model):
 	name = models.CharField(max_length=191)
 	_type = models.CharField(max_length=191)
 	date = models.DateField()
-	duration = models.PositiveIntegerField()
+	duration = models.PositiveIntegerField(blank=True)
 	web_presential = models.CharField(max_length=191)
 	country = models.CharField(max_length=191, blank=True, null=True)
 	state = models.CharField(max_length=191, blank=True, null=True)
@@ -56,7 +72,7 @@ class Event(models.Model):
 	business_unit = models.CharField(max_length=191)
 	despartment = models.CharField(max_length=191)
 	cost_center = models.CharField(max_length=191)
-	speaker = models.ForeignKey(Speaker, models.DO_NOTHING, blank=True, null=True)
+	speaker = models.ForeignKey(Speaker, models.CASCADE, blank=True, null=True)
 	virtual_presential = models.CharField(max_length=191)
 	displacement = models.CharField(max_length=191)
 

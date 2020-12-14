@@ -101,8 +101,11 @@
   "Event.List.Column.Date": "Encontro",
   "Event.List.Column.Type": "Tipo",
   "Event.List.Column.Action": " Açao",
-
-
+  "Event.List.Column.Solicitant": "Nome do Solicitante",
+  "Event.List.Column.Department": "Departamento",
+  "Event.List.Column.Cost": "Centro de custo",
+  "Event.List.Column.Speaker": "Nome do Palestrante",
+  "Event.List.Column.Virtual": "Virtual / Presencial",
   
   "Speaker.Registration.Title": "Registro de palestrante",
   "Speaker.Registration.Form.F_Flag": "Estrangeiro (a)",
