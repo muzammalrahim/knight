@@ -342,7 +342,6 @@ class EventRegistrationForm extends React.Component {
 											required
 											name="solicitant"
 											label={<FormattedMessage id="Event.List.Column.Solicitant"/>}
-											label="Solicitant Name"
 											style={styles.textField}
 											value={event.solicitant}
 											onChange={(e)=>{this.handleChange(e)}}
@@ -385,32 +384,16 @@ class EventRegistrationForm extends React.Component {
 									<div className="col-md-6">
 										<TextField
 											required
-											select
 											name="despartment"
 											label={<FormattedMessage id="Event.List.Column.Department"/>}
 											style={styles.textField}
 											value={event.despartment}
 											onChange={(e)=>{this.handleChange(e)}}
-											SelectProps={{
-												native: true,
-												MenuProps: {
-													className: styles.menu
-												}
-											}}
-											error={validateEvent['despartment']}
-											helperText={validateEvent['despartment'] && 'this field is required'}
 											margin="normal"
 											variant="outlined"
-										>
-											<option value={null}>
-												Select Department....
-											</option>
-											{department.map(option => (
-												<option key={option.value} value={option.value}>
-													{option.label}
-												</option>
-											))}
-										</TextField>
+											error={validateEvent['despartment']}
+											helperText={validateEvent['despartment'] && 'this field is required'}
+										/>
 									</div>
 									<div className="col-md-6">
 										<TextField

@@ -4,6 +4,7 @@ import {useLocation} from "react-router";
 import {NavLink}  from "react-router-dom";
 import SVG from "react-inlinesvg";
 import {toAbsoluteUrl, checkIsActive} from "../../../../_helpers";
+import { FormattedMessage } from "react-intl";
 export function AsideMenuList({ layoutProps }) {
   const location = useLocation();
   const [user, setUser] = useState();
@@ -45,7 +46,7 @@ export function AsideMenuList({ layoutProps }) {
             <span className="svg-icon menu-icon">
               <SVG src={toAbsoluteUrl("/media/svg/icons/Communication/Group.svg")}/>
             </span>
-              <span className="menu-text">Speaker</span>
+              <span className="menu-text"><FormattedMessage id="Sidebar.New.Speaker"/></span>
               <i className="menu-arrow"/>
             </NavLink>
             <div className="menu-submenu ">
@@ -103,7 +104,7 @@ export function AsideMenuList({ layoutProps }) {
             <span className="svg-icon menu-icon">
               <SVG src={toAbsoluteUrl("/media/svg/icons/Communication/Write.svg")}/>
             </span>
-              <span className="menu-text">Events</span>
+              <span className="menu-text"><FormattedMessage id="Sidebar.New.Event"/></span>
               <i className="menu-arrow"/>
             </NavLink>
             <div className="menu-submenu ">
@@ -161,7 +162,7 @@ export function AsideMenuList({ layoutProps }) {
             <span className="svg-icon menu-icon">
               <SVG src={toAbsoluteUrl("/media/svg/icons/Communication/Add-user.svg")}/>
             </span>
-              <span className="menu-text">User</span>
+              <span className="menu-text"><FormattedMessage id="Sidebar.New.User"/></span>
               <i className="menu-arrow"/>
             </NavLink>
             <div className="menu-submenu ">
@@ -220,7 +221,7 @@ export function AsideMenuList({ layoutProps }) {
             <span className="svg-icon menu-icon">
               <SVG src={toAbsoluteUrl("/media/svg/icons/Communication/Chat-check.svg")}/>
             </span>
-              <span className="menu-text">Approvals</span>
+              <span className="menu-text"><FormattedMessage id="Sidebar.Approvals"/></span>
               <i className="menu-arrow"/>
             </NavLink>
             <div className="menu-submenu ">

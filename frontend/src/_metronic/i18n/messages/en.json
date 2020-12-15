@@ -75,6 +75,11 @@
   "Dashboard.Approvals": "Approvals",
   "Dashboard.Welcome": "Welcome",
 
+  "Sidebar.New.Speaker": "Speakers",
+  "Sidebar.New.Event": "Events",
+  "Sidebar.New.User": "Users",
+  "Sidebar.Approvals": "Approvals",
+
   "Event.Create.Title": "Event Registration",
 
   "Event.Create.Eve_Name": "Event Name",

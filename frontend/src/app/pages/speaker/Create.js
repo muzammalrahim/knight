@@ -13,9 +13,9 @@ import { Alert, AlertTitle } from '@material-ui/lab';
 class SpeakerEditForm extends React.Component{
 	constructor(props){
 		super(props);
-		this.speaker={ id: this.props.match.params.id, name: "", father_name: "", mother_name:"", dob:"", birthplace:"", civil_state:"", 
+		this.speaker={name: "", father_name: "", mother_name:"", dob:"", birthplace:"", civil_state:"", 
 			scholarity: "", social_number: "", service_provider: "", country: "Select Counrty ...", state: "", city: "", neighborhood: "",
-			cep: "", ddd: "", address:"", id_number: "", document_issue_date: "", emitting_organ: "", email: "", mobile: "", fax: "", 
+			cep: "", ddd: "", address:"", id_number: "", document_issue_date: "", emitting_organ: "", email: "", mobile: "", fax: null, 
 			linkedin: "", lattes: "", orcid: "", person_type:null, national_id:"", company_name:"", cpf:"", cnpj:"", uf_crm:"", uf_city:"", 
 			specialty:"", juridical_address:"",	account_owner: "", bank_name: "", bank_address: "", swift_bic: "", iban_account: "", agency: ""
 		}
@@ -69,7 +69,9 @@ class SpeakerEditForm extends React.Component{
 			speaker['juridical_address'] = "";
 		}
 		if(key==="foreign_flag" || key==="accept_information_rule" || key==="registration_in_city" || key==="social_security"){
-			speaker[key]=!(speaker[key])
+			speaker[key]=!(speaker[key]);
+			validateSpeaker[key] = false;
+
 		}
 		else if(key==="id_number" || key==="fax" || key==="mobile"){
 			if(event.keyCode !== 107 && event.keyCode !== 109 && event.keyCode !== 187 && event.keyCode !== 189){
@@ -102,6 +104,9 @@ class SpeakerEditForm extends React.Component{
 				validateSpeaker[key] = false;
 			}else if(key === "lattes" || key === "linkedin" || key === "ddd" || key === "fax" || key === "orcid"){
 				validateSpeaker[key] = false;
+			}else if(key==="foreign_flag" || key==="accept_information_rule" || key==="registration_in_city" || key==="social_security"){
+				validateSpeaker[key] = false;
+	
 			}else{
 				validateSpeaker[key] = speaker[key] ? false : true;
 				isSubmit = speaker[key] && isSubmit !== false ? true : false;
@@ -130,6 +135,9 @@ class SpeakerEditForm extends React.Component{
 			})
 			this.setState({countries:list_data})});
 	}
+    handleClose(){
+        this.setState({alert:{open:false, severity: '', message:'' }})
+    }
 	render(){
 		let {speaker:{foreign_flag, accept_information_rule, person_type}, speaker, currentTab, countries, validateSpeaker, alert:{severity, message, title, open}} = this.state;
 		return (
@@ -383,7 +391,7 @@ class SpeakerEditForm extends React.Component{
 											helperText={validateSpeaker['city'] && 'this field is required'}
 										/>
 									</div>
-									<div className="col-md-5">
+									<div className="col-md-6">
 										<TextField
 											required
 											name="neighborhood"
@@ -397,7 +405,7 @@ class SpeakerEditForm extends React.Component{
 											helperText={validateSpeaker['neighborhood'] && 'this field is required'}
 										/>
 									</div>
-									<div className="col-md-5">
+									<div className="col-md-6">
 										<TextField
 											required
 											name="cep"
@@ -409,20 +417,6 @@ class SpeakerEditForm extends React.Component{
 											onChange={(event)=>{this.handleChange(event)}}
 											error={validateSpeaker['cep']}
 											helperText={validateSpeaker['cep'] && 'this field is required'}
-										/>
-									</div>
-									<div className="col-md-2">
-										<TextField
-											required={!foreign_flag}
-											name="ddd"
-											label={<FormattedMessage id="Speaker.Registration.Form.DDD"/>}
-											value={speaker.ddd}
-											style={styles.textField}
-											margin="normal"
-											variant="outlined"
-											onChange={(event)=>{this.handleChange(event)}}
-											error={!foreign_flag && validateSpeaker['cep']}
-											helperText={!foreign_flag && validateSpeaker['cep'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-12">
@@ -446,12 +440,12 @@ class SpeakerEditForm extends React.Component{
 											label={<FormattedMessage id="Speaker.Registration.Form.Id_No"/>}
 											style={styles.textField}
 											defaultValue={speaker.id_number}
-											type="number"
 											margin="normal"
 											variant="outlined"
 											error={validateSpeaker['id_number']}
 											helperText={validateSpeaker['id_number'] && 'this field is required'}
 											onKeyUp={(event)=>{this.handleChange(event)}}
+											onChange={(event)=>{this.handleChange(event)}}
 										/>
 									</div>
 									<div className="col-md-4">
@@ -503,6 +497,20 @@ class SpeakerEditForm extends React.Component{
 									</div>
 									<div className="col-md-3">
 										<TextField
+											required={!foreign_flag}
+											name="ddd"
+											label={<FormattedMessage id="Speaker.Registration.Form.DDD"/>}
+											value={speaker.ddd}
+											style={styles.textField}
+											margin="normal"
+											variant="outlined"
+											onChange={(event)=>{this.handleChange(event)}}
+											error={!foreign_flag && validateSpeaker['cep']}
+											helperText={!foreign_flag && validateSpeaker['cep'] && 'this field is required'}
+										/>
+									</div>
+									<div className="col-md-3">
+										<TextField
 											required
 											label={<FormattedMessage id="Speaker.Registration.Form.Mobile"/>}
 											style={styles.textField}
@@ -516,7 +524,7 @@ class SpeakerEditForm extends React.Component{
 											onKeyUp={(event)=>{this.handleChange(event)}}
 										/>
 									</div>
-									<div className="col-md-3">
+									<div className="col-md-6">
 										<TextField
 											name="fax"
 											label={<FormattedMessage id="Speaker.Registration.Form.Fax"/>}
@@ -529,7 +537,7 @@ class SpeakerEditForm extends React.Component{
 											onKeyUp={(event)=>{this.handleChange(event)}}
 										/>
 									</div>
-									<div className="col-md-4">
+									<div className="col-md-6">
 										<TextField
 											name="linkedin"
 											label={<FormattedMessage id="Speaker.Registration.Form.Linkedin_Url"/>}
@@ -541,7 +549,7 @@ class SpeakerEditForm extends React.Component{
 											onChange={(event)=>{this.handleChange(event)}}
 										/>
 									</div>
-									<div className="col-md-4">
+									<div className="col-md-6">
 										<TextField
 											name="lattes"
 											label={<FormattedMessage id="Speaker.Registration.Form.Latter_Url"/>}
@@ -553,7 +561,7 @@ class SpeakerEditForm extends React.Component{
 											onChange={(event)=>{this.handleChange(event)}}
 										/>
 									</div>
-									<div className="col-md-4">
+									<div className="col-md-6">
 										<TextField
 											name="orcid"
 											label={<FormattedMessage id="Speaker.Registration.Form.Orcid_Url"/>}

@@ -23,7 +23,7 @@ class Speaker(models.Model):
 	neighborhood = models.CharField(max_length=191)
 	cep = models.CharField(max_length=191)
 	ddd = models.CharField(max_length=191, blank=True, null=True)
-	id_number = models.IntegerField(blank=True, null=True)
+	id_number = models.CharField(max_length=191, blank=True, null=True)
 	document_issue_date = models.DateField()
 	emitting_organ = models.CharField(max_length=191, blank=True, null=True)
 	email = models.CharField(unique=True, max_length=191)
