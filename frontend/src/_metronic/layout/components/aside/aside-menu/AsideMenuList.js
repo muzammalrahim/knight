@@ -151,7 +151,7 @@ export function AsideMenuList({ layoutProps }) {
             </div>
           </li>
           {/* {user && user === 1 && */}
-          {user === 1 &&<li
+          {user === 1 && <li
               className={`menu-item menu-item-submenu ${getMenuItemActive(
                   "/google-material", true
               )}`}
