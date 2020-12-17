@@ -163,5 +163,11 @@
   "User.List.Column.Last_Name":"Last Name",
   "User.List.Column.Email":"Email",
   "User.List.Column.Bus_Un":"business unit",
-  "User.List.Column.Action":"Action"
+  "User.List.Column.Action":"Action",
+
+  "Speaker.Registration.CivilStatus.One":"Single",
+  "Speaker.Registration.CivilStatus.Two": "Married",
+  "Speaker.Registration.CivilStatus.Three": "Widowed",
+  "Speaker.Registration.CivilStatus.Four": "Separated",
+  "Speaker.Registration.CivilStatus.Five": "Divorced"
 }

@@ -81,7 +81,7 @@
   "Dashboard.Welcome": "Bem-vinda",
 
   "Sidebar.New.Speaker": "Palestrante",
-  "Sidebar.New.Event": "evento",
+  "Sidebar.New.Event": "Evento",
   "Sidebar.New.User": "usuário",
   "Sidebar.Approvals": "Aprovações",
 
@@ -173,5 +173,11 @@
   "User.List.Column.Last_Name":"Último nome",
   "User.List.Column.Email":"E-mail",
   "User.List.Column.Bus_Un":"unidade de negóc",
-  "User.List.Column.Action":"Açao"
+  "User.List.Column.Action":"Açao",
+
+  "Speaker.Registration.CivilStatus.One":"Solteiro",
+  "Speaker.Registration.CivilStatus.Two": "Casado",
+  "Speaker.Registration.CivilStatus.Three": "Viúvo",
+  "Speaker.Registration.CivilStatus.Four": "Separados",
+  "Speaker.Registration.CivilStatus.Five": "Divorciado"
 }

@@ -36,6 +36,7 @@ class EventRegistrationForm extends React.Component {
 			speaker_list:[],
 			countries:[]
 		}
+		this.handleTabChange = this.handleTabChange.bind(this);
 	}
 
 	handleChange(e){
@@ -59,7 +60,7 @@ class EventRegistrationForm extends React.Component {
         this.setState({event, validateEvent});
 	}
 
-	handleTabChange(value) {
+	handleTabChange(event, value) {
 		this.setState({currentTab:value});
 	}
 	submitHandler(){
@@ -122,9 +123,9 @@ class EventRegistrationForm extends React.Component {
 							<FormattedMessage id="Event.Create.Title"/>
 						</h3>
 						<AppBar position="static">
-							<Tabs value={currentTab}>
-								<Tab label="Step One" style={{cursor:'unset'}}/>
-								<Tab label="Step Two" style={{cursor:'unset'}}/>
+							<Tabs value={currentTab} onChange={this.handleTabChange}>
+								<Tab label="Step One"/>
+								<Tab label="Step Two"/>
 							</Tabs>
 						</AppBar>
 						<TabContainer>
@@ -329,7 +330,7 @@ class EventRegistrationForm extends React.Component {
 									</div>
 									</>}
 									<div className="col-md-12 text-right pt-4">
-										<Button variant="contained" color="primary" style={styles.button} onClick={()=>{this.handleTabChange(1)}}>
+										<Button variant="contained" color="primary" style={styles.button} onClick={(e)=>{this.handleTabChange(e,1)}}>
 											Next
 											{/* This Button uses a Font Icon, see the installation instructions in the docs. */}
 											<Icon style={styles.rightIcon}>send</Icon>
@@ -518,7 +519,7 @@ class EventRegistrationForm extends React.Component {
 										</div>
 									</div>
 									<div className="col-md-12 text-right pt-4">
-										<Button variant="contained" color="default" style={styles.button} style={{float:'left'}} onClick={()=>{this.handleTabChange( 0)}}>
+										<Button variant="contained" color="default" style={styles.button} style={{float:'left'}} onClick={(e)=>{this.handleTabChange(e, 0)}}>
 											<ChevronLeft/>
 											Back
 										</Button>
