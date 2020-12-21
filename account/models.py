@@ -5,6 +5,16 @@ class User(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
 	business_unit = models.CharField(max_length=191, blank=True, null=True)
 
+class Specialty(models.Model):
+	name = models.CharField(max_length=191)
+
+	deleted_at = models.DateTimeField(blank=True, null=True)
+	created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+	class Meta:
+		ordering = ['name']
+		
 class Speaker(models.Model):
 	foreign_flag = models.BooleanField(default=False)
 	accept_information_rule = models.BooleanField(null=True, default=False)
@@ -44,7 +54,7 @@ class Speaker(models.Model):
 	juridical_address = models.CharField(max_length=191, blank=True, null=True)
 	national_id = models.CharField(max_length=191, blank=True, null=True)
 	person_type = models.CharField(max_length=191, blank=True, null=True)
-	specialty = models.CharField(max_length=191, blank=True, null=True)
+	specialty = models.ForeignKey(Specialty, models.CASCADE, blank=True, null=True)
 	swift_bic = models.CharField(max_length=191, blank=True, null=True)
 	uf_city = models.CharField(max_length=191, blank=True, null=True)
 	uf_crm = models.CharField(max_length=191, blank=True, null=True)
@@ -82,5 +92,22 @@ class Event(models.Model):
 
 	class Meta:
 		ordering = ['date']
+
+class Price(models.Model):
+	specialty = models.ForeignKey(Specialty, models.CASCADE, blank=True, null=True)
+	tier = models.CharField(max_length=191)
+	program_type = models.CharField(max_length=191)
+	role = models.CharField(max_length=191)
+	factor = models.PositiveIntegerField(blank=True)
+	standard_price = models.PositiveIntegerField(blank=True)
+	hour_price = models.PositiveIntegerField(blank=True)
+
+	deleted_at = models.DateTimeField(blank=True, null=True)
+	created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+	class Meta:
+		ordering = ['role']
+
 
 

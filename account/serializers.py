@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User, Group
-from account.models import Event, Speaker, User as CustomUser
+from account.models import Event, Speaker, User as CustomUser, Price, Specialty
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
 
@@ -40,6 +40,16 @@ class UserSerializer(serializers.ModelSerializer):
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = Group
+		fields = ['id', 'name']
+
+class PriceSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Price
+		fields = '__all__'
+
+class SpecialtySerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Specialty
 		fields = ['id', 'name']
 
 class EventSerializer(serializers.ModelSerializer):

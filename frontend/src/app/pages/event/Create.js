@@ -1,7 +1,8 @@
 import React from "react";
-import { TextField, Button, Icon, AppBar, Tabs, Tab, Typography, Radio, RadioGroup, FormControlLabel, FormControl, Snackbar } from "@material-ui/core";
+import { TextField, Button, Icon, AppBar, Tabs, Tab, Typography, Table, Checkbox, 
+		Radio, RadioGroup, FormControlLabel, FormControl, Snackbar } from "@material-ui/core";
 import PropTypes from 'prop-types';
-import {ChevronLeft} from '@material-ui/icons';
+import {ChevronLeft, CheckBox as CheckBoxIcon, CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, Delete} from '@material-ui/icons';
 import { FormattedMessage } from "react-intl";
 import {
 	getCurrentDate
@@ -9,13 +10,15 @@ import {
   import list, {post} from '../helper/api';
   import { Alert, AlertTitle } from '@material-ui/lab';
 
+  const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+  const checkedIcon = <CheckBoxIcon fontSize="small" />;
 class EventRegistrationForm extends React.Component {
 	constructor(props){
 		super(props);
 		this.event={
 			name:"", _type:"", date:"", duration:"", web_presential:"", country:"",	state:"",
 			city:"", address:"", solicitant:"", business_unit:"", despartment:"", cost_center:"",
-			speaker:"", virtual_presential:"", displacement:''
+			speaker:[], virtual_presential:"", displacement:''
 		}
 		this.validateEvent={
 			name:false, _type:false, date:false, duration:false, web_presential:false, country:false,	state:false,
@@ -34,14 +37,20 @@ class EventRegistrationForm extends React.Component {
 			alert: this.alert,
 			currentTab: 0,
 			speaker_list:[],
-			countries:[]
+			speakers:[],
+			countries:[],
+			specialty:[]
 		}
 		this.handleTabChange = this.handleTabChange.bind(this);
 	}
 
 	handleChange(e){
 		let [key, value, {event, validateEvent}] = [e.target.name, e.target.value, this.state];
-		event[key]=value;
+		if(key === "speaker"){
+			!event[key].includes(value) && event[key].push(value);
+		}else{
+			event[key]=value;
+		}
 		if(validateEvent[key]){
 			if(key === "web_presential" && value==="web"){
 				validateEvent["country"] = false;
@@ -53,6 +62,8 @@ class EventRegistrationForm extends React.Component {
 				event["state"] = "";
 				event["cit"] = "";
 				event["address"] = "";
+			}else if(key === "speaker"){
+				validateEvent[key] = event[key].length > 0 ? false : true;
 			}else{
             	validateEvent[key] = event[key] ? false : true;
 			}
@@ -69,6 +80,8 @@ class EventRegistrationForm extends React.Component {
 		Object.keys(validateEvent).map((key)=>{
 			if(event["web_presential"]!=="Presential" && (key === "country" || key === "state" || key ==="city" || key === "address")){
 				validateEvent[key] = false;
+			}if(key === "speaker"){
+				validateEvent[key] = event[key].length > 0 ? false : true;
 			}else{
 				validateEvent[key] = event[key] ? false : true;
 				isSubmit = event[key] && isSubmit !== false ? true : false;
@@ -90,7 +103,7 @@ class EventRegistrationForm extends React.Component {
 		  response.data.map((row)=>{
 			  speaker_list.push({label:row.name, value:row.id})
 		  })
-		  this.setState({speaker_list});
+		  this.setState({speaker_list, speakers:response.data});
 		})
 	}
 	handleClose(){
@@ -105,10 +118,15 @@ class EventRegistrationForm extends React.Component {
 			data.map((country)=>{
 				list_data.push({label:country.name, value: country.name})
 			})
-			this.setState({countries:list_data})});
+			this.setState({countries:list_data})
+		});
+		list('api/specialty').then((response)=>{
+			this.setState({specialty:response.data})
+		})
 	}
 	render(){
-		let {event:{web_presential}, event, currentTab, speaker_list, countries, validateEvent, alert:{open, severity, message, title}} = this.state;
+		let {event:{web_presential}, event, currentTab, speaker_list, speakers, countries, 
+			validateEvent, alert:{open, severity, message, title}, specialty} = this.state;
 		return (
 			<div className="row">
 				<Snackbar open={open} autoHideDuration={4000} anchorOrigin={{ vertical:'top', horizontal:'right' }} onClose={()=>{this.handleClose()}}>
@@ -409,37 +427,7 @@ class EventRegistrationForm extends React.Component {
 											error={validateEvent['cost_center']}
 											helperText={validateEvent['cost_center'] && 'this field is required'}
 										/>
-									</div>
-									<div className="col-md-6">
-										<TextField
-											required
-											select
-											name="speaker"
-											label={<FormattedMessage id="Event.List.Column.Speaker"/>}
-											style={styles.textField}
-											value={event.speaker}
-											onChange={(e)=>{this.handleChange(e)}}
-											SelectProps={{
-												native: true,
-												MenuProps: {
-													className: styles.menu
-												}
-											}}
-											error={validateEvent['speaker']}
-											helperText={validateEvent['speaker'] && 'this field is required'}
-											margin="normal"
-											variant="outlined"
-										>
-											<option value={null}>
-												Select Speaker....
-											</option>
-											{speaker_list.map(option => (
-												<option key={option.value} value={option.value}>
-													{option.label}
-												</option>
-											))}
-										</TextField>
-									</div>
+									</div>									
 									<div className="col-md-6">
 										<TextField
 											required
@@ -470,14 +458,14 @@ class EventRegistrationForm extends React.Component {
 											))}
 										</TextField>
 									</div>
-									{/* <div className="col-md-6">
+									<div className="col-md-6">
 										<TextField
 											required
 											select
-											name="_duration"
-											label="Duration"
+											name="speaker"
+											label={<FormattedMessage id="Event.List.Column.Speaker"/>}
 											style={styles.textField}
-											value={event._duration}
+											// value={event.speaker}
 											onChange={(e)=>{this.handleChange(e)}}
 											SelectProps={{
 												native: true,
@@ -485,21 +473,51 @@ class EventRegistrationForm extends React.Component {
 													className: styles.menu
 												}
 											}}
-											error={validateEvent['_duration']}
-											helperText={validateEvent['_duration'] && 'this field is required'}
+											error={validateEvent['speaker']}
+											helperText={validateEvent['speaker'] && 'this field is required'}
 											margin="normal"
 											variant="outlined"
 										>
 											<option value={null}>
-												Select Duration....
+												Select Speaker....
 											</option>
-											{country.map(option => (
+											{speaker_list.map(option => (
 												<option key={option.value} value={option.value}>
 													{option.label}
 												</option>
 											))}
 										</TextField>
-									</div> */}
+									</div>
+									{event.speaker.length > 0 && <div className="col-md-12 m-4">
+										<h5>Selected Speakers</h5>
+										<Table striped bordered hover className="ml-4 mr-4">
+											<thead>
+												<tr>
+												<th>Name</th>
+												<th>Specialty</th>
+												<th>Cost</th>
+												<th style={{textAlign:'center'}}>Action</th>
+												</tr>
+											</thead>
+											<tbody>
+												{
+													event.speaker.map((speaker)=>{
+														let spk = speakers.find(data => data.id == speaker)
+														return <tr>
+															<td>{spk.name}</td>
+															<td>{spk.specialty && specialty.find(specialty => spk.specialty == specialty.id).name}</td>
+															<td>{}</td>
+															<td style={{textAlign:'center'}}><Delete style={{cursor:'pointer'}} onClick={()=>{
+																	event.speaker = event.speaker.filter(e => e !== speaker)
+																	this.setState({event})
+																}}
+															/></td>
+														</tr>
+													})
+												}
+											</tbody>
+										</Table>
+									</div>}
 									<div className="col-md-12 pt-4 ml-4">
 										<h5>Displacement</h5>
 										<div className="col-md-12 pt-4 ml-4">
@@ -562,24 +580,6 @@ const b_unit = [
 		label: "Unit 4"
 	}
 ];
-const country = [
-	{
-		value: "Pakistan",
-		label: "Pakistan"
-	},
-	{
-		value: "Australia",
-		label: "Australia"
-	},
-	{
-		value: "India",
-		label: "India"
-	},
-	{
-		value: "China",
-		label: "China"
-	}
-];
 const virtual_presential = [
 	{
 		value: "Test 1",
@@ -598,40 +598,22 @@ const virtual_presential = [
 		label: "Test 4"
 	}
 ];
-const department = [
-	{
-		value: "Department 1",
-		label: "Department 1"
-	},
-	{
-		value: "Department 2",
-		label: "Department 2"
-	},
-	{
-		value: "Department 3",
-		label: "Department 3"
-	},
-	{
-		value: "Department 4",
-		label: "Department 4"
-	}
-];
 const type = [
 	{
-		value: "Type 1",
-		label: "Type 1"
+		value: "Small Meetings",
+		label: "Small Meetings"
 	},
 	{
-		value: "Type 2",
-		label: "Type 2"
+		value: "Symposia",
+		label: "Symposia"
 	},
 	{
-		value: "Type 3",
-		label: "Type 3"
+		value: "Webinars",
+		label: "Webinars"
 	},
 	{
-		value: "Type 4",
-		label: "Type 4"
+		value: "EIF (Expert Input Forum)",
+		label: "EIF (Expert Input Forum)"
 	}
 ];
 const province = [

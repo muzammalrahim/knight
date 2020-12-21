@@ -64,7 +64,8 @@ class SpeakerEditForm extends React.Component{
 			currentTab: 0,
 			onlyNums:'',
 			countries:[{value:'Select country ....', label:'Select country ....'}],
-			show:false
+			show:false,
+			specialty_list:[]
 		}
 		this.handleTabChange = this.handleTabChange.bind(this);
 	}
@@ -161,20 +162,29 @@ class SpeakerEditForm extends React.Component{
 		.then(response => response.json())
 		.then((data) => {
 			let list_data = []
-			data.map((country)=>{
+			data.map((country)=>{	
 				if(country.name === "Brazil"){
 					list_data.push({label:"Brasil", value: "Brasil"})
 				}else{
 					list_data.push({label:country.name, value: country.name})
 				}
 			})
-			this.setState({countries:list_data})});
+			this.setState({countries:list_data})
+		});
+		list('api/specialty').then((response)=>{
+			let data = [];
+			response.data.map((option)=>{
+				data.push({label:option.name, value:option.id})
+			})
+			this.setState({specialty_list: data})
+		})
 	}
     handleClose(){
         this.setState({alert:{open:false, severity: '', message:'' }})
     }
 	render(){
-		let {speaker:{foreign_flag, accept_information_rule, person_type}, speaker, currentTab, countries, validateSpeaker, alert:{severity, message, title, open}, show} = this.state;
+		let {speaker:{foreign_flag, accept_information_rule, person_type}, speaker, currentTab, countries, validateSpeaker, 
+			alert:{severity, message, title, open}, show, specialty_list} = this.state;
 		const {formatMessage} = this.props.intl;
 		return (
 			<div style={styles.root}>
@@ -713,7 +723,7 @@ class SpeakerEditForm extends React.Component{
 													<option value={null}>
 														Select Specialty....
 													</option>
-													{countries.map(option => (
+													{specialty_list.map(option => (
 														<option key={option.value} value={option.value}>
 															{option.label}
 														</option>

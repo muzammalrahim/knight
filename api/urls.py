@@ -20,6 +20,19 @@ events_list = users_view.EventsViewSet.as_view({
 	'post': 'create',
 	'delete': 'destroy'
 })
+
+price_list = users_view.PriceViewSet.as_view({
+	'get': 'list',
+	'post': 'create',
+	'delete': 'destroy'
+})
+
+specialty_list = users_view.SpecialtyViewSet.as_view({
+	'get': 'list',
+	'post': 'create',
+	'delete': 'destroy'
+})
+
 events_detail = users_view.EventsViewSet.as_view({
 	'get': 'retrieve',
 	'put': 'update',
@@ -51,4 +64,7 @@ urlpatterns = format_suffix_patterns([
 
 	path('speakers', speakers_list, name='speakers'),
 	path('speaker/<pk>', speakers_detail, name='speaker'),
+
+	path('price', price_list, name='price'),
+	path('specialty', specialty_list, name='specialty'),
 ])
