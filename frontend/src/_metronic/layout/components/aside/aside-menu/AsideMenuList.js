@@ -4,6 +4,7 @@ import {useLocation} from "react-router";
 import {NavLink}  from "react-router-dom";
 import SVG from "react-inlinesvg";
 import {toAbsoluteUrl, checkIsActive} from "../../../../_helpers";
+import { FormattedMessage } from "react-intl";
 export function AsideMenuList({ layoutProps }) {
   const location = useLocation();
   const [user, setUser] = useState();
@@ -12,11 +13,11 @@ export function AsideMenuList({ layoutProps }) {
         ? ` ${!hasSubmenu && "menu-item-active"} menu-item-open `
         : "";
   };
-  // useEffect(() => {
-  //   let User = localStorage.getItem('persist:v705-demo1-auth') && JSON.parse(localStorage.getItem('persist:v705-demo1-auth')).user;
-  //   User = JSON.parse(User)
-  //   User && User.groups.length > 0 && setUser(User.groups[0])
-  // },[]);
+  useEffect(() => {
+    let User = localStorage.getItem('persist:v705-demo1-auth') && JSON.parse(localStorage.getItem('persist:v705-demo1-auth')).user;
+    User = JSON.parse(User)
+    User && User.groups.length > 0 && setUser(User.groups[0])
+  },[]);
   return (
       <>
         {/* begin::Menu Nav */}
@@ -45,7 +46,7 @@ export function AsideMenuList({ layoutProps }) {
             <span className="svg-icon menu-icon">
               <SVG src={toAbsoluteUrl("/media/svg/icons/Communication/Group.svg")}/>
             </span>
-              <span className="menu-text">Speaker</span>
+              <span className="menu-text"><FormattedMessage id="Sidebar.New.Speaker"/></span>
               <i className="menu-arrow"/>
             </NavLink>
             <div className="menu-submenu ">
@@ -103,7 +104,7 @@ export function AsideMenuList({ layoutProps }) {
             <span className="svg-icon menu-icon">
               <SVG src={toAbsoluteUrl("/media/svg/icons/Communication/Write.svg")}/>
             </span>
-              <span className="menu-text">Events</span>
+              <span className="menu-text"><FormattedMessage id="Sidebar.New.Event"/></span>
               <i className="menu-arrow"/>
             </NavLink>
             <div className="menu-submenu ">
@@ -150,7 +151,7 @@ export function AsideMenuList({ layoutProps }) {
             </div>
           </li>
           {/* {user && user === 1 && */}
-          <li
+          {user === 1 && <li
               className={`menu-item menu-item-submenu ${getMenuItemActive(
                   "/google-material", true
               )}`}
@@ -161,7 +162,7 @@ export function AsideMenuList({ layoutProps }) {
             <span className="svg-icon menu-icon">
               <SVG src={toAbsoluteUrl("/media/svg/icons/Communication/Add-user.svg")}/>
             </span>
-              <span className="menu-text">User</span>
+              <span className="menu-text"><FormattedMessage id="Sidebar.New.User"/></span>
               <i className="menu-arrow"/>
             </NavLink>
             <div className="menu-submenu ">
@@ -207,8 +208,8 @@ export function AsideMenuList({ layoutProps }) {
               </ul>
             </div>
           </li>
-          {/* } */}
-          <li
+          }
+          {user === 1 &&<li
               className={`menu-item menu-item-submenu ${getMenuItemActive(
                   "/google-material", true
               )}`}
@@ -219,7 +220,7 @@ export function AsideMenuList({ layoutProps }) {
             <span className="svg-icon menu-icon">
               <SVG src={toAbsoluteUrl("/media/svg/icons/Communication/Chat-check.svg")}/>
             </span>
-              <span className="menu-text">Approvals</span>
+              <span className="menu-text"><FormattedMessage id="Sidebar.Approvals"/></span>
               <i className="menu-arrow"/>
             </NavLink>
             <div className="menu-submenu ">
@@ -252,7 +253,7 @@ export function AsideMenuList({ layoutProps }) {
               </ul>
             </div>
           </li>
-        </ul>
+}</ul>
       </>
   );
 }

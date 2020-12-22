@@ -1,3 +1,10 @@
 .MuiFormControl-root.MuiTextField-root {
     width: 100%;
 }
+.kt_section__detail{
+    font-size: 130%;
+}
+.kt_detail__item_title{
+    font-size: 107%;
+    font-weight: 600;
+}

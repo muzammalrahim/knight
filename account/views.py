@@ -5,7 +5,7 @@ from account.serializers import UserSerializer, GroupSerializer
 from rest_framework.decorators import api_view, action, permission_classes, authentication_classes
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import AllowAny
-from account.models import Event, Speaker, User as CustomUser
+from account.models import Event, Speaker, User as CustomUser, Price, Specialty, EventSpeaker
 from account.serializers import *
 from django.contrib.auth import authenticate
 from rest_framework.response import Response
@@ -56,6 +56,31 @@ class GroupViewSet(viewsets.ModelViewSet):
 	queryset = Group.objects.all()
 	serializer_class = GroupSerializer
 	permission_classes = [permissions.IsAuthenticated]
+	
+class SpecialtyViewSet(viewsets.ModelViewSet):
+	"""
+	API endpoint that allows groups to be viewed or edited.
+	"""
+	queryset = Specialty.objects.all()
+	serializer_class = SpecialtySerializer
+	# permission_classes = [permissions.IsAuthenticated]
+
+class PriceViewSet(viewsets.ModelViewSet):
+	"""
+	API endpoint that allows groups to be viewed or edited.
+	"""
+	queryset = Price.objects.all()
+	serializer_class = PriceSerializer
+	filterset_fields = ['program_type', 'specialty', 'tier']
+	def list(self, request, *args, **kwargs):
+		program_type = request.GET.get('program_type', None)
+		specialty = request.GET.get('specialty', None)
+		tier = request.GET.get('tier', None)
+		queryset = self.filter_queryset(self.get_queryset())
+		page = self.paginate_queryset(queryset)
+		serializer = self.get_serializer(queryset, many=True)
+		return Response(serializer.data)
+	# permission_classes = [permissions.IsAuthenticated]
 
 class EventsViewSet(viewsets.ModelViewSet):
 	"""
@@ -64,7 +89,7 @@ class EventsViewSet(viewsets.ModelViewSet):
 	queryset = Event.objects.all()
 	serializer_class = EventSerializer
 	# authentication_classes = [authentication.TokenAuthentication]
-
+	
 	def destroy(self, request, *args, **kwargs):
 		request_data = json.loads(request.body.decode('utf-8'))
 		if 'ids' in request_data:
@@ -77,16 +102,16 @@ class EventsViewSet(viewsets.ModelViewSet):
 		instance = self.get_object()
 		serializer = self.get_serializer(instance)
 		data = serializer.data
-		
-		related_models = ['speaker']
-		
-		for model in related_models:
-			try:
-				data[model] = to_dict(getattr(instance, model))
-			except:
-				data[model] = None
 
 		return Response(data)
+
+class EventSpeakerViewSet(viewsets.ModelViewSet):
+	"""
+	API endpoint that allows groups to be viewed or edited.
+	"""
+	queryset = EventSpeaker.objects.all()
+	serializer_class = EventSpeakerSerializer
+	# permission_classes = [permissions.IsAuthenticated]
 
 class SpeakersViewSet(viewsets.ModelViewSet):
 	"""
@@ -140,3 +165,5 @@ def logout(request):
 	print(request.user.auth_token)
 	request.user.auth_token.delete()
 	return Response(status=HTTP_200_OK)
+
+

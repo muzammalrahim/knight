@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-no-undef */
 /* eslint-disable no-script-url,jsx-a11y/anchor-is-valid */
-import React, {useMemo, useEffect} from "react";
+import React, {useMemo, useEffect, useState} from "react";
 import SVG from "react-inlinesvg";
 import objectPath from "object-path";
 import ApexCharts from "apexcharts";
@@ -12,6 +12,7 @@ import { FormattedMessage } from "react-intl";
 export function MixedWidget1({ className }) {
   const uiService = useHtmlClassService();
   const history = useHistory();
+  const [user, setUser] = useState();
 
   const layoutProps = useMemo(() => {
     return {
@@ -49,6 +50,11 @@ export function MixedWidget1({ className }) {
       chart.destroy();
     };
   }, [layoutProps]);
+  useEffect(() => {
+    let User = localStorage.getItem('persist:v705-demo1-auth') && JSON.parse(localStorage.getItem('persist:v705-demo1-auth')).user;
+    User = JSON.parse(User)
+    User && User.groups.length > 0 && setUser(User.groups[0])
+  },[]);
   function handleClick(url){
     history.push(`/${url}`);
   }
@@ -101,7 +107,7 @@ export function MixedWidget1({ className }) {
               </a>
             </div>
           </div>
-          <div className="row m-0">
+          {user === 1 && <div className="row m-0">
             <div className="col bg-light-danger px-6 py-8 rounded-xl mr-7" style={{cursor:'pointer'}} onClick={()=>{handleClick('user/create')}}>
               <span className="svg-icon svg-icon-3x svg-icon-danger d-block my-2">
                 <SVG
@@ -130,7 +136,7 @@ export function MixedWidget1({ className }) {
                 <FormattedMessage id="Dashboard.Approvals" />
               </a>
             </div>
-          </div>
+          </div>}
         </div>
 
         {/* Resize */}

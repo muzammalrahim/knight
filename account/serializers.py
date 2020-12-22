@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User, Group
-from account.models import Event, Speaker, User as CustomUser
+from account.models import Event, Speaker, User as CustomUser, Price, Specialty, EventSpeaker
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
 
@@ -42,13 +42,41 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 		model = Group
 		fields = ['id', 'name']
 
-class EventSerializer(serializers.HyperlinkedModelSerializer):
+class PriceSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Price
+		fields = '__all__'
+
+class SpecialtySerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Specialty
+		fields = ['id', 'name']
+
+class EventSerializer(serializers.ModelSerializer):
+	def __init__(self, *args, **kwargs):
+		super(EventSerializer, self).__init__(*args, **kwargs)
+		self.fields['speaker'].required = True
+	
+	# event_speaker = EventSpeakerSerializer(many=True)
+	# def create(self, validated_data):
+
+	# 	event_speaker = validated_data.pop('event_speaker')
+	# 	print(validated_data)
+	# 	event = Event.objects.create(**validated_data)
+		# event.EventSpeaker.set(eventSpeaker)
+
 	class Meta:
 		model = Event
-		fields = ['id','name', '_type', 'date', 'duration', 'web_presential', 'country', 'state', 'city', 'address', 'solicitant', 'business_unit', 'despartment',
-		'cost_center','virtual_presential', 'displacement', 'created_at']
+		fields = '__all__'
 
 class SpeakerSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Speaker
+		fields = '__all__'
+
+class EventSpeakerSerializer(serializers.ModelSerializer):
+	# event = EventSerializer()
+	# speaker = SpeakerSerializer()
+	class Meta:
+		model = EventSpeaker
 		fields = '__all__'

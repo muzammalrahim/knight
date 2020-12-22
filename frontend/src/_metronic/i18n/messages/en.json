@@ -75,6 +75,11 @@
   "Dashboard.Approvals": "Approvals",
   "Dashboard.Welcome": "Welcome",
 
+  "Sidebar.New.Speaker": "Speakers",
+  "Sidebar.New.Event": "Events",
+  "Sidebar.New.User": "Users",
+  "Sidebar.Approvals": "Approvals",
+
   "Event.Create.Title": "Event Registration",
 
   "Event.Create.Eve_Name": "Event Name",
@@ -91,6 +96,11 @@
   "Event.List.Column.Date": "Date",
   "Event.List.Column.Type": "Type",
   "Event.List.Column.Action": "Action",
+  "Event.List.Column.Solicitant": "Solicitant Name",
+  "Event.List.Column.Department": "Department",
+  "Event.List.Column.Cost": "Cost Center",
+  "Event.List.Column.Speaker": "Speaker Name",
+  "Event.List.Column.Virtual": "Virtual / Presential",
 
   "Speaker.Registration.Title": "Speaker Registration",
   "Speaker.Registration.Form.F_Flag": "Foreign Flag",
@@ -153,5 +163,11 @@
   "User.List.Column.Last_Name":"Last Name",
   "User.List.Column.Email":"Email",
   "User.List.Column.Bus_Un":"business unit",
-  "User.List.Column.Action":"Action"
+  "User.List.Column.Action":"Action",
+
+  "Speaker.Registration.CivilStatus.One":"Single",
+  "Speaker.Registration.CivilStatus.Two": "Married",
+  "Speaker.Registration.CivilStatus.Three": "Widowed",
+  "Speaker.Registration.CivilStatus.Four": "Separated",
+  "Speaker.Registration.CivilStatus.Five": "Divorced"
 }

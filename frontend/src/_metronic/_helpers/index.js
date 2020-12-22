@@ -4,4 +4,4 @@ export * from "./RouterHelpers";
 export * from "./TablePaginationHelpers";
 export * from "./TableRowSelectionHelpers";
 export * from "./TableSortingHelpers";
-export * from "./FunctionHelpers";
+export * from "../../app/pages/helper/FunctionHelpers";

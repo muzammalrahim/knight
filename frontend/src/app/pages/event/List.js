@@ -2,21 +2,12 @@ import React, {useEffect} from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { lighten, makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
+import { Table, TableBody, TableCell, TableHead, TablePagination, TableRow, TableSortLabel, 
+  Toolbar, Typography, Paper, FormControlLabel, Switch, Snackbar } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
 import list, {del} from '../helper/api';
 import {Edit, Delete} from '@material-ui/icons';
+import { Alert, AlertTitle } from '@material-ui/lab';
 
 function createData(id, name, country, city, date, _type) {
   return { id, name, country, city, date, _type };
@@ -155,7 +146,12 @@ export default function EnhancedTable(props) {
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [rows, setRows] = React.useState([]);
-
+  const [open, setOpen] = React.useState(false);
+  const [alert, setAlert] = React.useState({
+    severity: '',
+    message:'',
+    title:''
+  });
   function handleRequestSort(event, property) {
     const isDesc = orderBy === property && order === 'desc';
     setOrder(isDesc ? 'asc' : 'desc');
@@ -182,15 +178,32 @@ export default function EnhancedTable(props) {
       setRows(event_list);
     })
   }
+  const closeAlert = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+  };
   useEffect(() => {
     getEvents();
   },[]);
-  
-
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   return (
     <div className={classes.root}>
+      <Snackbar 
+        open={open} 
+        autoHideDuration={4000} 
+        anchorOrigin={{ vertical:'top', horizontal:'right' }}
+        onClose={closeAlert} 
+      >
+        <Alert 
+            onClose={closeAlert} 
+            severity={alert.severity}
+          >
+          <AlertTitle>{alert.title}</AlertTitle>
+          <strong>{alert.message}</strong>
+        </Alert>
+      </Snackbar> 
       <Paper className={classes.paper}>
         <EnhancedTableToolbar/>
         <div className={classes.tableWrapper}>
@@ -229,8 +242,22 @@ export default function EnhancedTable(props) {
                           style={{cursor:'pointer'}}
                           onClick={()=>{
                             del(`api/events/${row.id}/`,[row.id]).then((response)=>{
+                              let data = alert;
+                              data.severity = 'success';
+                              data.title = "Success";
+                              data.message = "Record has been successfully deleted";
+                              setAlert(data);
+                              setOpen(true);
                               getEvents();
-                          })}}
+                          }).catch((error)=>{
+                            let data = alert;
+                              data.severity = 'error';
+                              data.title = "Error";
+                              data.message = "Something went wrong";
+                              setAlert(data);
+                              setOpen(true);
+                          })
+                        }}
                         />
                       </TableCell>
                     </TableRow>
