@@ -21,6 +21,17 @@ events_list = users_view.EventsViewSet.as_view({
 	'delete': 'destroy'
 })
 
+events_detail = users_view.EventsViewSet.as_view({
+	'get': 'retrieve',
+	'put': 'update',
+	# 'delete': 'destroy'
+})
+
+event_speaker_list = users_view.EventSpeakerViewSet.as_view({
+	'get': 'list',
+	'post': 'create',
+})
+
 price_list = users_view.PriceViewSet.as_view({
 	'get': 'list',
 	'post': 'create',
@@ -31,12 +42,6 @@ specialty_list = users_view.SpecialtyViewSet.as_view({
 	'get': 'list',
 	'post': 'create',
 	'delete': 'destroy'
-})
-
-events_detail = users_view.EventsViewSet.as_view({
-	'get': 'retrieve',
-	'put': 'update',
-	# 'delete': 'destroy'
 })
 
 speakers_list = users_view.SpeakersViewSet.as_view({
@@ -52,7 +57,6 @@ speakers_detail = users_view.SpeakersViewSet.as_view({
 
 urlpatterns = format_suffix_patterns([
 
-	# path('', users_view.api_root),
 	path('login', users_view.login),
 	path('logout', users_view.logout),
 
@@ -61,6 +65,8 @@ urlpatterns = format_suffix_patterns([
 	path('events', events_list, name='events'),
 	path('event/<pk>/', events_detail, name='event'),
 	path('events/<pk>/', events_list, name='delete'),
+
+	path('event_speaker', event_speaker_list, name='event_speakers'),
 
 	path('speakers', speakers_list, name='speakers'),
 	path('speaker/<pk>', speakers_detail, name='speaker'),

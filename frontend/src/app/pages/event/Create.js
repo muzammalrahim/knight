@@ -1,8 +1,8 @@
 import React from "react";
 import { TextField, Button, Icon, AppBar, Tabs, Tab, Typography, Table, Checkbox, 
-		Radio, RadioGroup, FormControlLabel, FormControl, Snackbar } from "@material-ui/core";
+		Radio, RadioGroup, FormControlLabel, FormControl, Snackbar, Grid } from "@material-ui/core";
 import PropTypes from 'prop-types';
-import {ChevronLeft, CheckBox as CheckBoxIcon, CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, Delete} from '@material-ui/icons';
+import {ChevronLeft, CheckBox as CheckBoxIcon, CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, Delete, Edit} from '@material-ui/icons';
 import { FormattedMessage } from "react-intl";
 import {
 	getCurrentDate
@@ -47,7 +47,7 @@ class EventRegistrationForm extends React.Component {
 	handleChange(e){
 		let [key, value, {event, validateEvent}] = [e.target.name, e.target.value, this.state];
 		if(key === "speaker"){
-			!event[key].includes(value) && event[key].push(value);
+			!event[key].includes(value) && value !="Select Speaker...." && event[key].push(value);
 		}else{
 			event[key]=value;
 		}
@@ -88,14 +88,14 @@ class EventRegistrationForm extends React.Component {
 			}
         })
         this.setState({validateEvent});
-        isSubmit && post('api/events', event).then((response)=>{
+        isSubmit ? post('api/events', event).then((response)=>{
                 this.setState({alert:{open:true, severity:"success", title:"success", message:'User Created Sucessfully'}})
 				setTimeout(()=>{this.props.history.push('/events')}, 1000)
 			}).catch((error)=>{
 				Object.keys(error.response.data).map((key)=>{
 					this.setState({alert:{open:true, severity:"error", title:"Error", message:`${key+": "+error.response.data[key][0]}`}})
 				})
-			})
+			}) : this.setState({currentTab:0});
     }
 	getSpeakers (){
 		list('api/speakers').then((response)=>{
@@ -127,6 +127,7 @@ class EventRegistrationForm extends React.Component {
 	render(){
 		let {event:{web_presential}, event, currentTab, speaker_list, speakers, countries, 
 			validateEvent, alert:{open, severity, message, title}, specialty} = this.state;
+			let airport={}
 		return (
 			<div className="row">
 				<Snackbar open={open} autoHideDuration={4000} anchorOrigin={{ vertical:'top', horizontal:'right' }} onClose={()=>{this.handleClose()}}>
@@ -144,6 +145,7 @@ class EventRegistrationForm extends React.Component {
 							<Tabs value={currentTab} onChange={this.handleTabChange}>
 								<Tab label="Step One"/>
 								<Tab label="Step Two"/>
+								<Tab label="Step Three"/>
 							</Tabs>
 						</AppBar>
 						<TabContainer>
@@ -478,7 +480,7 @@ class EventRegistrationForm extends React.Component {
 											margin="normal"
 											variant="outlined"
 										>
-											<option value={null}>
+											<option>
 												Select Speaker....
 											</option>
 											{speaker_list.map(option => (
@@ -503,7 +505,7 @@ class EventRegistrationForm extends React.Component {
 												{
 													event.speaker.map((speaker)=>{
 														let spk = speakers.find(data => data.id == speaker)
-														return <tr>
+														return spk && <tr>
 															<td>{spk.name}</td>
 															<td>{spk.specialty && specialty.find(specialty => spk.specialty == specialty.id).name}</td>
 															<td>{}</td>
@@ -541,6 +543,136 @@ class EventRegistrationForm extends React.Component {
 											<ChevronLeft/>
 											Back
 										</Button>
+										<Button variant="contained" color="primary" style={styles.button} onClick={(e)=>{this.handleTabChange(e,2)}}>
+											Next
+											<Icon style={styles.rightIcon}>send</Icon>
+										</Button>
+									</div>
+								</>}
+								{currentTab === 2 && <>
+									<Grid container spacing={3}>
+											<Grid item xs={12} md={12}>
+											<div className="kt_section__detail">
+												<div className="row mb-4">
+													<div className="col-md-6 col-12">
+														<div className="kt_detail__item_title">Name</div>
+														<div>{event.name ? event.name : '---'}</div>
+													</div>
+													<div className="col-md-6 col-12">
+														<div className="kt_detail__item_title">Event Type</div>
+														<div>{event._type ? event._type : '---'}</div>
+													</div>
+												</div>
+												<div className="row mb-4">
+													<div className="col-md-6 col-12">
+														<div className="kt_detail__item_title">Date</div>
+														<div>{event.date ? event.date : '---'}</div>
+													</div>
+													<div className="col-md-6 col-12">
+														<div className="kt_detail__item_title">Duration</div>
+														<div>{event.duration ? event.duration : '---'}</div>
+													</div>
+												</div>
+												<div className="row mb-4">
+													<div className="col-md-6 col-12">
+														<div className="kt_detail__item_title">Web / Presential</div>
+														<div>{event.web_presential ? event.web_presential : '---'}</div>
+													</div>
+												</div>
+												{event.webpresential === "react-router-dom" && 
+													<>
+														<div className="row mb-4">
+															<div className="col-md-6 col-12">
+																<div className="kt_detail__item_title">Country</div>
+																<div>{event.country ? event.country : '---'}</div>
+															</div>
+														</div>
+														<div className="row mb-4">
+															<div className="col-md-6 col-12">
+																<div className="kt_detail__item_title">State / Province</div>
+																<div>{event.state ? event.state : '---'}</div>
+															</div>
+														</div>
+														<div className="row mb-4">
+															<div className="col-md-6 col-12">
+																<div className="kt_detail__item_title">City</div>
+																<div>{event.city ? event.city : '---'}</div>
+															</div>
+														</div>
+														<div className="row mb-4">
+															<div className="col-md-6 col-12">
+																<div className="kt_detail__item_title">Address</div>
+																<div>{event.address ? event.address : '---'}</div>
+															</div>
+														</div>
+													</>
+												}
+												<hr/>
+												<div className="row mb-4">
+													<div className="col-md-6 col-12">
+														<div className="kt_detail__item_title">Solicitant Name</div>
+														<div>{event.solicitant ? event.solicitant : '---'}</div>
+													</div>
+													<div className="col-md-6 col-12">
+														<div className="kt_detail__item_title">Business Unit</div>
+														<div>{event.business_unit ? event.business_unit : '---'}</div>
+													</div>
+												</div>
+												<div className="row mb-4">
+													<div className="col-md-6 col-12">
+														<div className="kt_detail__item_title">Department</div>
+														<div>{event.despartment ? event.despartment : '---'}</div>
+													</div>
+													<div className="col-md-6 col-12">
+														<div className="kt_detail__item_title">Cost Center</div>
+														<div>{event.cost_center ? event.cost_center : '---'}</div>
+													</div>
+												</div>
+												<div className="row mb-4">
+													<div className="col-md-6 col-12">
+														<div className="kt_detail__item_title">Virtual Presential</div>
+														<div>{event.virtual_presential ? event.virtual_presential : '---'}</div>
+													</div>
+													<div className="col-md-6 col-12">
+														<div className="kt_detail__item_title">Displacement</div>
+														<div>{event.displacement ? event.displacement : '---'}</div>
+													</div>
+												</div>
+												<div className="row mb-4">
+													<div className="col-md-6 col-12">
+													<div className="kt_detail__item_title">Speakers</div>
+														<Table striped bordered hover className="ml-4 mr-4">
+															<thead>
+																<tr>
+																<th>Name</th>
+																<th>Specialty</th>
+																<th>Cost</th>
+																</tr>
+															</thead>
+															<tbody>
+																{
+																	event.speaker.map((speaker)=>{
+																		let spk = speakers.find(data => data.id == speaker)
+																		return spk && <tr>
+																			<td>{spk.name}</td>
+																			<td>{spk.specialty && specialty.find(specialty => spk.specialty == specialty.id).name}</td>
+																			<td>{}</td>
+																		</tr>
+																	})
+																}
+															</tbody>
+														</Table>
+													</div>
+												</div>
+											</div>
+											</Grid>
+									</Grid>
+    
+									<div className="col-md-12 text-right pt-4">
+										<Button variant="contained" color="default" style={styles.button} style={{float:'left'}} onClick={(e)=>{this.handleTabChange(e, 0)}}>
+											Edit
+											<Edit/>
+										</Button>
 										<Button variant="contained" color="default" style={styles.button}>
 											Cancel
 										</Button>
@@ -550,6 +682,7 @@ class EventRegistrationForm extends React.Component {
 										</Button>
 									</div>
 								</>}
+							
 							</form>
 						</TabContainer>
 					</div>

@@ -82,7 +82,7 @@ class Event(models.Model):
 	business_unit = models.CharField(max_length=191)
 	despartment = models.CharField(max_length=191)
 	cost_center = models.CharField(max_length=191)
-	speaker = models.ForeignKey(Speaker, models.CASCADE, blank=True, null=True)
+	speaker = models.ManyToManyField(Speaker, through='account.EventSpeaker')
 	virtual_presential = models.CharField(max_length=191)
 	displacement = models.CharField(max_length=191)
 
@@ -92,6 +92,18 @@ class Event(models.Model):
 
 	class Meta:
 		ordering = ['date']
+
+class EventSpeaker(models.Model):
+	event = models.ForeignKey(Event, on_delete=models.CASCADE)
+	speaker = models.ForeignKey(Speaker, on_delete=models.CASCADE)
+	price = models.FloatField(default=0)
+
+	created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+	class Meta:
+		ordering = ['created_at']
+
 
 class Price(models.Model):
 	specialty = models.ForeignKey(Specialty, models.CASCADE, blank=True, null=True)

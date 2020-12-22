@@ -5,7 +5,7 @@ from account.serializers import UserSerializer, GroupSerializer
 from rest_framework.decorators import api_view, action, permission_classes, authentication_classes
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import AllowAny
-from account.models import Event, Speaker, User as CustomUser, Price, Specialty
+from account.models import Event, Speaker, User as CustomUser, Price, Specialty, EventSpeaker
 from account.serializers import *
 from django.contrib.auth import authenticate
 from rest_framework.response import Response
@@ -89,7 +89,7 @@ class EventsViewSet(viewsets.ModelViewSet):
 	queryset = Event.objects.all()
 	serializer_class = EventSerializer
 	# authentication_classes = [authentication.TokenAuthentication]
-
+	
 	def destroy(self, request, *args, **kwargs):
 		request_data = json.loads(request.body.decode('utf-8'))
 		if 'ids' in request_data:
@@ -104,6 +104,14 @@ class EventsViewSet(viewsets.ModelViewSet):
 		data = serializer.data
 
 		return Response(data)
+
+class EventSpeakerViewSet(viewsets.ModelViewSet):
+	"""
+	API endpoint that allows groups to be viewed or edited.
+	"""
+	queryset = EventSpeaker.objects.all()
+	serializer_class = EventSpeakerSerializer
+	# permission_classes = [permissions.IsAuthenticated]
 
 class SpeakersViewSet(viewsets.ModelViewSet):
 	"""
@@ -157,3 +165,5 @@ def logout(request):
 	print(request.user.auth_token)
 	request.user.auth_token.delete()
 	return Response(status=HTTP_200_OK)
+
+
