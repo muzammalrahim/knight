@@ -1,47 +1,17 @@
-
-import React from 'react';
+import React, {useEffect} from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { lighten, makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
-import Checkbox from '@material-ui/core/Checkbox';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
-import DeleteIcon from '@material-ui/icons/Delete';
-import FilterListIcon from '@material-ui/icons/FilterList';
+import { Table, TableBody, TableCell, TableHead, TablePagination, TableRow, TableSortLabel, 
+  Toolbar, Typography, Paper, FormControlLabel, Switch, Snackbar } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
+import list, {del} from '../helper/api';
+import {Edit, Delete} from '@material-ui/icons';
+import { Alert, AlertTitle } from '@material-ui/lab';
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
+function createData(id, event_name, date, event_duration, speaker_duration, business_unit, price, email) {
+  return { id, event_name, date, event_duration, speaker_duration, business_unit, price, email };
 }
-
-const rows = [
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Donut', 452, 25.0, 51, 4.9),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-  createData('Honeycomb', 408, 3.2, 87, 6.5),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Jelly Bean', 375, 0.0, 94, 0.0),
-  createData('KitKat', 518, 26.0, 65, 7.0),
-  createData('Lollipop', 392, 0.2, 98, 0.0),
-  createData('Marshmallow', 318, 0, 81, 2.0),
-  createData('Nougat', 360, 19.0, 9, 37.0),
-  createData('Oreo', 437, 18.0, 63, 4.0),
-];
-
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -67,15 +37,18 @@ function getSorting(order, orderBy) {
 }
 
 const headRows = [
-  { id: 'name', numeric: false, disablePadding: true, label: 'Dessert (100g serving)' },
-  { id: 'calories', numeric: true, disablePadding: false, label: 'Calories' },
-  { id: 'fat', numeric: true, disablePadding: false, label: 'Fat (g)' },
-  { id: 'carbs', numeric: true, disablePadding: false, label: 'Carbs (g)' },
-  { id: 'protein', numeric: true, disablePadding: false, label: 'Protein (g)' },
+  { id: 'id', numeric: false, disablePadding: true, label: 'Id' },
+  { id: 'event_name', numeric: false, disablePadding: true, label: <FormattedMessage id="Approval.List.Column.EventName"/> },
+  { id: 'date', numeric: true, disablePadding: false, label:<FormattedMessage id="Approval.List.Column.Date"/>},
+  { id: 'event_duration', numeric: true, disablePadding: false, label: <FormattedMessage id="Approval.List.Column.EventDuration"/> },
+  { id: 'speaker_duration', numeric: true, disablePadding: false, label: <FormattedMessage id="Approval.List.Column.SpeakerDuration"/> },
+  { id: 'business_unit', numeric: true, disablePadding: false, label: <FormattedMessage id="Approval.List.Column.BusinessUnit"/> },
+  { id: 'price', numeric: true, disablePadding: false, label:<FormattedMessage id="Approval.List.Column.Price"/>},
+  { id: 'email', numeric: true, disablePadding: false, label:<FormattedMessage id="Approval.List.Column.Email"/>},
 ];
 
 function EnhancedTableHead(props) {
-  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
+  const { order, orderBy, onRequestSort } = props;
   const createSortHandler = property => event => {
     onRequestSort(event, property);
   };
@@ -83,19 +56,10 @@ function EnhancedTableHead(props) {
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{ 'aria-label': 'Select all desserts' }}
-          />
-        </TableCell>
-        {headRows.map(row => (
-          <TableCell
-            key={row.id}
-            align={row.numeric ? 'right' : 'left'}
-            padding={row.disablePadding ? 'none' : 'default'}
+        {headRows.map((row, index) => (
+        <TableCell
+            style={{display:row.id === 'id' ? 'none' : ''}}
+            key={index}
             sortDirection={orderBy === row.id ? order : false}
           >
             <TableSortLabel
@@ -113,12 +77,9 @@ function EnhancedTableHead(props) {
 }
 
 EnhancedTableHead.propTypes = {
-  numSelected: PropTypes.number.isRequired,
   onRequestSort: PropTypes.func.isRequired,
-  onSelectAllClick: PropTypes.func.isRequired,
   order: PropTypes.string.isRequired,
   orderBy: PropTypes.string.isRequired,
-  rowCount: PropTypes.number.isRequired,
 };
 
 const useToolbarStyles = makeStyles(theme => ({
@@ -149,47 +110,16 @@ const useToolbarStyles = makeStyles(theme => ({
 
 const EnhancedTableToolbar = props => {
   const classes = useToolbarStyles();
-  const { numSelected } = props;
 
   return (
     <Toolbar
-      className={clsx(classes.root, {
-        [classes.highlight]: numSelected > 0,
-      })}
+      className={clsx(classes.root)}
     >
-      <div className={classes.title}>
-        {numSelected > 0 ? (
-          <Typography color="inherit" variant="subtitle1">
-            {numSelected} selected
-          </Typography>
-        ) : (
-          <Typography variant="h6" id="tableTitle">
-            <FormattedMessage id="Approval.List.Title"/>
-          </Typography>
-        )}
-      </div>
-      <div className={classes.spacer} />
-      <div className={classes.actions}>
-        {numSelected > 0 ? (
-          <Tooltip title="Delete">
-            <IconButton aria-label="Delete">
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
-        ) : (
-          <Tooltip title="Filter list">
-            <IconButton aria-label="Filter list">
-              <FilterListIcon />
-            </IconButton>
-          </Tooltip>
-        )}
-      </div>
+      <Typography variant="h6" id="tableTitle">
+        <FormattedMessage id="Event.List.Title"/>
+      </Typography>
     </Toolbar>
   );
-};
-
-EnhancedTableToolbar.propTypes = {
-  numSelected: PropTypes.number.isRequired,
 };
 
 const useStyles = makeStyles(theme => ({
@@ -209,48 +139,24 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function EnhancedTable() {
+export default function EnhancedTable(props) {
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
-  const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
+  const [rows, setRows] = React.useState([]);
+  const [open, setOpen] = React.useState(false);
+  const [alert, setAlert] = React.useState({
+    severity: '',
+    message:'',
+    title:''
+  });
   function handleRequestSort(event, property) {
     const isDesc = orderBy === property && order === 'desc';
     setOrder(isDesc ? 'asc' : 'desc');
     setOrderBy(property);
-  }
-
-  function handleSelectAllClick(event) {
-    if (event.target.checked) {
-      const newSelecteds = rows.map(n => n.name);
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
-  }
-
-  function handleClick(event, name) {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
-    }
-
-    setSelected(newSelected);
   }
 
   function handleChangePage(event, newPage) {
@@ -264,15 +170,43 @@ export default function EnhancedTable() {
   function handleChangeDense(event) {
     setDense(event.target.checked);
   }
-
-  const isSelected = name => selected.indexOf(name) !== -1;
-
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+  async function getEvents (){
+    list('api/events').then((response)=>{
+      let event_list = [];
+      response.data.map((row)=>{
+        event_list.push(createData(row.id, row.name, row.date, row.duration, 1, row.business_unit, 500, "test@email.com"))
+      })
+      setRows(event_list);
+    })
+  }
+  const closeAlert = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+  };
+  useEffect(() => {
+    getEvents();
+  },[]);
 
   return (
     <div className={classes.root}>
+      <Snackbar 
+        open={open} 
+        autoHideDuration={4000} 
+        anchorOrigin={{ vertical:'top', horizontal:'right' }}
+        onClose={closeAlert} 
+      >
+        <Alert 
+            onClose={closeAlert} 
+            severity={alert.severity}
+          >
+          <AlertTitle>{alert.title}</AlertTitle>
+          <strong>{alert.message}</strong>
+        </Alert>
+      </Snackbar> 
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar/>
         <div className={classes.tableWrapper}>
           <Table
             className={classes.table}
@@ -280,49 +214,63 @@ export default function EnhancedTable() {
             size={dense ? 'small' : 'medium'}
           >
             <EnhancedTableHead
-              numSelected={selected.length}
               order={order}
               orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
             />
             <TableBody>
               {stableSort(rows, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
-                  const labelId = `enhanced-table-checkbox-${index}`;
-
                   return (
                     <TableRow
                       hover
-                      onClick={event => handleClick(event, row.name)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.name}
-                      selected={isItemSelected}
+                      key={index}
                     >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          checked={isItemSelected}
-                          inputProps={{ 'aria-labelledby': labelId }}
+                      
+                      <TableCell style={{display:'none'}}>{row.id}</TableCell>
+                      <TableCell>
+                        {row.event_name}
+                      </TableCell>
+                      <TableCell>{row.date}</TableCell>
+                      <TableCell>{row.event_duration}</TableCell>
+                      <TableCell>{row.speaker_duration}</TableCell>
+                      <TableCell>{row.business_unit}</TableCell>
+                      <TableCell>{row.price}</TableCell>
+                      <TableCell>{row.email}</TableCell>
+                      <TableCell>
+                        <Edit onClick={()=>{props.history.push(`/event/${row.id}`)}} style={{cursor:'pointer'}}/>
+                        <Delete 
+                          style={{cursor:'pointer'}}
+                          onClick={()=>{
+                            del(`api/events/${row.id}/`,[row.id]).then((response)=>{
+                              let data = alert;
+                              data.severity = 'success';
+                              data.title = "Success";
+                              data.message = "Record has been successfully deleted";
+                              setAlert(data);
+                              setOpen(true);
+                              getEvents();
+                          }).catch((error)=>{
+                            let data = alert;
+                              data.severity = 'error';
+                              data.title = "Error";
+                              data.message = "Something went wrong";
+                              setAlert(data);
+                              setOpen(true);
+                          })
+                        }}
                         />
                       </TableCell>
-                      <TableCell component="th" id={labelId} scope="row" padding="none">
-                        {row.name}
-                      </TableCell>
-                      <TableCell align="right">{row.calories}</TableCell>
-                      <TableCell align="right">{row.fat}</TableCell>
-                      <TableCell align="right">{row.carbs}</TableCell>
-                      <TableCell align="right">{row.protein}</TableCell>
                     </TableRow>
                   );
                 })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 49 * emptyRows }}>
-                  <TableCell colSpan={6} />
+              {rows.length < 1 && (
+                <TableRow>
+                  <TableCell colSpan={6}>
+                    No Record Found
+                  </TableCell>
                 </TableRow>
               )}
             </TableBody>

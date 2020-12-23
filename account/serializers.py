@@ -2,6 +2,7 @@ from django.contrib.auth.models import User, Group
 from account.models import Event, Speaker, User as CustomUser, Price, Specialty, EventSpeaker
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
+import json
 
 
 
@@ -52,31 +53,57 @@ class SpecialtySerializer(serializers.ModelSerializer):
 		model = Specialty
 		fields = ['id', 'name']
 
-class EventSerializer(serializers.ModelSerializer):
-	def __init__(self, *args, **kwargs):
-		super(EventSerializer, self).__init__(*args, **kwargs)
-		self.fields['speaker'].required = True
-	
-	# event_speaker = EventSpeakerSerializer(many=True)
-	# def create(self, validated_data):
-
-	# 	event_speaker = validated_data.pop('event_speaker')
-	# 	print(validated_data)
-	# 	event = Event.objects.create(**validated_data)
-		# event.EventSpeaker.set(eventSpeaker)
-
-	class Meta:
-		model = Event
-		fields = '__all__'
-
 class SpeakerSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Speaker
 		fields = '__all__'
 
 class EventSpeakerSerializer(serializers.ModelSerializer):
-	# event = EventSerializer()
-	# speaker = SpeakerSerializer()
+	def __init__(self, *args, **kwargs):
+		super(EventSpeakerSerializer, self).__init__(*args, **kwargs)
+		self.fields['event'].required = False
+
+	def to_representation(self, instance):
+		print('instanceeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
+		print(instance.event)
+		representation = super(EventSpeakerSerializer, self).to_representation(instance)
+		try:
+		    representation['event'] = EventSerializer(instance.event).data
+		except:
+		    representation['event'] = None
+		try:
+		    representation['speaker'] = SpeakerSerializer(instance.speaker).data
+		except:
+		    representation['speaker'] = None
+		return representation
+
 	class Meta:
 		model = EventSpeaker
+		fields = ['id', 'price','speaker', 'event']
+
+class EventSerializer(serializers.ModelSerializer):
+	def __init__(self, *args, **kwargs):
+		super(EventSerializer, self).__init__(*args, **kwargs)
+		self.fields['speaker'].required = True
+	
+	event_speaker = EventSpeakerSerializer(many=True, write_only=True)
+	def create(self, validated_data):
+		event_speaker = validated_data.pop('event_speaker')
+		event = Event.objects.create(**validated_data)
+		for data in event_speaker:
+			data['event'] = event
+			EventSpeaker.objects.create(**data)
+		return event
+	
+	def to_representation(self, instance):
+		representation = super(EventSerializer, self).to_representation(instance)
+		try:
+			representation['speaker'] = SpeakerSerializer(instance.speaker, many=True).data
+		except:
+			representation['speaker'] = None
+		return representation
+
+	class Meta:
+		model = Event
 		fields = '__all__'
+		# fields = ['id', 'name', 'event_speaker', 'speaker', 'date', 'duration', '_type', 'city', 'country']

@@ -36,15 +36,20 @@ class EventEditForm extends React.Component {
 			speaker_list:[],
 			speakers:[],
 			countries:[],
-			specialty:[]
+			specialty:[],
+			event_speaker:[]
 		}
 		this.handleTabChange = this.handleTabChange.bind(this);
 	}
 
 	handleChange(e){
-		let [key, value, {event, validateEvent}] = [e.target.name, e.target.value, this.state];
+		let [key, value, {event, validateEvent, event_speaker}] = [e.target.name, e.target.value, this.state];
 		if(key === "speaker"){
-			!event[key].includes(value) && value !="Select Speaker...." && event[key].push(value);
+			if(!event[key].includes(value) && value !="Select Speaker...."){
+				event[key].push(value);
+				event_speaker.push({speaker:value, price:100})
+				this.setState({event_speaker})
+			}
 		}else{
 			event[key]=value;
 		}
@@ -59,6 +64,8 @@ class EventEditForm extends React.Component {
 				event["state"] = "";
 				event["cit"] = "";
 				event["address"] = "";
+			}else if(key === "speaker"){
+				validateEvent[key] = event[key].length > 0 ? false : true;
 			}else{
             	validateEvent[key] = event[key] ? false : true;
 			}
@@ -80,7 +87,8 @@ class EventEditForm extends React.Component {
 				isSubmit = event[key] && isSubmit !== false ? true : false;
 			}
         })
-        this.setState({validateEvent});
+		this.setState({validateEvent});
+		event['event_speaker']=this.state.event_speaker;
         isSubmit ?  put(`api/event/${event.id}/`, event).then((response)=>{
                 this.setState({alert:{open:true, severity:"success", title:"success", message:'User Created Sucessfully'}})
 				setTimeout(()=>{this.props.history.push('/events')}, 1000)
@@ -110,7 +118,7 @@ class EventEditForm extends React.Component {
         this.setState({alert:{open:false, severity: '', message:'' }})
     }   
 	componentDidMount(){
-		this.getSpeakers();
+		this.getEvent();
 		fetch('https://restcountries.eu/rest/v2/all')
 		.then(response => response.json())
 		.then((data) => {

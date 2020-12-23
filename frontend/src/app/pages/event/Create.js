@@ -39,15 +39,20 @@ class EventRegistrationForm extends React.Component {
 			speaker_list:[],
 			speakers:[],
 			countries:[],
-			specialty:[]
+			specialty:[],
+			event_speaker:[]
 		}
 		this.handleTabChange = this.handleTabChange.bind(this);
 	}
 
 	handleChange(e){
-		let [key, value, {event, validateEvent}] = [e.target.name, e.target.value, this.state];
+		let [key, value, {event, validateEvent, event_speaker}] = [e.target.name, e.target.value, this.state];
 		if(key === "speaker"){
-			!event[key].includes(value) && value !="Select Speaker...." && event[key].push(value);
+			if(!event[key].includes(value) && value !="Select Speaker...."){
+				event[key].push(value);
+				event_speaker.push({speaker:value, price:100})
+				this.setState({event_speaker})
+			}
 		}else{
 			event[key]=value;
 		}
@@ -80,14 +85,15 @@ class EventRegistrationForm extends React.Component {
 		Object.keys(validateEvent).map((key)=>{
 			if(event["web_presential"]!=="Presential" && (key === "country" || key === "state" || key ==="city" || key === "address")){
 				validateEvent[key] = false;
-			}if(key === "speaker"){
+			}else if(key === "speaker"){
 				validateEvent[key] = event[key].length > 0 ? false : true;
 			}else{
 				validateEvent[key] = event[key] ? false : true;
 				isSubmit = event[key] && isSubmit !== false ? true : false;
 			}
         })
-        this.setState({validateEvent});
+		this.setState({validateEvent});
+		event['event_speaker']=this.state.event_speaker;
         isSubmit ? post('api/events', event).then((response)=>{
                 this.setState({alert:{open:true, severity:"success", title:"success", message:'User Created Sucessfully'}})
 				setTimeout(()=>{this.props.history.push('/events')}, 1000)

@@ -169,5 +169,13 @@
   "Speaker.Registration.CivilStatus.Two": "Married",
   "Speaker.Registration.CivilStatus.Three": "Widowed",
   "Speaker.Registration.CivilStatus.Four": "Separated",
-  "Speaker.Registration.CivilStatus.Five": "Divorced"
+  "Speaker.Registration.CivilStatus.Five": "Divorced",
+
+  "Approval.List.Column.EventName":"Event Name",
+  "Approval.List.Column.Date":"Date",
+  "Approval.List.Column.EventDuration":"Event Duration",
+  "Approval.List.Column.SpeakerDuration":"Speaker Duration",
+  "Approval.List.Column.BusinessUnit":"Business Unit",
+  "Approval.List.Column.Price":"Price",
+  "Approval.List.Column.Email":"Email"
 }
