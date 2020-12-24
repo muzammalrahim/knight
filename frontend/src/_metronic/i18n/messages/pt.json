@@ -84,11 +84,6 @@
   "Sidebar.New.Event": "Evento",
   "Sidebar.New.User": "usuário",
   "Sidebar.Approvals": "Aprovações",
-
-
-
-
-
   
   "Event.Create.Title": "Registro de Evento ",
 
@@ -97,6 +92,7 @@
   "Event.Create.Date": "Encontro",
   "Event.Create.Duration": "Duração ",
   "Event.Create.Web_OR_pres": "Web / Presencial",
+  "Event.Create.Price": "Preço",
 
   "Event.List.Title": "Lista de Eventos",
 
@@ -187,5 +183,6 @@
   "Approval.List.Column.SpeakerDuration":"Duração do alto-falante",
   "Approval.List.Column.BusinessUnit":"Unidade de negócio",
   "Approval.List.Column.Price":"Preço",
-  "Approval.List.Column.Email":"E-mail"
+  "Approval.List.Column.Email":"E-mail",
+  "Approval.List.Column.Status":"Status"
 }

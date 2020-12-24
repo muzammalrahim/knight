@@ -97,6 +97,8 @@ class EventSpeaker(models.Model):
 	event = models.ForeignKey(Event, on_delete=models.CASCADE)
 	speaker = models.ForeignKey(Speaker, on_delete=models.CASCADE)
 	price = models.FloatField(default=0)
+	duration = models.PositiveIntegerField(blank=True)
+	status = models.BooleanField(null=True, default=False)
 
 	created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 	updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)

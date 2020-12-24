@@ -64,8 +64,6 @@ class EventSpeakerSerializer(serializers.ModelSerializer):
 		self.fields['event'].required = False
 
 	def to_representation(self, instance):
-		print('instanceeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
-		print(instance.event)
 		representation = super(EventSpeakerSerializer, self).to_representation(instance)
 		try:
 		    representation['event'] = EventSerializer(instance.event).data
@@ -79,7 +77,7 @@ class EventSpeakerSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = EventSpeaker
-		fields = ['id', 'price','speaker', 'event']
+		fields = ['id', 'price','speaker', 'event', 'status', 'duration']
 
 class EventSerializer(serializers.ModelSerializer):
 	def __init__(self, *args, **kwargs):
@@ -106,4 +104,3 @@ class EventSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Event
 		fields = '__all__'
-		# fields = ['id', 'name', 'event_speaker', 'speaker', 'date', 'duration', '_type', 'city', 'country']

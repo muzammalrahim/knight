@@ -22,40 +22,78 @@ class EventRegistrationForm extends React.Component {
 		}
 		this.validateEvent={
 			name:false, _type:false, date:false, duration:false, web_presential:false, country:false,	state:false,
-			city:false, address:false, solicitant:false, business_unit:false, despartment:false, cost_center:false,
-			speaker:false, virtual_presential:false, displacement:false
+			city:false, address:false, solicitant:false, business_unit:false, despartment:false, cost_center:false, virtual_presential:false, 
+			displacement:false
+		}
+		this.validateEventSpeaker={
+			duration:false, speaker:false
 		}
 		this.alert={
             open: false, 
             severity: '',
             message:'',
             title:''
-        }
+		}
+		this.speaker = {
+			speaker:'',
+			price:0,
+			duration:''
+		}
 		this.state={
 			event: this.event,
 			validateEvent: this.validateEvent,
+			validateEventSpeaker: this.validateEventSpeaker,
 			alert: this.alert,
 			currentTab: 0,
 			speaker_list:[],
 			speakers:[],
 			countries:[],
 			specialty:[],
-			event_speaker:[]
+			event_speaker:[],
+			current_speaker:this.speaker
 		}
 		this.handleTabChange = this.handleTabChange.bind(this);
 	}
 
-	handleChange(e){
-		let [key, value, {event, validateEvent, event_speaker}] = [e.target.name, e.target.value, this.state];
+	handleChangeSpeaker(e){
+		let [key, value, {current_speaker, validateEventSpeaker}] = [e.target.name, e.target.value, this.state];
 		if(key === "speaker"){
-			if(!event[key].includes(value) && value !="Select Speaker...."){
-				event[key].push(value);
-				event_speaker.push({speaker:value, price:100})
-				this.setState({event_speaker})
-			}
+			current_speaker[key]=value;
 		}else{
-			event[key]=value;
+			current_speaker[key]=value;
 		}
+		if(validateEventSpeaker[key]){
+            validateEventSpeaker[key] = current_speaker[key] ? false : true;
+        }
+		this.setState({current_speaker, validateEventSpeaker})
+	}
+	handleAddSpeaker(){
+		let {event_speaker, event, current_speaker, validateEventSpeaker, speakers} = this.state;
+		let isSubmit = null;
+		Object.keys(validateEventSpeaker).map((key)=>{
+			validateEventSpeaker[key] = current_speaker[key] ? false : true;
+			isSubmit = current_speaker[key] && isSubmit !== false ? true : false;
+		})
+		this.setState({validateEventSpeaker})
+
+		let speaker = speakers.find(data => data.id == current_speaker.speaker)
+		isSubmit && list(`api/price`, {specialty:speaker.specialty, program_type:event._type, tier:3}).then((response)=>{
+			if(!event['speaker'].includes(current_speaker.speaker)){
+				current_speaker['price'] = response.data[0].hour_price*current_speaker.duration;
+				event['speaker'].push(current_speaker.speaker);
+				event_speaker.push(current_speaker)
+			}
+			this.setState({
+				event_speaker, 
+				event, 
+				current_speaker:{speaker:'', price:0, duration:''}
+			});
+		})
+	}
+		
+	handleChange(e){
+		let [key, value, {event, validateEvent}] = [e.target.name, e.target.value, this.state];
+		event[key]=value;
 		if(validateEvent[key]){
 			if(key === "web_presential" && value==="web"){
 				validateEvent["country"] = false;
@@ -131,8 +169,8 @@ class EventRegistrationForm extends React.Component {
 		})
 	}
 	render(){
-		let {event:{web_presential}, event, currentTab, speaker_list, speakers, countries, 
-			validateEvent, alert:{open, severity, message, title}, specialty} = this.state;
+		let {event:{web_presential}, event, currentTab, speaker_list, speakers, countries, event_speaker,
+			validateEvent, alert:{open, severity, message, title}, specialty, current_speaker, validateEventSpeaker} = this.state;
 			let airport={}
 		return (
 			<div className="row">
@@ -466,35 +504,74 @@ class EventRegistrationForm extends React.Component {
 											))}
 										</TextField>
 									</div>
-									<div className="col-md-6">
-										<TextField
-											required
-											select
-											name="speaker"
-											label={<FormattedMessage id="Event.List.Column.Speaker"/>}
-											style={styles.textField}
-											// value={event.speaker}
-											onChange={(e)=>{this.handleChange(e)}}
-											SelectProps={{
-												native: true,
-												MenuProps: {
-													className: styles.menu
-												}
-											}}
-											error={validateEvent['speaker']}
-											helperText={validateEvent['speaker'] && 'this field is required'}
-											margin="normal"
-											variant="outlined"
-										>
-											<option>
-												Select Speaker....
-											</option>
-											{speaker_list.map(option => (
-												<option key={option.value} value={option.value}>
-													{option.label}
-												</option>
-											))}
-										</TextField>
+									<div className="container">
+										<div className="row" style={{border:'1px solid gray', margin:'1rem', padding:'1rem'}}>
+											<div className="col-md-6">
+												<TextField
+													required
+													select
+													name="speaker"
+													label={<FormattedMessage id="Event.List.Column.Speaker"/>}
+													style={styles.textField}
+													onChange={(e)=>{this.handleChangeSpeaker(e)}}
+													SelectProps={{
+														native: true,
+														MenuProps: {
+															className: styles.menu
+														}
+													}}
+													error={validateEventSpeaker['speaker']}
+													helperText={validateEventSpeaker['speaker'] && 'this field is required'}
+													margin="normal"
+													variant="outlined"
+												>
+													<option>
+														Select Speaker....
+													</option>
+													{speaker_list.map(option => (
+														<option key={option.value} value={option.value}>
+															{option.label}
+														</option>
+													))}
+												</TextField>
+											</div>
+											<div className="col-md-6">
+												<TextField
+													required
+													name="duration"
+													label={<FormattedMessage id="Event.Create.Duration"/>}
+													type="number"
+													style={styles.textField}
+													value={current_speaker.duration}
+													onChange={(e)=>{this.handleChangeSpeaker(e)}}
+													margin="normal"
+													variant="outlined"
+													error={validateEventSpeaker['duration']}
+													helperText={validateEventSpeaker['duration'] && 'this field is required'}
+												/>
+											</div>
+											{/* <div className="col-md-4">
+												<TextField
+													disabled
+													name="price"
+													label={<FormattedMessage id="Event.Create.Price"/>}
+													type="number"
+													style={styles.textField}
+													value={current_speaker.price}
+													onChange={(e)=>{this.handleChangeSpeaker(e)}}
+													margin="normal"
+													variant="outlined"
+													error={validateEventSpeaker['price']}
+													helperText={validateEventSpeaker['price'] && 'this field is required'}
+												/>
+											</div> */}
+											<div className="col-md-12 text-right pt-4">
+												<Button variant="contained" color="primary" style={styles.button} onClick={()=>{this.handleAddSpeaker()}}>
+													Add Speaker
+													<Icon style={styles.rightIcon}>add</Icon>
+												</Button>
+											</div>
+										</div>
 									</div>
 									{event.speaker.length > 0 && <div className="col-md-12 m-4">
 										<h5>Selected Speakers</h5>
@@ -511,10 +588,11 @@ class EventRegistrationForm extends React.Component {
 												{
 													event.speaker.map((speaker)=>{
 														let spk = speakers.find(data => data.id == speaker)
+														let data = event_speaker.find(data => data.speaker == speaker)
 														return spk && <tr>
 															<td>{spk.name}</td>
 															<td>{spk.specialty && specialty.find(specialty => spk.specialty == specialty.id).name}</td>
-															<td>{}</td>
+															<td>{data && data.price}</td>
 															<td style={{textAlign:'center'}}><Delete style={{cursor:'pointer'}} onClick={()=>{
 																	event.speaker = event.speaker.filter(e => e !== speaker)
 																	this.setState({event})
@@ -650,9 +728,10 @@ class EventRegistrationForm extends React.Component {
 														<Table striped bordered hover className="ml-4 mr-4">
 															<thead>
 																<tr>
-																<th>Name</th>
-																<th>Specialty</th>
-																<th>Cost</th>
+																	<th>Name</th>
+																	<th>Specialty</th>
+																	<th>Duration</th>
+																	<th>Cost</th>
 																</tr>
 															</thead>
 															<tbody>
@@ -662,7 +741,8 @@ class EventRegistrationForm extends React.Component {
 																		return spk && <tr>
 																			<td>{spk.name}</td>
 																			<td>{spk.specialty && specialty.find(specialty => spk.specialty == specialty.id).name}</td>
-																			<td>{}</td>
+																			<td>{spk.duration}</td>
+																			<td>{spk.price}</td>
 																		</tr>
 																	})
 																}

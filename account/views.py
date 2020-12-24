@@ -113,6 +113,21 @@ class EventSpeakerViewSet(viewsets.ModelViewSet):
 	serializer_class = EventSpeakerSerializer
 	# permission_classes = [permissions.IsAuthenticated]
 
+	def destroy(self, request, *args, **kwargs):
+		request_data = json.loads(request.body.decode('utf-8'))
+		if 'ids' in request_data:
+			EventSpeaker.objects.filter(id__in=request_data['ids']).delete()
+			return Response(status=HTTP_204_NO_CONTENT)
+		else:
+			return super(EventSpeakerViewSet, self).destroy(request, *args, **kwargs)
+	
+	def retrieve(self, request: Request, *args, **kwargs):
+		instance = self.get_object()
+		serializer = self.get_serializer(instance)
+		data = serializer.data
+
+		return Response(data)
+
 class SpeakersViewSet(viewsets.ModelViewSet):
 	"""
 	API endpoint that allows groups to be viewed or edited.

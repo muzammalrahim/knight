@@ -87,6 +87,7 @@
   "Event.Create.Date": "Date",
   "Event.Create.Duration": "Duration",
   "Event.Create.Web_OR_pres": "Web/Presential",
+  "Event.Create.Price": "Price",
 
   "Event.List.Title": "Events List",
 
@@ -177,5 +178,6 @@
   "Approval.List.Column.SpeakerDuration":"Speaker Duration",
   "Approval.List.Column.BusinessUnit":"Business Unit",
   "Approval.List.Column.Price":"Price",
-  "Approval.List.Column.Email":"Email"
+  "Approval.List.Column.Email":"Email",
+  "Approval.List.Column.Status":"Status"
 }

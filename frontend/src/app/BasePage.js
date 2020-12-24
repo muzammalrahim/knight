@@ -18,6 +18,7 @@ import UserEdit from "./pages/user/Edit";
 import Users from "./pages/user/List";
 
 import Approvals from "./pages/approval/List";
+import ApprovalDetail from "./pages/approval/Detail";
 
 const GoogleMaterialPage = lazy(() =>
   import("./modules/GoogleMaterialExamples/GoogleMaterialPage")
@@ -56,7 +57,8 @@ export default function BasePage() {
                 <ContentRoute eaxct path="/user/:id" component={UserEdit}/>
                 <ContentRoute exact path="/users" component={Users}/>
 
-                <ContentRoute path="/approvals" component={Approvals}/>
+                <ContentRoute exact path="/approvals" component={Approvals}/>
+                <ContentRoute exact path="/approval/:id" component={ApprovalDetail}/>
 
                 <ContentRoute path="/builder" component={BuilderPage}/>
                 <ContentRoute path="/my-page" component={MyPage}/>

@@ -5,12 +5,11 @@ import { lighten, makeStyles } from '@material-ui/core/styles';
 import { Table, TableBody, TableCell, TableHead, TablePagination, TableRow, TableSortLabel, 
   Toolbar, Typography, Paper, FormControlLabel, Switch, Snackbar } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
-import list, {del} from '../helper/api';
-import {Edit, Delete} from '@material-ui/icons';
+import list, {put} from '../helper/api';
 import { Alert, AlertTitle } from '@material-ui/lab';
 
-function createData(id, event_name, date, event_duration, speaker_duration, business_unit, price, email) {
-  return { id, event_name, date, event_duration, speaker_duration, business_unit, price, email };
+function createData(id, event_name, date, event_duration, speaker_duration, business_unit, price, email, status) {
+  return { id, event_name, date, event_duration, speaker_duration, business_unit, price, email, status };
 }
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -45,6 +44,7 @@ const headRows = [
   { id: 'business_unit', numeric: true, disablePadding: false, label: <FormattedMessage id="Approval.List.Column.BusinessUnit"/> },
   { id: 'price', numeric: true, disablePadding: false, label:<FormattedMessage id="Approval.List.Column.Price"/>},
   { id: 'email', numeric: true, disablePadding: false, label:<FormattedMessage id="Approval.List.Column.Email"/>},
+  { id: 'status', numeric: true, disablePadding: false, label:<FormattedMessage id="Approval.List.Column.Status"/>},
 ];
 
 function EnhancedTableHead(props) {
@@ -147,6 +147,8 @@ export default function EnhancedTable(props) {
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [rows, setRows] = React.useState([]);
+  const [events, setEvents] = React.useState([]);
+  const [status, setStatus] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [alert, setAlert] = React.useState({
     severity: '',
@@ -171,12 +173,13 @@ export default function EnhancedTable(props) {
     setDense(event.target.checked);
   }
   async function getEvents (){
-    list('api/events').then((response)=>{
+    list('api/event_speaker').then((response)=>{
       let event_list = [];
       response.data.map((row)=>{
-        event_list.push(createData(row.id, row.name, row.date, row.duration, 1, row.business_unit, 500, "test@email.com"))
+        event_list.push(createData(row.id, row.event.name, row.event.date, row.event.duration, 1, row.event.business_unit, 500, row.speaker.email, row.status))
       })
       setRows(event_list);
+      setEvents(response.data);
     })
   }
   const closeAlert = (event, reason) => {
@@ -185,10 +188,32 @@ export default function EnhancedTable(props) {
     }
     setOpen(false);
   };
+  function handleChangeStatus (id, value){
+    let data = events.find(event => event.id === id);
+    data['status'] = value;
+    data['speaker'] = data.speaker.id;
+    data['event'] = data.event.id;
+    put(`api/event_speaker/${id}/`,data).then((response)=>{
+      let data = alert;
+      data.severity = 'success';
+      data.title = "Success";
+      data.message = "Record has been successfully Updated";
+      setAlert(data);
+      setOpen(true);
+      getEvents();
+  }).catch((error)=>{
+    let data = alert;
+      data.severity = 'error';
+      data.title = "Error";
+      data.message = "Something went wrong";
+      setAlert(data);
+      setOpen(true);
+  })
+  };
+
   useEffect(() => {
     getEvents();
   },[]);
-
   return (
     <div className={classes.root}>
       <Snackbar 
@@ -240,27 +265,16 @@ export default function EnhancedTable(props) {
                       <TableCell>{row.price}</TableCell>
                       <TableCell>{row.email}</TableCell>
                       <TableCell>
-                        <Edit onClick={()=>{props.history.push(`/event/${row.id}`)}} style={{cursor:'pointer'}}/>
-                        <Delete 
-                          style={{cursor:'pointer'}}
-                          onClick={()=>{
-                            del(`api/events/${row.id}/`,[row.id]).then((response)=>{
-                              let data = alert;
-                              data.severity = 'success';
-                              data.title = "Success";
-                              data.message = "Record has been successfully deleted";
-                              setAlert(data);
-                              setOpen(true);
-                              getEvents();
-                          }).catch((error)=>{
-                            let data = alert;
-                              data.severity = 'error';
-                              data.title = "Error";
-                              data.message = "Something went wrong";
-                              setAlert(data);
-                              setOpen(true);
-                          })
-                        }}
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={row.status}
+                              onChange={()=>{
+                                handleChangeStatus(row.id, !row.status)
+                              }}
+                              color="primary"
+                            />
+                          }
                         />
                       </TableCell>
                     </TableRow>
