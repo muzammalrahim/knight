@@ -39,16 +39,6 @@ class UserViewSet(viewsets.ModelViewSet):
 		serializer = self.get_serializer(instance)
 		return Response(serializer.data)
 
-	# def destroy(self, request, *args, **kwargs):
-	# 	request_data = json.loads(request.body.decode('utf-8'))
-	# 	if 'ids' in request_data:
-	# 		CustomUser.objects.filter(id__in=request_data['ids']).delete()
-	# 		return Response(status=HTTP_204_NO_CONTENT)
-	# 	else:
-	# 		return super(UserViewSet, self).destroy(request, *args, **kwargs)
-	
-
-
 class GroupViewSet(viewsets.ModelViewSet):
 	"""
 	API endpoint that allows groups to be viewed or edited.
@@ -63,7 +53,7 @@ class SpecialtyViewSet(viewsets.ModelViewSet):
 	"""
 	queryset = Specialty.objects.all()
 	serializer_class = SpecialtySerializer
-	# permission_classes = [permissions.IsAuthenticated]
+	permission_classes = [permissions.IsAuthenticated]
 
 class PriceViewSet(viewsets.ModelViewSet):
 	"""
@@ -80,7 +70,7 @@ class PriceViewSet(viewsets.ModelViewSet):
 		page = self.paginate_queryset(queryset)
 		serializer = self.get_serializer(queryset, many=True)
 		return Response(serializer.data)
-	# permission_classes = [permissions.IsAuthenticated]
+	permission_classes = [permissions.IsAuthenticated]
 
 class EventsViewSet(viewsets.ModelViewSet):
 	"""
@@ -88,7 +78,7 @@ class EventsViewSet(viewsets.ModelViewSet):
 	"""
 	queryset = Event.objects.all()
 	serializer_class = EventSerializer
-	# authentication_classes = [authentication.TokenAuthentication]
+	permission_classes = [permissions.IsAuthenticated]
 	
 	def destroy(self, request, *args, **kwargs):
 		request_data = json.loads(request.body.decode('utf-8'))
@@ -111,7 +101,7 @@ class EventSpeakerViewSet(viewsets.ModelViewSet):
 	"""
 	queryset = EventSpeaker.objects.all()
 	serializer_class = EventSpeakerSerializer
-	# permission_classes = [permissions.IsAuthenticated]
+	permission_classes = [permissions.IsAuthenticated]
 
 	def destroy(self, request, *args, **kwargs):
 		request_data = json.loads(request.body.decode('utf-8'))
@@ -134,7 +124,7 @@ class SpeakersViewSet(viewsets.ModelViewSet):
 	"""
 	queryset = Speaker.objects.all()
 	serializer_class = SpeakerSerializer
-	# permission_classes = [permissions.IsAuthenticated]
+	permission_classes = [permissions.IsAuthenticated]
 
 	def retrieve(self, request: Request, *args, **kwargs):
 		instance = self.get_object()
