@@ -3,11 +3,11 @@ from rest_framework import viewsets
 from rest_framework import permissions, authentication
 
 from account.backend import id_generator
-from account.serializers import UserSerializer, GroupSerializer
 from rest_framework.decorators import api_view, action, permission_classes, authentication_classes
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import AllowAny
-from account.models import Event, Speaker, User as CustomUser, Price, Specialty, EventSpeaker
+from account.models import User
+
 from account.serializers import *
 from django.contrib.auth import authenticate
 from rest_framework.response import Response
@@ -21,7 +21,6 @@ from rest_framework.authtoken.models import Token
 from rest_framework.request import Request
 import json
 from django.template.loader import get_template
-from django.shortcuts import render
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -42,6 +41,7 @@ class UserViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
+
 
 # def destroy(self, request, *args, **kwargs):
 # 	request_data = json.loads(request.body.decode('utf-8'))
@@ -67,6 +67,8 @@ class SpecialtyViewSet(viewsets.ModelViewSet):
     """
     queryset = Specialty.objects.all()
     serializer_class = SpecialtySerializer
+
+
 # permission_classes = [permissions.IsAuthenticated]
 
 
@@ -86,6 +88,8 @@ class PriceViewSet(viewsets.ModelViewSet):
         page = self.paginate_queryset(queryset)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+
 # permission_classes = [permissions.IsAuthenticated]
 
 
@@ -198,14 +202,18 @@ def logout(request):
 
 
 @api_view(["POST"])
-# @permission_classes((AllowAny,))
 def forget_password(request):
     email = request.data.get("email")
     user = User.objects.filter(email=email)
     if user.exists():
         user = user.first()
         random_id = id_generator(64)
-        user.password_link = random_id
+        from account.models import User as CustomUser
+        c_user = CustomUser.objects.filter(user=user).first()
+        if c_user is None:
+            CustomUser.objects.create(password_link=random_id, user=user)
+        else:
+            CustomUser.objects.update(password_link=random_id, user=user)
         user.save()
         reset_link = '{}/auth/reset_password/{}'.format(settings.SITE_URL, random_id)
         html_content = get_template('account/general.html') \
@@ -219,13 +227,22 @@ def forget_password(request):
                         status=HTTP_404_NOT_FOUND)
 
 
+@api_view(["POST"])
+@permission_classes((AllowAny,))
 def reset_password(request):
     email = request.data.get("email")
     password = request.data.get("password")
     password_link = request.data.get("password_link")
-    user = User.objects.filter(email=email, password_link=password_link)
-    if user.exists():
-        user = user.first()
-        user.password_link = None
-        user.set_passwprd(password)
-        user.save()
+    users = User.objects.filter(email=email).first()
+    from account.models import User as CustomUser
+    CustomUser = CustomUser.objects.filter(user=users).first()
+    if CustomUser.password_link == password_link:
+        users.set_password(password)
+        users.save()
+        CustomUser.password_link = None
+        CustomUser.save()
+        return Response({'message': 'Password has been updated successfully', 'success': True},
+                        status=HTTP_200_OK)
+    else:
+        return Response({'message': 'You are not authorized to access', 'success': False},
+                        status=HTTP_404_NOT_FOUND)

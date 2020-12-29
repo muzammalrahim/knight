@@ -149,7 +149,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 # SITE_URL = 'http://127.0.0.1:8000/'
-SITE_URL = 'http://127.0.0.1:8000'
+SITE_URL = 'http://127.0.0.1:3001'
 SITE_ID = 1
 AUTH_USER_MODEL = 'auth.User'
 
