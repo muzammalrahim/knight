@@ -1,0 +1,23 @@
+{% autoescape off %}
+<h3>
+    Hi {{user}},
+</h3>
+
+To initiate the password reset process for your account on {{ email }},
+click the link below:
+<br><br>
+<td class="content-cell" style="font-family: Avenir, Helvetica, sans-serif; box-sizing: border-box; padding: 35px;">
+    <p><strong>Hello!</strong></p>
+    <p>You are receiving this email because we received a password reset request for your account.</p>
+    <p>
+        <a target="_blank" href="{{reset_link}}" class="btn">Reset Password</a>
+    </p>
+    <p>
+        If you did not request a password reset, no further action is required.
+    </p>
+</td>
+<br><br>
+If clicking the link above doesn't work, please copy and paste the URL in a new browser
+window instead.
+
+{% endautoescape %}
