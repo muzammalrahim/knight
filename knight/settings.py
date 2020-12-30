@@ -15,7 +15,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
@@ -26,7 +25,6 @@ SECRET_KEY = 'vqc-yqmev(0syjca0(bky#fk6qjaz_*f31jdmh7mpb^g8$7oh-'
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 
@@ -48,7 +46,11 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
     ),
-    
+    # 'DEFAULT_PARSER_CLASSES': (
+    #     'rest_framework.parsers.FormParser',
+    #     'rest_framework.parsers.MultiPartParser'
+    # ),
+
     # 'DEFAULT_PERMISSION_CLASSES': (
     # 'rest_framework.permissions.IsAuthenticated', ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
@@ -87,11 +89,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'knight.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'knight',
+        'USER': 'root',
+        'PASSWORD': 'knight12',
+        'HOST': 'db',  # Or an IP Address that your DB is hosted on
+        'PORT': '3306',
+        'default-character-set': 'utf8',
+    }
     # 'default': {
         # 'ENGINE': 'django.db.backends.mysql',
         # 'NAME': 'knight',
@@ -101,17 +111,7 @@ DATABASES = {
         # 'PORT': '3306',
         # 'default-character-set': 'utf8',
     # }
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'knight',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
-        'PORT': '3306',
-        'default-character-set': 'utf8',
-    }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -131,7 +131,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
@@ -145,12 +144,13 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-
+# SITE_URL = 'http://127.0.0.1:8000/'
+SITE_URL = 'http://127.0.0.1:3001'
+SITE_ID = 1
 AUTH_USER_MODEL = 'auth.User'
 
 AUTHENTICATION_BACKENDS = (
@@ -159,6 +159,13 @@ AUTHENTICATION_BACKENDS = (
 )
 
 CORS_ORIGIN_WHITELIST = (
-       'http://localhost:3001',
-       'http://localhost:3000',
+    'http://localhost:3001',
+    'http://localhost:3000',
 )
+
+EMAIL_USE_TLS = True
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.mailtrap.io'
+EMAIL_HOST_USER = '3ed2b8f95f3581'
+EMAIL_HOST_PASSWORD = '2510381bc092fa'
+EMAIL_PORT = '2525'
