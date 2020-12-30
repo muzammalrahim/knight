@@ -1,10 +1,11 @@
 import axios from "axios";
 
+
 export const LOGIN_URL = "api/login";
 // export const LOGIN_URL = "api/auth/login";
 export const REGISTER_URL = "api/auth/register";
-export const REQUEST_PASSWORD_URL = "api/auth/forgot-password";
-export const NEW_PASSWORD_URL = "api/auth/reset-password";
+export const REQUEST_PASSWORD_URL = "forget_password";
+export const NEW_PASSWORD_URL = "api/auth/reset-password/:id";
 
 export const ME_URL = "api/users/me";
 // export const ME_URL = "api/me";
@@ -19,13 +20,15 @@ export function register(email, fullname, username, password) {
 }
 
 export function requestPassword(email) {
-
+  console.log("send data",email)
   return axios.post(process.env.REACT_APP_API_URL + REQUEST_PASSWORD_URL, { email });
+
 }
 
 export function newPassword(newpassword) {
 
   return axios.post(process.env.REACT_APP_API_URL + NEW_PASSWORD_URL, { newpassword });
+
 }
 
 export function getUserByToken() {
