@@ -58,9 +58,13 @@ class Create extends React.Component {
     }
     changeHandler(e){
         let [key, value, {user, userValidate}] = [e.target.id, e.target.value, this.state];
+        
+		// console.log("value :",value);
         user[key] = value;
-        if(userValidate[key]){
-            if(key==='email'){
+        if(userValidate[key])
+        {
+            if(key==='email')
+            {
                 userValidate[key] = user[key] && this.validateEmail(user[key]) ? false : true;
             }else{
                 userValidate[key] = user[key] && user[key].length > 3 ? false : true;
@@ -72,20 +76,34 @@ class Create extends React.Component {
         let {user, userValidate} = this.state;
         let isSubmit = null;
         Object.keys(userValidate).map((key)=>{
+
+            // console.log("bhoom",user[key]);
             isSubmit = user[key] && isSubmit !== false ? true : false;
+
+            // console.log("issubmit",isSubmit)
             if(key==='email'){
                 userValidate[key] = user[key] && this.validateEmail(user[key]) ? false : true;
+
+                console.log(" userValidate[key ] email :" ,userValidate[key])
             }else{
                 userValidate[key] = user[key] && user[key].length > 3 ? false : true;
+                
+                // console.log(" userValidate[key] :" ,userValidate[key])
             }
         })
         this.setState({userValidate});
+
         isSubmit && post('users/', user).then((response)=>{
             this.setState({alert:{open:true, severity:"success", title:"success", message:'User Created Sucessfully'}})
             setTimeout(()=>{this.props.history.push('/users')}, 1000)
         }).catch((error)=>{
+
+            
+            
             Object.keys(error.response.data).map((key)=>{
+                console.log("key:",error.response.data);
                 this.setState({alert:{open:true, severity:"error", title:"Error", message:`${key+": "+error.response.data[key][0]}`}})
+                console.log("error:",error.response.data[key]);
             })
         })
     }   

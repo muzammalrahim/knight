@@ -14,6 +14,9 @@ export function QuickUser() {
       }
       history.push("/logout");
   };
+let user = JSON.parse(JSON.parse(localStorage.getItem('persist:v705-demo1-auth')).user)
+console.log(user)
+
 
   return (
       <div id="kt_quick_user" className="offcanvas offcanvas-right offcanvas p-10">
@@ -50,9 +53,12 @@ export function QuickUser() {
                   href="#"
                   className="font-weight-bold font-size-h5 text-dark-75 text-hover-primary"
               >
-                James Jones
+
+    
+              <h3> {user.first_name}  {user.last_name}</h3>  
+              <h3>{getFLName(user.first_name,user.last_name)}</h3>  
+            
               </a>
-              <div className="text-muted mt-1">Application Developer</div>
               <div className="navi mt-2">
                 <a href="#" className="navi-item">
                 <span className="navi-link p-0 pb-2">
@@ -66,7 +72,7 @@ export function QuickUser() {
                     </span>
                   </span>
                   <span className="navi-text text-muted text-hover-primary">
-                    jm@softplus.com
+                    {user.email}
                   </span>
                 </span>
                 </a>
@@ -269,4 +275,8 @@ export function QuickUser() {
         </div>
       </div>
   );
+}
+
+function getFLName(firstName,lastName) {
+  return firstName + ' ' +lastName;
 }

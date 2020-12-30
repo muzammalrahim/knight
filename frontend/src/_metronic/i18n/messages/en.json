@@ -36,6 +36,7 @@
   "AUTH.VALIDATION.NOT_FOUND": "The requested {name} is not found",
   "AUTH.VALIDATION.INVALID_LOGIN": "The login detail is incorrect",
   "AUTH.VALIDATION.REQUIRED_FIELD": "Required field",
+  "AUTH.VALIDATION.PASSWORD_MATCH_FIELD": "Password are not match",
   "AUTH.VALIDATION.MIN_LENGTH_FIELD": "Minimum field length:",
   "AUTH.VALIDATION.MAX_LENGTH_FIELD": "Maximum field length:",
   "AUTH.VALIDATION.INVALID_FIELD": "Field is not valid",

@@ -1,32 +1,45 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect} from "react";
 import { useFormik } from "formik";
 import { connect } from "react-redux";
 import { Link, Redirect } from "react-router-dom";
 import * as Yup from "yup";
 import { injectIntl } from "react-intl";
 import * as auth from "../_redux/authRedux";
-import { requestPassword } from "../_redux/authCrud";
+import { newPassword } from "../_redux/authCrud";
 
 const initialValues = {
-  email: "",
+  newpassword: "",
+  confirmpassword: "",
 };
 
-function ForgotPassword(props) {
+function ResetPassword(props) {
   const { intl } = props;
   const [isRequested, setIsRequested] = useState(false);
   const ForgotPasswordSchema = Yup.object().shape({
-    email: Yup.string()
-      .email("Wrong email format")
-      .min(3, "Minimum 3 symbols")
-      .max(50, "Maximum 50 symbols")
+    newpassword: Yup.string() 
+      .min(6, "Minimum 6 symbols")
+      .max(12, "Maximum 12 symbols")
       .required(
         intl.formatMessage({
           id: "AUTH.VALIDATION.REQUIRED_FIELD",
         })
       ),
+
+      confirmpassword: Yup.string()  
+      .min(6, "Minimum 6 symbols")
+      .max(12, "Maximum 12 symbols")
+      .required(
+        intl.formatMessage({
+          id: "AUTH.VALIDATION.REQUIRED_FIELD",
+        })
+      ),
+
+
   });
 
   const getInputClasses = (fieldname) => {
+
+
     if (formik.touched[fieldname] && formik.errors[fieldname]) {
       return "is-invalid";
     }
@@ -36,27 +49,51 @@ function ForgotPassword(props) {
     }
 
     return "";
+
+ 
   };
+
+const checkpass= (first, sec)=>
+{
+  if ( first != sec) {
+   return false
+}
+  else{ return true }
+}
 
   const formik = useFormik({
     initialValues,
-    validationSchema: ForgotPasswordSchema,
+    validationSchema: ForgotPasswordSchema , 
     onSubmit: (values, { setStatus, setSubmitting }) => {
-      
-      requestPassword(values.email)
-        .then(() => setIsRequested(true))
+         newPassword(values.newpassword)
+        .then( () => setIsRequested(true))
         .catch(() => {
           setIsRequested(false);
           setSubmitting(false);
+        
+         if(checkpass(values.newpassword,values.confirmpassword)){
+           setStatus(
+            intl.formatMessage(
+                    { id: "AUTH.VALIDATION.NOT_FOUND" },
+                    { name: values.newpassword }
+                    )
+                  );
+                }
+         else{
           setStatus(
             intl.formatMessage(
-              { id: "AUTH.VALIDATION.NOT_FOUND" },
-              { name: values.email }
-            )
-          );
+              { id: "AUTH.VALIDATION.PASSWORD_MATCH_FIELD" },
+              { name: values.newpassword }
+             )
+            );
+             }
         });
+
+      
     },
   });
+
+
 
   return (
     <>
@@ -64,9 +101,9 @@ function ForgotPassword(props) {
       {!isRequested && (
         <div className="login-form login-forgot" style={{ display: "block" }}>
           <div className="text-center mb-10 mb-lg-20">
-            <h3 className="font-size-h1">Forgotten Password ?</h3>
+            <h3 className="font-size-h1">Now Ready to change you password !</h3>
             <div className="text-muted font-weight-bold">
-              Enter your email to reset your password
+              Enter your New Password & Confirm password
             </div>
           </div>
           <form
@@ -80,20 +117,44 @@ function ForgotPassword(props) {
                 </div>
               </div>
             )}
+
             <div className="form-group fv-plugins-icon-container">
               <input
-                type="email"
+                type="password"
+                placeholder="Enter new password"
                 className={`form-control form-control-solid h-auto py-5 px-6 ${getInputClasses(
-                  "email"
+                  "password"
                 )}`}
-                name="email"
-                {...formik.getFieldProps("email")}
+                name="newpassword"
+                onChange={formik.handleChange}
+                {...formik.getFieldProps("newpassword")}
               />
-              {formik.touched.email && formik.errors.email ? (
+              {formik.touched.newpassword && formik.errors.newpassword ? (
                 <div className="fv-plugins-message-container">
-                  <div className="fv-help-block">{formik.errors.email}</div>
+                  <div className="fv-help-block">{formik.errors.newpassword}</div>
                 </div>
               ) : null}
+            </div>
+
+            <div className="form-group fv-plugins-icon-container">
+              <input
+                type="password"
+                placeholder="Enter again to confirm"
+                className={`form-control form-control-solid h-auto py-5 px-6 ${getInputClasses(
+                  "password"
+                )}`}
+                // onChange = {(e)=>{console.log(e.target.value)}}
+                name="confirmpassword"
+                 {...formik.getFieldProps("confirmpassword")}
+                
+              />
+              
+              {formik.touched.confirmpassword && formik.errors.confirmpassword ? (
+                <div className="fv-plugins-message-container">
+                  <div className="fv-help-block">{formik.errors.confirmpassword}</div>
+                </div>
+              ) : null}
+
             </div>
             <div className="form-group d-flex flex-wrap flex-center">
               <button
@@ -121,4 +182,4 @@ function ForgotPassword(props) {
   );
 }
 
-export default injectIntl(connect(null, auth.actions)(ForgotPassword));
+export default injectIntl(connect(null, auth.actions)(ResetPassword));

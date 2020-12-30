@@ -54,7 +54,7 @@ export default function BasePage() {
                 <ContentRoute exact path="/event/:id" component={EventEdit}/>
 
                 <ContentRoute exact path="/user/create" component={UserCreate}/>
-                <ContentRoute eaxct path="/user/:id" component={UserEdit}/>
+                <ContentRoute exact path="/user/:id" component={UserEdit}/>
                 <ContentRoute exact path="/users" component={Users}/>
 
                 <ContentRoute exact path="/approvals" component={Approvals}/>
@@ -65,6 +65,8 @@ export default function BasePage() {
                 <Route path="/google-material" component={GoogleMaterialPage}/>
                 <Route path="/react-bootstrap" component={ReactBootstrapPage}/>
                 <Route path="/e-commerce" component={ECommercePage}/>
+
+                
                 <Redirect to="error/error-v1"/>
             </Switch>
         </Suspense>

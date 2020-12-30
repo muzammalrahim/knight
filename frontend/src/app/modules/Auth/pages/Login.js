@@ -163,6 +163,15 @@ function Login(props) {
           >
             <FormattedMessage id="AUTH.GENERAL.FORGOT_BUTTON" />
           </Link>
+
+          <Link
+          to="/auth/reset-password"
+          className="text-dark-50 text-hover-primary my-3 mr-2"
+          id="kt_login_forgot"
+        >
+          <FormattedMessage id="AUTH.GENERAL.FORGOT_BUTTON" />
+        </Link>
+
           <button
             id="kt_login_signin_submit"
             type="submit"

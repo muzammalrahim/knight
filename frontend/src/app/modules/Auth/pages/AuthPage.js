@@ -6,6 +6,7 @@ import {ContentRoute} from "../../../../_metronic/layout"
 import Login from "./Login";
 import Registration from "./Registration";
 import ForgotPassword from "./ForgotPassword";
+import ResetPassword from "./ResetPassword";
 import "../../../../_metronic/_assets/sass/pages/login/classic/login-1.scss";
 
 export function AuthPage() {
@@ -56,10 +57,7 @@ export function AuthPage() {
             {/*begin::Content*/}
             <div className="flex-row-fluid d-flex flex-column position-relative p-7 overflow-hidden">
               {/*begin::Content header*/}
-              <div className="position-absolute top-0 right-0 text-right mt-5 mb-15 mb-lg-0 flex-column-auto justify-content-center py-5 px-10">
-                <span className="font-weight-bold text-dark-50">Don't have an account yet?</span>
-                <Link to="/auth/registration" className="font-weight-bold ml-2" id="kt_login_signup">Sign Up!</Link>
-              </div>
+             
               {/*end::Content header*/}
 
               {/* begin::Content body */}
@@ -71,6 +69,13 @@ export function AuthPage() {
                     path="/auth/forgot-password"
                     component={ForgotPassword}
                 />
+
+                <ContentRoute
+                    path="/auth/reset-password"
+                    component={ResetPassword}
+                />
+               
+
                 <Redirect from="/auth" exact={true} to="/auth/login"/>
                 <Redirect to="/auth/login"/>
               </Switch>

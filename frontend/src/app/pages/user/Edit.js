@@ -67,10 +67,16 @@ class Create extends React.Component {
     }
     getData(){
         var {groups, user, selected_group} = this.state
+
         list(`users/${this.state.user.id}`).then((response)=>{
+            // console.log("list user response :",response)
             this.setState({user:response.data})
+
+            // console.log("getdata method ,list users");
+           
         })
         list(`groups`).then((response)=>{
+            //  console.log("list group response :",response)
             response.data.map(({id, name})=>{
                 groups.push({label:name, value:id})
                 if(user.groups[0]===id){
@@ -78,6 +84,8 @@ class Create extends React.Component {
                 }
             })
             this.setState({groups, selected_group})
+
+            // console.log("getdata method, list group");
         })
     }
     changeHandler(e){
