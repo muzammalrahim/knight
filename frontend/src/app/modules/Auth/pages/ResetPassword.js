@@ -1,7 +1,7 @@
 import React, { useState ,useEffect} from "react";
 import { useFormik } from "formik";
 import { connect } from "react-redux";
-import { Link, Redirect } from "react-router-dom";
+import { Link, Redirect ,useParams} from "react-router-dom";
 import * as Yup from "yup";
 import { injectIntl } from "react-intl";
 import * as auth from "../_redux/authRedux";
@@ -13,6 +13,9 @@ const initialValues = {
 };
 
 function ResetPassword(props) {
+
+  const {id} = useParams()
+  alert(id);
   const { intl } = props;
   const [isRequested, setIsRequested] = useState(false);
   const ForgotPasswordSchema = Yup.object().shape({

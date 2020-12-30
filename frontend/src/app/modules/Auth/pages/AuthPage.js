@@ -71,7 +71,7 @@ export function AuthPage() {
                 />
 
                 <ContentRoute
-                    path="/auth/reset-password"
+                    path="/auth/reset-password/:id"
                     component={ResetPassword}
                 />
                

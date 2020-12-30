@@ -165,7 +165,7 @@ function Login(props) {
           </Link>
 
           <Link
-          to="/auth/reset-password"
+          to="/auth/reset-password/:id"
           className="text-dark-50 text-hover-primary my-3 mr-2"
           id="kt_login_forgot"
         >
