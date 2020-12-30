@@ -1,7 +1,8 @@
 import React from "react";
-import { TextField, Button, Icon, AppBar, Tabs, Tab, FormControl, FormControlLabel, RadioGroup, Radio, Typography, Snackbar, Table, Grid } from "@material-ui/core";
+import { TextField, Button, Icon, AppBar, Tabs, Tab, Typography, Table, Checkbox, 
+		Radio, RadioGroup, FormControlLabel, FormControl, Snackbar, Grid } from "@material-ui/core";
 import PropTypes from 'prop-types';
-import {ChevronLeft, Edit, Delete} from '@material-ui/icons';
+import {ChevronLeft, CheckBox as CheckBoxIcon, CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, Delete, Edit} from '@material-ui/icons';
 import { FormattedMessage } from "react-intl";
 import {
 	getCurrentDate
@@ -9,50 +10,87 @@ import {
   import list, {put} from '../helper/api';
   import { Alert, AlertTitle } from '@material-ui/lab';
 
-class EventEditForm extends React.Component {
+  const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+  const checkedIcon = <CheckBoxIcon fontSize="small" />;
+class EventRegistrationForm extends React.Component {
 	constructor(props){
 		super(props);
 		this.event={
-			id:this.props.match.params.id,	name:"", _type:"", date:"", duration:"", web_presential:"", 
-			country:"",	state:"", city:"", address:"", solicitant:"", business_unit:"", despartment:"", 
-			cost_center:"",	speaker:[], virtual_presential:"", displacement:''
+			id:this.props.match.params.id,	name:"", _type:"", date:"", duration:"", web_presential:"", country:"",	state:"",
+			city:"", address:"", solicitant:"", business_unit:"", despartment:"", cost_center:"",
+			speaker:[], virtual_presential:"", displacement:''
 		}
 		this.validateEvent={
 			name:false, _type:false, date:false, duration:false, web_presential:false, country:false,	state:false,
-			city:false, address:false, solicitant:false, business_unit:false, despartment:false, cost_center:false,
-			speaker:false, virtual_presential:false, displacement:false
+			city:false, address:false, solicitant:false, business_unit:false, despartment:false, cost_center:false, virtual_presential:false, 
+			displacement:false
+		}
+		this.validateEventSpeaker={
+			duration:false, role: false, speaker:false
 		}
 		this.alert={
             open: false, 
             severity: '',
             message:'',
             title:''
-        }
+		}
+		this.speaker = {
+			speaker:'',
+			role:'',
+			price:0,
+			duration:''
+		}
 		this.state={
 			event: this.event,
 			validateEvent: this.validateEvent,
+			validateEventSpeaker: this.validateEventSpeaker,
 			alert: this.alert,
 			currentTab: 0,
 			speaker_list:[],
 			speakers:[],
 			countries:[],
 			specialty:[],
-			event_speaker:[]
+			event_speaker:[],
+			current_speaker:this.speaker
 		}
 		this.handleTabChange = this.handleTabChange.bind(this);
 	}
 
-	handleChange(e){
-		let [key, value, {event, validateEvent, event_speaker}] = [e.target.name, e.target.value, this.state];
-		if(key === "speaker"){
-			if(!event[key].includes(value) && value !="Select Speaker...."){
-				event[key].push(value);
-				event_speaker.push({speaker:value, price:100})
-				this.setState({event_speaker})
+	handleChangeSpeaker(e){
+		let [key, value, {current_speaker, validateEventSpeaker}] = [e.target.name, e.target.value, this.state];
+			current_speaker[key]=value;
+		if(validateEventSpeaker[key]){
+            validateEventSpeaker[key] = current_speaker[key] ? false : true;
+        }
+		this.setState({current_speaker, validateEventSpeaker})
+	}
+	handleAddSpeaker(){
+		let {event_speaker, event, current_speaker, validateEventSpeaker, speakers} = this.state;
+		let isSubmit = null;
+		Object.keys(validateEventSpeaker).map((key)=>{
+			validateEventSpeaker[key] = current_speaker[key] ? false : true;
+			isSubmit = current_speaker[key] && isSubmit !== false ? true : false;
+		})
+		this.setState({validateEventSpeaker})
+
+		let speaker = speakers.find(data => data.id == current_speaker.speaker)
+		isSubmit && list(`api/price`, {specialty:speaker.specialty, program_type:event._type, tier:speaker.tier, role:current_speaker.role}).then((response)=>{
+			if(!event['speaker'].includes(current_speaker.speaker)){
+				current_speaker['price'] = response.data[0].hour_price*current_speaker.duration;
+				event['speaker'].push(current_speaker.speaker);
+				event_speaker.push(current_speaker)
 			}
-		}else{
-			event[key]=value;
-		}
+			this.setState({
+				event_speaker, 
+				event, 
+				current_speaker:{speaker:'', price:0, duration:''}
+			});
+		})
+	}
+		
+	handleChange(e){
+		let [key, value, {event, validateEvent}] = [e.target.name, e.target.value, this.state];
+		event[key]=value;
 		if(validateEvent[key]){
 			if(key === "web_presential" && value==="web"){
 				validateEvent["country"] = false;
@@ -110,6 +148,11 @@ class EventEditForm extends React.Component {
 	getEvent (){
 		let {event} = this.state;
 		list(`api/event/${event.id}`).then((response)=>{
+			let speaker = []
+			response.data.speaker.map((speak)=>{
+				speaker.push(speak.id)
+			})
+			response.data.speaker = speaker;
 		  	this.setState({event:response.data})
 			this.getSpeakers();
 		})
@@ -133,8 +176,9 @@ class EventEditForm extends React.Component {
 		})
 	}
 	render(){
-		let {event:{web_presential}, event, currentTab, speaker_list, countries, validateEvent, 
-			alert:{open, severity, message, title}, speakers, specialty} = this.state;
+		let {event:{web_presential}, event, currentTab, speaker_list, speakers, countries, event_speaker,
+			validateEvent, alert:{open, severity, message, title}, specialty, current_speaker, validateEventSpeaker} = this.state;
+			console.log(event.speaker, speakers)
 		return (
 			<div className="row">
 				<Snackbar open={open} autoHideDuration={4000} anchorOrigin={{ vertical:'top', horizontal:'right' }} onClose={()=>{this.handleClose()}}>
@@ -152,6 +196,7 @@ class EventEditForm extends React.Component {
 							<Tabs value={currentTab} onChange={this.handleTabChange}>
 								<Tab label="Step One"/>
 								<Tab label="Step Two"/>
+								<Tab label="Step Three"/>
 							</Tabs>
 						</AppBar>
 						<TabContainer>
@@ -210,11 +255,11 @@ class EventEditForm extends React.Component {
 											value={event.date ? event.date : getCurrentDate()}
 											onChange={(e) =>{this.handleChange(e)}}
 											style={styles.textField}
-											error={validateEvent['date']}
-                                    		helperText={validateEvent['date'] && 'this field is required'}
 											InputLabelProps={{
 												shrink: true
 											}}
+											error={validateEvent['date']}
+                                    		helperText={validateEvent['date'] && 'this field is required'}
 										/>
 									</div>
 									<div className="col-md-6">
@@ -247,13 +292,14 @@ class EventEditForm extends React.Component {
 												className: styles.menu
 												}
 											}}
-											error={validateEvent['web_presential']}
-                                    		helperText={validateEvent['web_presential'] && 'this field is required'}
+											// helperText="Please select your currency"
 											margin="normal"
 											variant="outlined"
+											error={validateEvent['web_presential']}
+                                    		helperText={validateEvent['web_presential'] && 'this field is required'}
 											>
 											<option value={null}>
-												Select Web/Presential....
+												Select Web / Presential....
 											</option>
 											{web_presential_options.map(option => (
 												<option key={option.value} value={option.value}>
@@ -279,10 +325,11 @@ class EventEditForm extends React.Component {
 													className: styles.menu
 													}
 												}}
-												error={validateEvent['country']}
-												helperText={validateEvent['country'] && 'this field is required'}
+												helperText="Please select your currency"
 												margin="normal"
 												variant="outlined"
+												error={validateEvent['country']}
+												helperText={validateEvent['country'] && 'this field is required'}
 												>
 												<option value={null}>
 													Select Country....
@@ -319,7 +366,7 @@ class EventEditForm extends React.Component {
 												</option>
 												{province.map(option => (
 													<option key={option.value} value={option.value}>
-													{option.label}
+														{option.label}
 													</option>
 												))}
 											</TextField>
@@ -354,7 +401,7 @@ class EventEditForm extends React.Component {
 									</div>
 									</>}
 									<div className="col-md-12 text-right pt-4">
-										<Button variant="contained" color="primary" style={styles.button} onClick={(e)=>{this.handleTabChange(e, 1)}}>
+										<Button variant="contained" color="primary" style={styles.button} onClick={(e)=>{this.handleTabChange(e,1)}}>
 											Next
 											{/* This Button uses a Font Icon, see the installation instructions in the docs. */}
 											<Icon style={styles.rightIcon}>send</Icon>
@@ -395,7 +442,7 @@ class EventEditForm extends React.Component {
 											helperText={validateEvent['business_unit'] && 'this field is required'}
 											margin="normal"
 											variant="outlined"
-										>
+										>	
 											<option value={null}>
 												Select Business Unit....
 											</option>
@@ -433,7 +480,7 @@ class EventEditForm extends React.Component {
 											error={validateEvent['cost_center']}
 											helperText={validateEvent['cost_center'] && 'this field is required'}
 										/>
-									</div>
+									</div>									
 									<div className="col-md-6">
 										<TextField
 											required
@@ -453,7 +500,7 @@ class EventEditForm extends React.Component {
 											helperText={validateEvent['virtual_presential'] && 'this field is required'}
 											margin="normal"
 											variant="outlined"
-										>
+										>	
 											<option value={null}>
 												Select Virtual / Presential....
 											</option>
@@ -464,34 +511,103 @@ class EventEditForm extends React.Component {
 											))}
 										</TextField>
 									</div>
-									<div className="col-md-6">
-										<TextField
-											required
-											select
-											name="speaker"
-											label={<FormattedMessage id="Event.List.Column.Speaker"/>}
-											style={styles.textField}
-											onChange={(e)=>{this.handleChange(e)}}
-											SelectProps={{
-												native: true,
-												MenuProps: {
-													className: styles.menu
-												}
-											}}
-											error={validateEvent['speaker']}
-											helperText={validateEvent['speaker'] && 'this field is required'}
-											margin="normal"
-											variant="outlined"
-										>
-											<option value={null}>
-												Select Speaker Name....
-											</option>
-											{speaker_list.map(option => (
-												<option key={option.value} value={option.value}>
-													{option.label}
-												</option>
-											))}
-										</TextField>
+									<div className="container">
+										<div className="row" style={{border:'1px solid gray', margin:'1rem', padding:'1rem'}}>
+											<div className="col-md-6">
+												<TextField
+													required
+													select
+													name="speaker"
+													label={<FormattedMessage id="Event.List.Column.Speaker"/>}
+													style={styles.textField}
+													onChange={(e)=>{this.handleChangeSpeaker(e)}}
+													SelectProps={{
+														native: true,
+														MenuProps: {
+															className: styles.menu
+														}
+													}}
+													error={validateEventSpeaker['speaker']}
+													helperText={validateEventSpeaker['speaker'] && 'this field is required'}
+													margin="normal"
+													variant="outlined"
+												>
+													<option>
+														Select Speaker....
+													</option>
+													{speaker_list.map(option => (
+														<option key={option.value} value={option.value}>
+															{option.label}
+														</option>
+													))}
+												</TextField>
+											</div>
+											<div className="col-md-6">
+												<TextField
+													required
+													select
+													name="role"
+													label={<FormattedMessage id="Event.List.Column.Role"/>}
+													style={styles.textField}
+													onChange={(e)=>{this.handleChangeSpeaker(e)}}
+													SelectProps={{
+														native: true,
+														MenuProps: {
+															className: styles.menu
+														}
+													}}
+													error={validateEventSpeaker['role']}
+													helperText={validateEventSpeaker['role'] && 'this field is required'}
+													margin="normal"
+													variant="outlined"
+												>
+													<option>
+														Select Role....
+													</option>
+													{role_list.map(option => (
+														<option key={option.value} value={option.value}>
+															{option.label}
+														</option>
+													))}
+												</TextField>
+											</div>
+											<div className="col-md-6">
+												<TextField
+													required
+													name="duration"
+													label={<FormattedMessage id="Event.Create.Duration"/>}
+													type="number"
+													style={styles.textField}
+													value={current_speaker.duration}
+													onChange={(e)=>{this.handleChangeSpeaker(e)}}
+													margin="normal"
+													variant="outlined"
+													error={validateEventSpeaker['duration']}
+													helperText={validateEventSpeaker['duration'] && 'this field is required'}
+												/>
+											</div>
+											{/* <div className="col-md-4">
+												<TextField
+													disabled
+													name="price"
+													label={<FormattedMessage id="Event.Create.Price"/>}
+													type="number"
+													style={styles.textField}
+													value={current_speaker.price}
+													onChange={(e)=>{this.handleChangeSpeaker(e)}}
+													margin="normal"
+													variant="outlined"
+													error={validateEventSpeaker['price']}
+													helperText={validateEventSpeaker['price'] && 'this field is required'}
+												/>
+											</div> */}
+											<div className="col-md-12 text-right pt-4">
+												<Button variant="contained" color="primary" style={styles.button} onClick={()=>{this.handleAddSpeaker()}}>
+													Add Speaker
+													<Icon style={styles.rightIcon}>add</Icon>
+												</Button>
+											</div>
+										</div>
 									</div>
 									{event.speaker.length > 0 && <div className="col-md-12 m-4">
 										<h5>Selected Speakers</h5>
@@ -647,9 +763,10 @@ class EventEditForm extends React.Component {
 														<Table striped bordered hover className="ml-4 mr-4">
 															<thead>
 																<tr>
-																<th>Name</th>
-																<th>Specialty</th>
-																<th>Cost</th>
+																	<th>Name</th>
+																	<th>Specialty</th>
+																	<th>Duration</th>
+																	<th>Cost</th>
 																</tr>
 															</thead>
 															<tbody>
@@ -659,7 +776,8 @@ class EventEditForm extends React.Component {
 																		return spk && <tr>
 																			<td>{spk.name}</td>
 																			<td>{spk.specialty && specialty.find(specialty => spk.specialty == specialty.id).name}</td>
-																			<td>{}</td>
+																			<td>{spk.duration}</td>
+																			<td>{spk.price}</td>
 																		</tr>
 																	})
 																}
@@ -685,6 +803,7 @@ class EventEditForm extends React.Component {
 										</Button>
 									</div>
 								</>}
+							
 							</form>
 						</TabContainer>
 					</div>
@@ -695,7 +814,7 @@ class EventEditForm extends React.Component {
 	};
 }
 
-export default EventEditForm;
+export default EventRegistrationForm;
 
 const b_unit = [
 	{
@@ -713,24 +832,6 @@ const b_unit = [
 	{
 		value: "Unit 4",
 		label: "Unit 4"
-	}
-];
-const country = [
-	{
-		value: "Pakistan",
-		label: "Pakistan"
-	},
-	{
-		value: "Australia",
-		label: "Australia"
-	},
-	{
-		value: "India",
-		label: "India"
-	},
-	{
-		value: "China",
-		label: "China"
 	}
 ];
 const virtual_presential = [
@@ -751,40 +852,22 @@ const virtual_presential = [
 		label: "Test 4"
 	}
 ];
-const department = [
-	{
-		value: "Department 1",
-		label: "Department 1"
-	},
-	{
-		value: "Department 2",
-		label: "Department 2"
-	},
-	{
-		value: "Department 3",
-		label: "Department 3"
-	},
-	{
-		value: "Department 4",
-		label: "Department 4"
-	}
-];
 const type = [
 	{
-		value: "Type 1",
-		label: "Type 1"
+		value: "Small Meetings",
+		label: "Small Meetings"
 	},
 	{
-		value: "Type 2",
-		label: "Type 2"
+		value: "Symposia",
+		label: "Symposia"
 	},
 	{
-		value: "Type 3",
-		label: "Type 3"
+		value: "Webinars",
+		label: "Webinars"
 	},
 	{
-		value: "Type 4",
-		label: "Type 4"
+		value: "EIF (Expert Input Forum)",
+		label: "EIF (Expert Input Forum)"
 	}
 ];
 const province = [
@@ -810,6 +893,21 @@ const web_presential_options = [
 		value: "Presential",
 		label: "Presential"
 	}
+];
+const role_list = [
+	{
+		value: "Chair",
+		label: "Chair"
+	},
+	{
+		value: "Participant",
+		label: "Participant"
+	},
+	{
+		value: "Speaker",
+		label: "Speaker"
+	}
+	
 ];
 function TabContainer(props) {
 	return (

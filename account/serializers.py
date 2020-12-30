@@ -100,7 +100,7 @@ class EventSpeakerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = EventSpeaker
-        fields = ['id', 'price', 'speaker', 'event', 'status', 'duration']
+        fields = ['id', 'price', 'speaker', 'event', 'status', 'duration', 'role']
 
 
 class EventSerializer(serializers.ModelSerializer):

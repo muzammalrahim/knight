@@ -42,14 +42,14 @@ class SpeakerEditForm extends React.Component{
 			scholarity: "", social_number: "", service_provider: "", country: "Brasil", state: "", city: "", neighborhood: "",
 			cep: "", ddd: "", address:"", id_number: "", document_issue_date: "", emitting_organ: "", email: "", mobile: "", fax: null, 
 			linkedin: "", lattes: "", orcid: "", juridcal_person:false, national_id:"", company_name:"", cpf:"", cnpj:"", uf_crm:"", uf_city:"", 
-			specialty:"", juridical_address:"",	account_owner: "", bank_name: "", bank_address: "", swift_bic: "", iban_account: "", agency: ""
+			specialty:"", tier:"", juridical_address:"",	account_owner: "", bank_name: "", bank_address: "", swift_bic: "", iban_account: "", agency: ""
 		}
 		this.validateSpeaker={ foreign_flag: false,	accept_information_rule: false,	name: false, father_name: false,	
 			mother_name: false,	dob: false, birthplace: false, civil_state: false, scholarity: false, social_number: false, service_provider: false, 
 			country: false, state: false, city: false, neighborhood: false, cep: false, ddd: false, address: false, id_number: false, 
 			document_issue_date: false, emitting_organ: false, email: false, mobile: false, fax: false, linkedin: false, lattes: false, orcid: false, 
 			registration_in_city: false, social_security: false, juridcal_person: false, national_id: false, company_name: false, cpf: false, cnpj: false,
-			uf_crm: false, uf_city: false, specialty: false, juridical_address:false, account_owner: false, bank_name: false, bank_address: false, 
+			uf_crm: false, uf_city: false, specialty: false, tier: false, juridical_address:false, account_owner: false, bank_name: false, bank_address: false, 
 			swift_bic: false, iban_account: false, agency: false
 		}
         this.alert={
@@ -702,14 +702,13 @@ class SpeakerEditForm extends React.Component{
 													onChange={(event)=>{this.handleChange(event)}}
 												/>
 											</InputGroup> 
-											{validateSpeaker['uf_crm'] && <FormText className="text-danger">this field is required</FormText>}</>
-											
+											{validateSpeaker['uf_crm'] && <FormText className="text-danger">this field is required</FormText>}
+										</>
 										<TextField
 											name="specialty"
 											select
 											label="specialty"
 											style={styles.textField}
-											value={speaker.national_id ? speaker.specialty : ''}
 											onChange={(event)=>{this.handleChange(event)}}
 											SelectProps={{
 												native: true,
@@ -726,6 +725,32 @@ class SpeakerEditForm extends React.Component{
 												Select Specialty....
 											</option>
 											{specialty_list.map(option => (
+												<option key={option.value} value={option.value}>
+													{option.label}
+												</option>
+											))}
+										</TextField> 
+										<TextField
+											name="tier"
+											select
+											label="Tier"
+											style={styles.textField}
+											onChange={(event)=>{this.handleChange(event)}}
+											SelectProps={{
+												native: true,
+												MenuProps: {
+													style: styles.menu
+												}
+											}}
+											error={validateSpeaker['tier']}
+											helperText={validateSpeaker['tier'] && 'this field is required'}
+											margin="normal"
+											variant="outlined"
+										>
+											<option value={null}>
+												Select Tier....
+											</option>
+											{tier.map(option => (
 												<option key={option.value} value={option.value}>
 													{option.label}
 												</option>
@@ -1007,6 +1032,21 @@ class SpeakerEditForm extends React.Component{
 }
 
 export default injectIntl(SpeakerEditForm)
+
+const tier = [
+	{
+		value: "1",
+		label: "Tier 1"
+	},
+	{
+		value: "2",
+		label: "Tier 2"
+	},
+	{
+		value: "3",
+		label: "Tier 3"
+	}
+];
 
 function TabContainer(props) {
 	return (
