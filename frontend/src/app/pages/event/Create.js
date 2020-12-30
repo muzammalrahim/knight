@@ -26,7 +26,7 @@ class EventRegistrationForm extends React.Component {
 			displacement:false
 		}
 		this.validateEventSpeaker={
-			duration:false, speaker:false
+			duration:false, role: false, speaker:false
 		}
 		this.alert={
             open: false, 
@@ -36,6 +36,7 @@ class EventRegistrationForm extends React.Component {
 		}
 		this.speaker = {
 			speaker:'',
+			role:'',
 			price:0,
 			duration:''
 		}
@@ -57,11 +58,7 @@ class EventRegistrationForm extends React.Component {
 
 	handleChangeSpeaker(e){
 		let [key, value, {current_speaker, validateEventSpeaker}] = [e.target.name, e.target.value, this.state];
-		if(key === "speaker"){
 			current_speaker[key]=value;
-		}else{
-			current_speaker[key]=value;
-		}
 		if(validateEventSpeaker[key]){
             validateEventSpeaker[key] = current_speaker[key] ? false : true;
         }
@@ -77,7 +74,7 @@ class EventRegistrationForm extends React.Component {
 		this.setState({validateEventSpeaker})
 
 		let speaker = speakers.find(data => data.id == current_speaker.speaker)
-		isSubmit && list(`api/price`, {specialty:speaker.specialty, program_type:event._type, tier:3}).then((response)=>{
+		isSubmit && list(`api/price`, {specialty:speaker.specialty, program_type:event._type, tier:speaker.tier}).then((response)=>{
 			if(!event['speaker'].includes(current_speaker.speaker)){
 				current_speaker['price'] = response.data[0].hour_price*current_speaker.duration;
 				event['speaker'].push(current_speaker.speaker);
@@ -538,6 +535,35 @@ class EventRegistrationForm extends React.Component {
 											<div className="col-md-6">
 												<TextField
 													required
+													select
+													name="role"
+													label={<FormattedMessage id="Event.List.Column.Role"/>}
+													style={styles.textField}
+													onChange={(e)=>{this.handleChangeSpeaker(e)}}
+													SelectProps={{
+														native: true,
+														MenuProps: {
+															className: styles.menu
+														}
+													}}
+													error={validateEventSpeaker['role']}
+													helperText={validateEventSpeaker['role'] && 'this field is required'}
+													margin="normal"
+													variant="outlined"
+												>
+													<option>
+														Select Role....
+													</option>
+													{role_list.map(option => (
+														<option key={option.value} value={option.value}>
+															{option.label}
+														</option>
+													))}
+												</TextField>
+											</div>
+											<div className="col-md-6">
+												<TextField
+													required
 													name="duration"
 													label={<FormattedMessage id="Event.Create.Duration"/>}
 													type="number"
@@ -858,6 +884,21 @@ const web_presential_options = [
 		value: "Presential",
 		label: "Presential"
 	}
+];
+const role_list = [
+	{
+		value: "Chair",
+		label: "Chair"
+	},
+	{
+		value: "Participant",
+		label: "Participant"
+	},
+	{
+		value: "Speaker",
+		label: "Speaker"
+	}
+	
 ];
 function TabContainer(props) {
 	return (

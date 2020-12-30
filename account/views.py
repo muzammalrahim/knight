@@ -78,7 +78,7 @@ class PriceViewSet(viewsets.ModelViewSet):
     """
     queryset = Price.objects.all()
     serializer_class = PriceSerializer
-    filterset_fields = ['program_type', 'specialty', 'tier']
+    filterset_fields = ['program_type', 'specialty', 'tier', 'role']
 
     def list(self, request, *args, **kwargs):
         program_type = request.GET.get('program_type', None)
