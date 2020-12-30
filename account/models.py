@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 class User(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
 	business_unit = models.CharField(max_length=191, blank=True, null=True)
+	password_link = models.CharField(max_length=191, blank=True, null=True)
 
 class Specialty(models.Model):
 	name = models.CharField(max_length=191)
