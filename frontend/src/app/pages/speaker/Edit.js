@@ -43,7 +43,7 @@ class SpeakerEditForm extends React.Component{
 			scholarity: "", social_number: "", service_provider: "", country: "Brasil", state: "", city: "", neighborhood: "",
 			cep: "", ddd: "", address:"", id_number: "", document_issue_date: "", emitting_organ: "", email: "", mobile: "", fax: null, 
 			linkedin: "", lattes: "", orcid: "", juridcal_person:false, national_id:"", company_name:"", cpf:"", cnpj:"", uf_crm:"", uf_city:"", 
-			specialty:"", tier:"", juridical_address:"",	account_owner: "", bank_name: "", bank_address: "", swift_bic: "", iban_account: "", agency: ""
+			specialty:"", tier:"", juridical_address:"",	account_owner: "", bank_name: "", bank_address: "", swift_bic: "", iban_account: "", pix:"", agency: ""
 		}
 		this.validateSpeaker={ 
 			foreign_flag: false,	accept_information_rule: false,	name: false, father_name: false,	
@@ -52,7 +52,7 @@ class SpeakerEditForm extends React.Component{
 			document_issue_date: false, emitting_organ: false, email: false, mobile: false, fax: false, linkedin: false, lattes: false, orcid: false, 
 			registration_in_city: false, social_security: false, juridcal_person: false, national_id: false, company_name: false, cpf: false, cnpj: false,
 			uf_crm: false, uf_city: false, specialty: false, tier: false, juridical_address:false, account_owner: false, bank_name: false, bank_address: false, 
-			swift_bic: false, iban_account: false, agency: false
+			swift_bic: false, iban_account: false, pix: false, agency: false
 		}
         this.alert={
             open: false, 
@@ -74,18 +74,6 @@ class SpeakerEditForm extends React.Component{
 
 	handleChange(event){
 		let [key, value, {speaker, validateSpeaker}] = [event.target.name, event.target.value, this.state];
-		// if(speaker['juridcal_person'] === "juridcal"){
-		// 	validateSpeaker['national_id'] = false;
-		// 	validateSpeaker['cpf'] = false;
-		// 	validateSpeaker['uf_crm'] = false;
-		// 	validateSpeaker['specialty'] = false;
-
-		// 	speaker['national_id'] = "";
-		// 	speaker['cpf'] = "";
-		// 	speaker['uf_crm'] = "";
-		// 	speaker['specialty'] = "";
-
-		// }else 
 		if (speaker['juridcal_person'] === false){
 			validateSpeaker['company_name'] = false;
 			validateSpeaker['cnpj'] = false;
@@ -98,8 +86,17 @@ class SpeakerEditForm extends React.Component{
 			speaker['juridical_address'] = "";
 		}
 		if(key==="foreign_flag" || key==="registration_in_city" || key==="social_security" || key == "juridcal_person"){
-			speaker[key]=!(speaker[key]);
-			validateSpeaker[key] = false;
+			if(key === "foreign_flag"){
+				validateSpeaker['pix'] = speaker[key] ? true : false;
+				if(speaker[key]){
+					speaker['pix'] = "";
+				}
+				speaker[key]=!(speaker[key]);
+				validateSpeaker[key] = false;
+			}else{
+				speaker[key]=!(speaker[key]);
+				validateSpeaker[key] = false;
+			}
 
 		}
 		else if(key==="id_number" || key==="fax" || key==="mobile"){
@@ -127,15 +124,16 @@ class SpeakerEditForm extends React.Component{
 		let isSubmit = null;
 		
 		Object.keys(validateSpeaker).map((key)=>{
-			// if(speaker['juridcal_person'] === true && (key === "national_id" || key === "cpf" || key === "uf_crm" || key === "specialty" )){
-			// 	validateSpeaker[key] = false;
-			// }else 
 			if(speaker['juridcal_person'] === false && (key === "company_name" || key === "cnpj" || key === "uf_city" || key === "juridical_address" )){
 				validateSpeaker[key] = false;
 			}
 			//Skip Optional Fields form Validation
 			else if(key === "lattes" || key === "linkedin" || key === "ddd" || key === "fax" || key === "orcid" || key === "juridcal_person"){
 				validateSpeaker[key] = false;
+			}
+			else if(key === "pix" && speaker['foreign_flag'] === false){
+				validateSpeaker['pix'] = false;
+				speaker['pix'] = "";
 			}
 			else if(key==="foreign_flag" || key==="registration_in_city" || key==="social_security"){
 				validateSpeaker[key] = false;
@@ -1006,7 +1004,20 @@ class SpeakerEditForm extends React.Component{
 											error={validateSpeaker['iban_account']}
 											helperText={validateSpeaker['iban_account'] && 'this field is required'}
 										/>
-									</div>	
+									</div>
+									{speaker['foreign_flag'] && <div className="col-md-6">
+										<TextField
+											name="pix"
+											label="PIX"
+											style={styles.textField}
+											value={speaker.pix}
+											onChange={(event)=>{this.handleChange(event)}}
+											margin="normal"
+											variant="outlined"
+											error={validateSpeaker['pix']}
+											helperText={validateSpeaker['pix'] && 'this field is required'}
+										/>
+									</div>}	
 									<div className="col-md-6">
 										<TextField
 											name="agency"

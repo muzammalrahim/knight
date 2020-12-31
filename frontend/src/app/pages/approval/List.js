@@ -252,6 +252,8 @@ export default function EnhancedTable(props) {
                       hover
                       tabIndex={-1}
                       key={index}
+                      style={{cursor:'pointer'}}
+                      onClick={()=>{props.history.push(`approval/${row.id}`)}}
                     >
                       
                       <TableCell style={{display:'none'}}>{row.id}</TableCell>
