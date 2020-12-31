@@ -3,10 +3,13 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import { Table, TableBody, TableCell, TableHead, TablePagination, TableRow, TableSortLabel, 
-  Toolbar, Typography, Paper, FormControlLabel, Switch, Snackbar } from '@material-ui/core';
+  Toolbar, Typography, Paper, FormControlLabel, Switch, Snackbar, Button, Icon } from '@material-ui/core';
 import { FormattedMessage } from 'react-intl';
 import list, {put} from '../helper/api';
 import { Alert, AlertTitle } from '@material-ui/lab';
+import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
+import jsPDF from 'jspdf'
+import 'jspdf-autotable'
 
 function createData(id, event_name, date, event_duration, speaker_duration, business_unit, price, email, status) {
   return { id, event_name, date, event_duration, speaker_duration, business_unit, price, email, status };
@@ -115,9 +118,15 @@ const EnhancedTableToolbar = props => {
     <Toolbar
       className={clsx(classes.root)}
     >
-      <Typography variant="h6" id="tableTitle">
+      <Typography variant="h6" id="tableTitle" style={{width:'100%'}}>
         <FormattedMessage id="Event.List.Title"/>
       </Typography>
+      <div className="text-right" style={{width:'100%'}}>
+        <Button variant="contained" color="primary" style={classes.button} onClick={()=>{props.save()}}>
+          Download
+          <PictureAsPdfIcon />
+        </Button>
+      </div>
     </Toolbar>
   );
 };
@@ -214,6 +223,8 @@ export default function EnhancedTable(props) {
   useEffect(() => {
     getEvents();
   },[]);
+  const doc = new jsPDF()
+  doc.autoTable({ html: '#approvals_list' })
   return (
     <div className={classes.root}>
       <Snackbar 
@@ -231,9 +242,10 @@ export default function EnhancedTable(props) {
         </Alert>
       </Snackbar> 
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar/>
+        <EnhancedTableToolbar save={()=>{doc.save('approvals.pdf')}}/>
         <div className={classes.tableWrapper}>
           <Table
+            id="approvals_list"
             className={classes.table}
             aria-labelledby="tableTitle"
             size={dense ? 'small' : 'medium'}
