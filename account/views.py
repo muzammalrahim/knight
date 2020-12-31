@@ -215,7 +215,7 @@ def forget_password(request):
         else:
             CustomUser.objects.update(password_link=random_id, user=user)
         user.save()
-        reset_link = '{}/auth/reset_password/{}'.format(settings.SITE_URL, random_id)
+        reset_link = '{}/auth/reset-password/{}'.format(settings.SITE_URL, random_id)
         html_content = get_template('account/general.html') \
             .render({'reset_link': reset_link})
 

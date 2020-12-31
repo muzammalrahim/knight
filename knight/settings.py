@@ -149,7 +149,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 # SITE_URL = 'http://127.0.0.1:8000/'
-SITE_URL = 'http://127.0.0.1:3001'
+SITE_URL = 'http://127.0.0.1:3000'
 SITE_ID = 1
 AUTH_USER_MODEL = 'auth.User'
 
@@ -159,13 +159,17 @@ AUTHENTICATION_BACKENDS = (
 )
 
 CORS_ORIGIN_WHITELIST = (
-    'http://localhost:3001',
+    'http://localhost:3000',
     'http://localhost:3000',
 )
 
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.mailtrap.io'
+# EMAIL_HOST_USER = '3ed2b8f95f3581'
+# EMAIL_HOST_PASSWORD = '2510381bc092fa'
+# EMAIL_PORT = '2525'
 EMAIL_HOST = 'smtp.mailtrap.io'
-EMAIL_HOST_USER = '3ed2b8f95f3581'
-EMAIL_HOST_PASSWORD = '2510381bc092fa'
+EMAIL_HOST_USER = '9288f4bb6ecc1d'
+EMAIL_HOST_PASSWORD = 'e394895db6f985'
 EMAIL_PORT = '2525'

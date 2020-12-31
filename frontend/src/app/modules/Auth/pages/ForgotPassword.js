@@ -6,14 +6,23 @@ import * as Yup from "yup";
 import { injectIntl } from "react-intl";
 import * as auth from "../_redux/authRedux";
 import { requestPassword } from "../_redux/authCrud";
+import { TextField, Button, Icon, Snackbar, withStyles } from "@material-ui/core";
+import { Alert, AlertTitle } from '@material-ui/lab';
 
 const initialValues = {
   email: "",
+  checkk : false,
 };
 
 function ForgotPassword(props) {
   const { intl } = props;
   const [isRequested, setIsRequested] = useState(false);
+   const [alertsnack,setalertsnack] = useState({
+                                                    open: false, 
+                                                    severity: '',
+                                                     message:'',
+                                                     title:''
+                                                    });
   const ForgotPasswordSchema = Yup.object().shape({
     email: Yup.string()
       .email("Wrong email format")
@@ -38,16 +47,39 @@ function ForgotPassword(props) {
     return "";
   };
 
+ const handleClose=()=>{
+    setalertsnack({...alertsnack,open:false, severity: '', message:'' })
+  }   
+
   const formik = useFormik({
     initialValues,
-    validationSchema: ForgotPasswordSchema,
+     validationSchema: ForgotPasswordSchema,
     onSubmit: (values, { setStatus, setSubmitting }) => {
-      
       requestPassword(values.email)
-        .then(() => setIsRequested(true))
+        .then((res) => {
+          setIsRequested(true)
+          setalertsnack({
+            ...alertsnack,
+            open: true,
+            severity: 'success',
+            title:'success',
+            message:'Email send and verified Sucessfully',
+              
+          });
+          setTimeout(()=>{props.history.push('/auth/login')}, 6000)
+        })
         .catch(() => {
           setIsRequested(false);
           setSubmitting(false);
+
+          setalertsnack({
+            ...alertsnack,
+               open: true,
+               severity: 'error',
+               title:'Error',
+                message:'Email not Send ',
+             
+          });
           setStatus(
             intl.formatMessage(
               { id: "AUTH.VALIDATION.NOT_FOUND" },
@@ -60,7 +92,13 @@ function ForgotPassword(props) {
 
   return (
     <>
-      {isRequested && <Redirect to="/auth" />}
+    <Snackbar open={alertsnack.open} autoHideDuration={4000} anchorOrigin={{ vertical:'top', horizontal:'right' }} onClose={()=>{handleClose()}}>
+    <Alert onClose={()=>{handleClose()}} severity={alertsnack.severity}>
+        <AlertTitle>{alertsnack.title}</AlertTitle>
+        <strong>{alertsnack.message}</strong>
+    </Alert>
+  </Snackbar> 
+
       {!isRequested && (
         <div className="login-form login-forgot" style={{ display: "block" }}>
           <div className="text-center mb-10 mb-lg-20">
@@ -70,7 +108,7 @@ function ForgotPassword(props) {
             </div>
           </div>
           <form
-            onSubmit={formik.handleSubmit}
+            onSubmit={formik.handleSubmit }
             className="form fv-plugins-bootstrap fv-plugins-framework animated animate__animated animate__backInUp"
           >
             {formik.status && (
@@ -87,20 +125,25 @@ function ForgotPassword(props) {
                   "email"
                 )}`}
                 name="email"
+                // onChange={hello}
                 {...formik.getFieldProps("email")}
+               
               />
+               
               {formik.touched.email && formik.errors.email ? (
                 <div className="fv-plugins-message-container">
                   <div className="fv-help-block">{formik.errors.email}</div>
                 </div>
               ) : null}
+
             </div>
             <div className="form-group d-flex flex-wrap flex-center">
               <button
                 id="kt_login_forgot_submit"
                 type="submit"
                 className="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-4"
-                disabled={formik.isSubmitting}
+                // disabled={(formik.isSubmitting) || (formik.touched.email)?true:false}
+                disabled={ formik.isSubmitting || !formik.isValid}                    
               >
                 Submit
               </button>
