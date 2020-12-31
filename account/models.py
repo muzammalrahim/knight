@@ -53,6 +53,7 @@ class Speaker(models.Model):
 	company_name = models.CharField(max_length=191, blank=True, null=True)
 	cpf = models.CharField(max_length=191, blank=True, null=True)
 	iban_account = models.CharField(max_length=191, blank=True, null=True)
+	pix = models.CharField(max_length=191, blank=True, null=True)
 	juridical_address = models.CharField(max_length=191, blank=True, null=True)
 	national_id = models.CharField(max_length=191, blank=True, null=True)
 	juridcal_person = models.BooleanField(null=True, default=False)
@@ -98,7 +99,7 @@ class Event(models.Model):
 class EventSpeaker(models.Model):
 	duration = models.PositiveIntegerField(blank=True)
 	event = models.ForeignKey(Event, on_delete=models.CASCADE)
-	role = models.CharField(max_length=191)
+	role = models.CharField(max_length=191, blank=True, null=True)
 	price = models.FloatField(default=0)
 	speaker = models.ForeignKey(Speaker, on_delete=models.CASCADE)
 	status = models.BooleanField(null=True, default=False)
