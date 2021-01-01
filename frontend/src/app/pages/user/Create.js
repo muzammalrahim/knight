@@ -97,9 +97,6 @@ class Create extends React.Component {
             this.setState({alert:{open:true, severity:"success", title:"success", message:'User Created Sucessfully'}})
             setTimeout(()=>{this.props.history.push('/users')}, 1000)
         }).catch((error)=>{
-
-            
-            
             Object.keys(error.response.data).map((key)=>{
                 console.log("key:",error.response.data);
                 this.setState({alert:{open:true, severity:"error", title:"Error", message:`${key+": "+error.response.data[key][0]}`}})

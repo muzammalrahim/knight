@@ -39,6 +39,7 @@ class Speaker(models.Model):
 	emitting_organ = models.CharField(max_length=191, blank=True, null=True)
 	email = models.CharField(unique=True, max_length=191)
 	mobile = models.IntegerField()
+	tier = models.IntegerField()
 	fax = models.IntegerField(blank=True, null=True)
 	linkedin = models.CharField(max_length=191, blank=True, null=True)
 	lattes = models.CharField(max_length=191, blank=True, null=True)
@@ -52,9 +53,10 @@ class Speaker(models.Model):
 	company_name = models.CharField(max_length=191, blank=True, null=True)
 	cpf = models.CharField(max_length=191, blank=True, null=True)
 	iban_account = models.CharField(max_length=191, blank=True, null=True)
+	pix = models.CharField(max_length=191, blank=True, null=True)
 	juridical_address = models.CharField(max_length=191, blank=True, null=True)
 	national_id = models.CharField(max_length=191, blank=True, null=True)
-	person_type = models.CharField(max_length=191, blank=True, null=True)
+	juridcal_person = models.BooleanField(null=True, default=False)
 	specialty = models.ForeignKey(Specialty, models.CASCADE, blank=True, null=True)
 	swift_bic = models.CharField(max_length=191, blank=True, null=True)
 	uf_city = models.CharField(max_length=191, blank=True, null=True)
@@ -95,10 +97,11 @@ class Event(models.Model):
 		ordering = ['date']
 
 class EventSpeaker(models.Model):
-	event = models.ForeignKey(Event, on_delete=models.CASCADE)
-	speaker = models.ForeignKey(Speaker, on_delete=models.CASCADE)
-	price = models.FloatField(default=0)
 	duration = models.PositiveIntegerField(blank=True)
+	event = models.ForeignKey(Event, on_delete=models.CASCADE)
+	role = models.CharField(max_length=191, blank=True, null=True)
+	price = models.FloatField(default=0)
+	speaker = models.ForeignKey(Speaker, on_delete=models.CASCADE)
 	status = models.BooleanField(null=True, default=False)
 
 	created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)

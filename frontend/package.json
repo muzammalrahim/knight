@@ -56,6 +56,8 @@
         "fg-loadcss": "2.1.0",
         "formik": "2.1.4",
         "json2mq": "0.2.0",
+        "jspdf": "^2.2.0",
+        "jspdf-autotable": "^3.5.13",
         "jss-rtl": "^0.3.0",
         "lodash": "4.17.15",
         "material-ui-popup-state": "1.4.1",
