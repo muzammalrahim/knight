@@ -89,23 +89,17 @@ class SpeakerEditForm extends React.Component{
 		if(key==="foreign_flag" || key==="registration_in_city" || key==="social_security" ||  		    key==="accept_information_rule"||  key == "juridcal_person"){
 			if(key === "foreign_flag")
 			 {
-				 console.log("foreign flag :",speaker[key]);
 				validateSpeaker['pix'] = speaker[key] ? true : false;
-				console.log("a",validateSpeaker['pix'])
 				if(speaker[key])
 				 {
-					 console.log("c: ",speaker[key])
 					speaker['pix'] = "";
 				 }
 				speaker[key]=!(speaker[key]);
 				validateSpeaker[key] = false;
 			}else{
 				  
-				console.log(!(speaker[key]));
 				speaker[key]=!(speaker[key]);
-				console.log("bang",speaker[key])
 				validateSpeaker[key] = false;
-				console.log("da se di",validateSpeaker[key])
 			}
 
 		}
@@ -922,11 +916,6 @@ class SpeakerEditForm extends React.Component{
 											</div>
 										</div>
 								
-									{ 
-									  console.log("kon hai",validateSpeaker['foreign_flag']),
-									  console.log("kon hai",validateSpeaker.foreign_flag)
-									}
-
 									 {speaker.foreign_flag && <div className="col-md-6">
 										<TextField
 											name="account_owner"

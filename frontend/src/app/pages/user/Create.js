@@ -58,8 +58,6 @@ class Create extends React.Component {
     }
     changeHandler(e){
         let [key, value, {user, userValidate}] = [e.target.id, e.target.value, this.state];
-        
-		// console.log("value :",value);
         user[key] = value;
         if(userValidate[key])
         {
@@ -77,18 +75,13 @@ class Create extends React.Component {
         let isSubmit = null;
         Object.keys(userValidate).map((key)=>{
 
-            // console.log("bhoom",user[key]);
             isSubmit = user[key] && isSubmit !== false ? true : false;
 
-            // console.log("issubmit",isSubmit)
             if(key==='email'){
                 userValidate[key] = user[key] && this.validateEmail(user[key]) ? false : true;
-
-                console.log(" userValidate[key ] email :" ,userValidate[key])
             }else{
                 userValidate[key] = user[key] && user[key].length > 3 ? false : true;
                 
-                // console.log(" userValidate[key] :" ,userValidate[key])
             }
         })
         this.setState({userValidate});
@@ -98,9 +91,7 @@ class Create extends React.Component {
             setTimeout(()=>{this.props.history.push('/users')}, 1000)
         }).catch((error)=>{
             Object.keys(error.response.data).map((key)=>{
-                console.log("key:",error.response.data);
                 this.setState({alert:{open:true, severity:"error", title:"Error", message:`${key+": "+error.response.data[key][0]}`}})
-                console.log("error:",error.response.data[key]);
             })
         })
     }   

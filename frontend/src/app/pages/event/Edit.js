@@ -178,7 +178,6 @@ class EventRegistrationForm extends React.Component {
 	render(){
 		let {event:{web_presential}, event, currentTab, speaker_list, speakers, countries, event_speaker,
 			validateEvent, alert:{open, severity, message, title}, specialty, current_speaker, validateEventSpeaker} = this.state;
-			console.log(event.speaker, speakers)
 		return (
 			<div className="row">
 				<Snackbar open={open} autoHideDuration={4000} anchorOrigin={{ vertical:'top', horizontal:'right' }} onClose={()=>{this.handleClose()}}>
