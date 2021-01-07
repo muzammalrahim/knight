@@ -87,7 +87,6 @@ class Event(models.Model):
 	cost_center = models.CharField(max_length=191)
 	speaker = models.ManyToManyField(Speaker, through='account.EventSpeaker')
 	virtual_presential = models.CharField(max_length=191)
-	displacement = models.CharField(max_length=191)
 
 	deleted_at = models.DateTimeField(blank=True, null=True)
 	created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
@@ -103,6 +102,7 @@ class EventSpeaker(models.Model):
 	price = models.FloatField(default=0)
 	speaker = models.ForeignKey(Speaker, on_delete=models.CASCADE)
 	status = models.BooleanField(null=True, default=False)
+	displacement = models.CharField(max_length=191)
 
 	created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 	updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
