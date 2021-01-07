@@ -591,6 +591,25 @@ class EventRegistrationForm extends React.Component {
 													helperText={validateEventSpeaker['price'] && 'this field is required'}
 												/>
 											</div> */}
+											<div className="col-md-12 pt-4 ml-4">
+										<h5>Displacement</h5>
+										<div className="col-md-12 pt-4 ml-4">
+											<FormControl component="fieldset" style={styles.formControl}>
+												<RadioGroup
+													aria-label="Gender"
+													name="displacement"
+													style={styles.group}
+													value={event.displacement}
+													onChange={(e)=>{this.handleChange(e)}}
+												>
+													<FormControlLabel value="local" control={<Radio />} label="Local (at the same State)" />
+													<FormControlLabel value="regional" control={<Radio />} label="Regional (at the same Country)" />
+													<FormControlLabel value="international" control={<Radio />} label="International (at different Country)" />
+												</RadioGroup>
+											</FormControl>
+										</div>
+									</div>
+
 											<div className="col-md-12 text-right pt-4">
 												<Button variant="contained" color="primary" style={styles.button} onClick={()=>{this.handleAddSpeaker()}}>
 													Add Speaker
@@ -627,27 +646,11 @@ class EventRegistrationForm extends React.Component {
 														</tr>
 													})
 												}
+											
 											</tbody>
 										</Table>
 									</div>}
-									<div className="col-md-12 pt-4 ml-4">
-										<h5>Displacement</h5>
-										<div className="col-md-12 pt-4 ml-4">
-											<FormControl component="fieldset" style={styles.formControl}>
-												<RadioGroup
-													aria-label="Gender"
-													name="displacement"
-													style={styles.group}
-													value={event.displacement}
-													onChange={(e)=>{this.handleChange(e)}}
-												>
-													<FormControlLabel value="local" control={<Radio />} label="Local (at the same State)" />
-													<FormControlLabel value="regional" control={<Radio />} label="Regional (at the same Country)" />
-													<FormControlLabel value="international" control={<Radio />} label="International (at different Country)" />
-												</RadioGroup>
-											</FormControl>
-										</div>
-									</div>
+									
 									<div className="col-md-12 text-right pt-4">
 										<Button variant="contained" color="default" style={styles.button} style={{float:'left'}} onClick={(e)=>{this.handleTabChange(e, 0)}}>
 											<ChevronLeft/>
