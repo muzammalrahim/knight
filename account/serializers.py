@@ -78,14 +78,7 @@ class SpecialtySerializer(serializers.ModelSerializer):
 class SpeakerSerializer(serializers.ModelSerializer):
     person = serializers.ListField()
 
-    # def create(self, validated_data):
-    #     persons = validated_data.pop('person')
-    #     print("persons", persons)
-    #     speaker = super(SpeakerSerializer, self).create(validated_data)
-    #     print(speaker)
-    #     for person in persons:
-    #         SpeakerPerson.objects.create(**person, speaker=speaker.id)
-    #     return speaker
+
 
     class Meta:
         model = Speaker

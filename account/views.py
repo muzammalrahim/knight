@@ -167,6 +167,12 @@ class SpeakersViewSet(viewsets.ModelViewSet):
             return super(SpeakersViewSet, self).destroy(request, *args, **kwargs)
 
 
+# class SpeakerPersonViewSet(viewsets.ModelViewSet):
+#
+#     queryset = Speaker.objects.all()
+#     serializer_class = SpeakerPersonSerializer
+
+
 @api_view(['GET'])
 def api_root(request, format=None):
     return Response({
