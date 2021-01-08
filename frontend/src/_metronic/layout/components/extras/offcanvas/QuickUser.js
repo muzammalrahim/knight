@@ -15,9 +15,6 @@ export function QuickUser() {
       history.push("/logout");
   };
 let user = JSON.parse(JSON.parse(localStorage.getItem('persist:v705-demo1-auth')).user)
-console.log(user)
-
-
   return (
       <div id="kt_quick_user" className="offcanvas offcanvas-right offcanvas p-10">
         <div className="offcanvas-header d-flex align-items-center justify-content-between pb-5">

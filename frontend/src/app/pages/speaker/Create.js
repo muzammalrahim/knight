@@ -38,22 +38,25 @@ const civilStatus = defineMessages({
 class SpeakerEditForm extends React.Component{
 	constructor(props){
 		super(props);
-		this.speaker={name: "", accept_information_rule: true, father_name: "", mother_name:"", dob:"", birthplace:"", civil_state:"", 
+
+		this.speaker={name: "", father_name: "", mother_name:"", dob:"", birthplace:"", civil_state:"",
 			scholarity: "", social_number: "", service_provider: "", country: "Brasil", state: "", city: "", neighborhood: "",
-			cep: "", ddd: "", address:"", id_number: "", document_issue_date: "", emitting_organ: "", email: "", mobile: "", fax: null, 
-			linkedin: "", lattes: "", orcid: "", juridcal_person:false, national_id:"", company_name:"", cpf:"", cnpj:"", uf_crm:"", uf_city:"", 
+			cep: "", ddd: "", address:"", id_number: "", document_issue_date: "", emitting_organ: "", email: "", mobile: "", fax: null,
+			linkedin: "", lattes: "", orcid: "", juridcal_person:false, national_id:"", company_name:"", cpf:"", cnpj:"", uf_crm:"", uf_city:"",
 			specialty:"", tier:"", juridical_address:"",	account_owner: "", bank_name: "", bank_address: "", swift_bic: "", iban_account: "", pix:"", agency: ""
 		}
-		this.validateSpeaker={ foreign_flag: false,	accept_information_rule: false,	name: false, father_name: false,	
-			mother_name: false,	dob: false, birthplace: false, civil_state: false, scholarity: false, social_number: false, service_provider: false, 
-			country: false, state: false, city: false, neighborhood: false, cep: false, ddd: false, address: false, id_number: false, 
-			document_issue_date: false, emitting_organ: false, email: false, mobile: false, fax: false, linkedin: false, lattes: false, orcid: false, 
+
+		this.validateSpeaker={ foreign_flag: false,	accept_information_rule: false,	name: false, father_name: false,
+			mother_name: false,	dob: false, birthplace: false, civil_state: false, scholarity: false, social_number: false, service_provider: false,
+			country: false, state: false, city: false, neighborhood: false, cep: false, ddd: false, address: false, id_number: false,
+			document_issue_date: false, emitting_organ: false, email: false, mobile: false, fax: false, linkedin: false, lattes: false, orcid: false,
 			registration_in_city: false, social_security: false, juridcal_person: false, national_id: false, company_name: false, cpf: false, cnpj: false,
-			uf_crm: false, uf_city: false, specialty: false, tier: false, juridical_address:false, account_owner: false, bank_name: false, bank_address: false, 
+			uf_crm: false, uf_city: false, specialty: false, tier: false, juridical_address:false, account_owner: false, bank_name: false, bank_address: false,
 			swift_bic: false, iban_account: false, pix: false, agency: false
 		}
+
         this.alert={
-            open: false, 
+            open: false,
             severity: '',
             message:'',
             title:''
@@ -83,15 +86,18 @@ class SpeakerEditForm extends React.Component{
 			speaker['uf_city'] = "";
 			speaker['juridical_address'] = "";
 		}
-		if(key==="foreign_flag" || key==="registration_in_city" || key==="social_security" || key == "juridcal_person"){
-			if(key === "foreign_flag"){
+		if(key==="foreign_flag" || key==="registration_in_city" || key==="social_security" ||  		    key==="accept_information_rule"||  key == "juridcal_person"){
+			if(key === "foreign_flag")
+			 {
 				validateSpeaker['pix'] = speaker[key] ? true : false;
-				if(speaker[key]){
+				if(speaker[key])
+				 {
 					speaker['pix'] = "";
-				}
+				 }
 				speaker[key]=!(speaker[key]);
 				validateSpeaker[key] = false;
 			}else{
+
 				speaker[key]=!(speaker[key]);
 				validateSpeaker[key] = false;
 			}
@@ -111,7 +117,7 @@ class SpeakerEditForm extends React.Component{
 		if(validateSpeaker[key]){
 			validateSpeaker[key] = speaker[key] ? false : true;
 		}
-		
+
 		this.setState({speaker, validateSpeaker});
 	}
 
@@ -121,7 +127,7 @@ class SpeakerEditForm extends React.Component{
 	handleSubmit(){
 		let {speaker, validateSpeaker} = this.state;
 		let isSubmit = null;
-		
+
 		Object.keys(validateSpeaker).map((key)=>{
 			if(speaker['juridcal_person'] === false && (key === "company_name" || key === "cnpj" || key === "uf_city" || key === "juridical_address" )){
 				validateSpeaker[key] = false;
@@ -136,14 +142,14 @@ class SpeakerEditForm extends React.Component{
 			}
 			else if(key==="foreign_flag" || key==="registration_in_city" || key==="social_security"){
 				validateSpeaker[key] = false;
-	
+
 			}
 			else{
 				validateSpeaker[key] = speaker[key] ? false : true;
 				isSubmit = speaker[key] && isSubmit !== false ? true : false;
 			}
 		})
-		console.log('validation', validateSpeaker)
+
         this.setState({validateSpeaker});
 		isSubmit && post(`api/speakers`, speaker).then((response)=>{
 			this.setState({alert:{open:true, severity:"success", title:"success", message:'User has been updated Sucessfully'}})
@@ -181,7 +187,7 @@ class SpeakerEditForm extends React.Component{
         this.setState({alert:{open:false, severity: '', message:'' }})
     }
 	render(){
-		let {speaker:{foreign_flag, accept_information_rule, juridcal_person}, speaker, currentTab, countries, 
+		let {speaker:{foreign_flag, accept_information_rule, juridcal_person}, speaker, currentTab, countries,
 			validateSpeaker, alert:{severity, message, title, open}, specialty_list} = this.state;
 		const {formatMessage} = this.props.intl;
 		return (
@@ -193,7 +199,7 @@ class SpeakerEditForm extends React.Component{
 					</Alert>
 				</Snackbar>
 				<Grid container spacing={3}>
-        			<Grid item xs={12}>	
+        			<Grid item xs={12}>
 						<h3 className="card-label text-center pt-4 pb-2">
 							<FormattedMessage id="Speaker.Registration.Title"/>
 						</h3>
@@ -246,7 +252,7 @@ class SpeakerEditForm extends React.Component{
 											helperText={validateSpeaker['name'] && 'this field is required'}
 										/>
 									</div>
-									
+
 									<div className="col-md-6">
 										<TextField
 											name="father_name"
@@ -611,7 +617,7 @@ class SpeakerEditForm extends React.Component{
 											onChange={(event)=>{this.handleChange(event)}}
 										/>
 									</div>
-									<div className="col-md-4 mt-4">
+									<div className="col-md-6 mt-4">
 										<Checkbox
 											name="registration_in_city"
 											checked={speaker.registration_in_city}
@@ -621,8 +627,10 @@ class SpeakerEditForm extends React.Component{
 											}}
 										/>
 						<strong> {<FormattedMessage id="Speaker.Registration.Form.Reg_City"/>}</strong>
+						 <br/>
+						<strong className="pl-13"> {<FormattedMessage id="Speaker.Registration.Form.Reg_City2"/>}</strong>
 									</div>
-									<div className="col-md-4 mt-4">
+									<div className="col-md-5 mt-4">
 										<Checkbox
 											name="social_security"
 											checked={speaker.social_security}
@@ -643,10 +651,10 @@ class SpeakerEditForm extends React.Component{
 								</>}
 								{currentTab === 1 && <>
 									<div className="col-md-12 text-center">
-										<Checkbox 
-											name="juridcal_person" 
+										<Checkbox
+											name="juridcal_person"
 											value={juridcal_person}
-											checked={juridcal_person ? true : false} 
+											checked={juridcal_person ? true : false}
 											onClick={(event)=>{this.handleChange(event)}}
 										/><strong>Juridical Person Data</strong>
 									</div>
@@ -661,7 +669,7 @@ class SpeakerEditForm extends React.Component{
 											variant="outlined"
 											error={validateSpeaker['national_id']}
 											helperText={validateSpeaker['national_id'] && 'this field is required'}
-										/> 
+										/>
 										<TextField
 											name="cpf"
 											label="CPF (Brazilian only)"
@@ -690,13 +698,13 @@ class SpeakerEditForm extends React.Component{
 													<Dropdown.Divider />
 													<Dropdown.Item href="#">Separated link</Dropdown.Item>
 												</DropdownButton>
-												<FormControl 
+												<FormControl
 													name="uf_crm"
-													aria-describedby="basic-addon1" 
+													aria-describedby="basic-addon1"
 													value={speaker.national_id ? speaker.uf_crm : ''}
 													onChange={(event)=>{this.handleChange(event)}}
 												/>
-											</InputGroup> 
+											</InputGroup>
 											{validateSpeaker['uf_crm'] && <FormText className="text-danger">this field is required</FormText>}
 										</>
 										<TextField
@@ -724,7 +732,7 @@ class SpeakerEditForm extends React.Component{
 													{option.label}
 												</option>
 											))}
-										</TextField> 
+										</TextField>
 										<TextField
 											name="tier"
 											select
@@ -750,7 +758,7 @@ class SpeakerEditForm extends React.Component{
 													{option.label}
 												</option>
 											))}
-										</TextField> 
+										</TextField>
 									</div>
 									<div className="col-md-6 text-center">
 										<div style={{opacity: !juridcal_person && "0.5"}}>
@@ -796,15 +804,15 @@ class SpeakerEditForm extends React.Component{
 														<Dropdown.Divider />
 														<Dropdown.Item href="#">Separated link</Dropdown.Item>
 													</DropdownButton>
-													<FormControl 
+													<FormControl
 														name="uf_city"
-														aria-describedby="basic-addon1" 
+														aria-describedby="basic-addon1"
 														disabled={!juridcal_person}
 														value={juridcal_person ? speaker.uf_city : ''}
 														onChange={(event)=>{this.handleChange(event)}}/>
 												</InputGroup>
 												{validateSpeaker['uf_city'] && <FormText className="text-danger">this field is required</FormText>}</>
-												
+
 												<TextField
 													disabled={!juridcal_person}
 													name="juridical_address"
@@ -907,7 +915,8 @@ class SpeakerEditForm extends React.Component{
 												/> */}
 											</div>
 										</div>
-									<div className="col-md-6">
+
+									 {speaker.foreign_flag && <div className="col-md-6">
 										<TextField
 											name="account_owner"
 											label="Account Owner"
@@ -919,7 +928,7 @@ class SpeakerEditForm extends React.Component{
 											error={validateSpeaker['account_owner']}
 											helperText={validateSpeaker['account_owner'] && 'this field is required'}
 										/>
-									</div>	
+									</div>}
 									<div className="col-md-6">
 										<TextField
 											name="bank_name"
@@ -948,8 +957,8 @@ class SpeakerEditForm extends React.Component{
 												</option>
 											))}
 										</TextField>
-									</div>	
-									<div className="col-md-6">
+									</div>
+									{speaker.foreign_flag && <div className="col-md-6">
 										<TextField
 											name="bank_address"
 											label="Bank Address"
@@ -961,8 +970,9 @@ class SpeakerEditForm extends React.Component{
 											error={validateSpeaker['bank_address']}
 											helperText={validateSpeaker['bank_address'] && 'this field is required'}
 										/>
-									</div>	
-									<div className="col-md-6">
+									</div>}
+
+									{speaker.foreign_flag && <div className="col-md-6">
 										<TextField
 											name="swift_bic"
 											label="Swift / BIC"
@@ -974,8 +984,8 @@ class SpeakerEditForm extends React.Component{
 											error={validateSpeaker['swift_bic']}
 											helperText={validateSpeaker['swift_bic'] && 'this field is required'}
 										/>
-										
-									</div>	
+
+									</div>}
 									<div className="col-md-6">
 										<TextField
 											name="iban_account"

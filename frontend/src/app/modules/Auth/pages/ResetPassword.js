@@ -6,20 +6,42 @@ import * as Yup from "yup";
 import { injectIntl } from "react-intl";
 import * as auth from "../_redux/authRedux";
 import { newPassword } from "../_redux/authCrud";
+import { TextField, Button, Icon, Snackbar, withStyles } from "@material-ui/core";
+import { Alert, AlertTitle } from '@material-ui/lab';
 
 const initialValues = {
   newpassword: "",
   confirmpassword: "",
+  email:""
 };
 
 function ResetPassword(props) {
 
-  const {id} = useParams()
-  alert(id);
+  const {id} = useParams();
+
   const { intl } = props;
   const [isRequested, setIsRequested] = useState(false);
+
+  const [alertsnack,setalertsnack] = useState({
+    open: false,
+    severity: '',
+     message:'',
+     title:''
+    });
+
   const ForgotPasswordSchema = Yup.object().shape({
-    newpassword: Yup.string() 
+
+    email: Yup.string()
+    .email("Wrong email format")
+    .min(3, "Minimum 3 symbols")
+    .max(50, "Maximum 50 symbols")
+    .required(
+      intl.formatMessage({
+        id: "AUTH.VALIDATION.REQUIRED_FIELD",
+      })
+    ),
+
+    newpassword: Yup.string()
       .min(6, "Minimum 6 symbols")
       .max(12, "Maximum 12 symbols")
       .required(
@@ -28,7 +50,7 @@ function ResetPassword(props) {
         })
       ),
 
-      confirmpassword: Yup.string()  
+      confirmpassword: Yup.string()
       .min(6, "Minimum 6 symbols")
       .max(12, "Maximum 12 symbols")
       .required(
@@ -53,10 +75,15 @@ function ResetPassword(props) {
 
     return "";
 
- 
+
   };
 
-const checkpass= (first, sec)=>
+  const handleClose=()=>{
+    setalertsnack({...alertsnack,open:false, severity: '', message:'' })
+  }
+
+
+const checkNewAndConfirmPassword = (first, sec)=>
 {
   if ( first != sec) {
    return false
@@ -66,33 +93,58 @@ const checkpass= (first, sec)=>
 
   const formik = useFormik({
     initialValues,
-    validationSchema: ForgotPasswordSchema , 
+    validationSchema: ForgotPasswordSchema ,
     onSubmit: (values, { setStatus, setSubmitting }) => {
-         newPassword(values.newpassword)
-        .then( () => setIsRequested(true))
+
+
+      if(!checkNewAndConfirmPassword(values.newpassword,values.confirmpassword)){
+
+        setSubmitting(false);
+        setalertsnack({
+          ...alertsnack,
+             open: true,
+             severity: 'error',
+             title:'Error',
+              message:'your password and confirm password are not match !',
+
+        });
+
+
+            }
+
+      else{
+      newPassword(values.newpassword,values.email,id)
+
+        .then( () => {
+                        setIsRequested(true)
+                         setSubmitting(true);
+                         setalertsnack({
+                          ...alertsnack,
+                             open: true,
+                             severity: 'success',
+                             title:'success',
+                              message:'your Email password change Sucessfully',
+
+                        });
+                        setTimeout(()=>{props.history.push('/auth/login')}, 3000)
+                        })
         .catch(() => {
           setIsRequested(false);
           setSubmitting(false);
-        
-         if(checkpass(values.newpassword,values.confirmpassword)){
-           setStatus(
-            intl.formatMessage(
-                    { id: "AUTH.VALIDATION.NOT_FOUND" },
-                    { name: values.newpassword }
-                    )
-                  );
-                }
-         else{
-          setStatus(
-            intl.formatMessage(
-              { id: "AUTH.VALIDATION.PASSWORD_MATCH_FIELD" },
-              { name: values.newpassword }
-             )
-            );
-             }
+
+
+          setalertsnack({
+            ...alertsnack,
+               open: true,
+               severity: 'error',
+               title:'Error',
+                message:'Email and password not change !',
+
+          });
+
         });
 
-      
+      }
     },
   });
 
@@ -100,7 +152,15 @@ const checkpass= (first, sec)=>
 
   return (
     <>
-      {isRequested && <Redirect to="/auth" />}
+    <Snackbar open={alertsnack.open} autoHideDuration={4000} anchorOrigin={{ vertical:'top', horizontal:'right' }} onClose={()=>{handleClose()}}>
+    <Alert onClose={()=>{handleClose()}} severity={alertsnack.severity}>
+        <AlertTitle>{alertsnack.title}</AlertTitle>
+        <strong>{alertsnack.message}</strong>
+    </Alert>
+  </Snackbar>
+
+
+
       {!isRequested && (
         <div className="login-form login-forgot" style={{ display: "block" }}>
           <div className="text-center mb-10 mb-lg-20">
@@ -109,6 +169,7 @@ const checkpass= (first, sec)=>
               Enter your New Password & Confirm password
             </div>
           </div>
+
           <form
             onSubmit={formik.handleSubmit}
             className="form fv-plugins-bootstrap fv-plugins-framework animated animate__animated animate__backInUp"
@@ -120,6 +181,28 @@ const checkpass= (first, sec)=>
                 </div>
               </div>
             )}
+
+            <div className="form-group fv-plugins-icon-container">
+            <input
+              type="email"
+              placeholder="Enter Email here!"
+              className={`form-control form-control-solid h-auto py-5 px-6 ${getInputClasses(
+                "email"
+              )}`}
+              name="email"
+              // onChange={hello}
+              {...formik.getFieldProps("email")}
+
+            />
+
+            {formik.touched.email && formik.errors.email ? (
+              <div className="fv-plugins-message-container">
+                <div className="fv-help-block">{formik.errors.email}</div>
+              </div>
+            ) : null}
+
+          </div>
+
 
             <div className="form-group fv-plugins-icon-container">
               <input
@@ -146,12 +229,11 @@ const checkpass= (first, sec)=>
                 className={`form-control form-control-solid h-auto py-5 px-6 ${getInputClasses(
                   "password"
                 )}`}
-                // onChange = {(e)=>{console.log(e.target.value)}}
                 name="confirmpassword"
                  {...formik.getFieldProps("confirmpassword")}
-                
+
               />
-              
+
               {formik.touched.confirmpassword && formik.errors.confirmpassword ? (
                 <div className="fv-plugins-message-container">
                   <div className="fv-help-block">{formik.errors.confirmpassword}</div>
@@ -164,8 +246,9 @@ const checkpass= (first, sec)=>
                 id="kt_login_forgot_submit"
                 type="submit"
                 className="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-4"
-                disabled={formik.isSubmitting}
+                disabled={formik.isSubmitting || !formik.isValid }
               >
+
                 Submit
               </button>
               <Link to="/auth">
