@@ -2,12 +2,6 @@ from django.contrib.auth.models import User, Group
 from account.models import Event, Speaker, User as CustomUser, Price, Specialty, EventSpeaker, SpeakerPerson
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
-import json
-
-from knight import settings
-from django.utils.safestring import mark_safe
-from django.template.loader import get_template
-from account.backend import send_emails
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -76,19 +70,33 @@ class SpecialtySerializer(serializers.ModelSerializer):
 
 
 class SpeakerSerializer(serializers.ModelSerializer):
-    person = serializers.ListField()
+    person = serializers.ListField(write_only=True)
+    def __init__(self, *args, **kwargs):
+        super(SpeakerSerializer, self).__init__(*args, **kwargs)
 
+    # person = SpeakerPersonSerializer(many=True, write_only=True)
 
+    def create(self, validated_data):
+        persons = validated_data.pop('person')
+        speaker = Speaker.objects.create(**validated_data)
+        for person in persons:
+            person['speaker'] = speaker
+            SpeakerPerson.objects.create(**person)
+        return speaker
 
     class Meta:
         model = Speaker
         fields = '__all__'
 
 
-# class SpeakerPersonSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = SpeakerPerson
-#         fields = '__all__'
+class SpeakerPersonSerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        super(SpeakerPersonSerializer, self).__init__(*args, **kwargs)
+        self.fields['speaker'].required = True
+
+    class Meta:
+        model = SpeakerPerson
+        fields = '__all__'
 
 
 class EventSpeakerSerializer(serializers.ModelSerializer):

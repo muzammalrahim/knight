@@ -8,6 +8,14 @@ router = DefaultRouter()
 
 # router.register(r'speakerperson', users_view.SpeakerPersonSerializer)
 
+speaker_person = users_view.SpeakerPersonViewSet.as_view({
+    'get': 'list',
+    'post': 'create',
+    'put': 'update',
+    'patch': 'partial_update',
+    'delete': 'destroy'
+})
+
 user_detail = users_view.UserViewSet.as_view({
     'get': 'retrieve',
     'post': 'create',
@@ -66,8 +74,10 @@ urlpatterns = format_suffix_patterns([
 
     path('login', users_view.login),
     path('logout', users_view.logout),
+    path('speakerperson', speaker_person, name='events'),
 
     path('users/<pk>/', user_detail),
+
 
     path('events', events_list, name='events'),
     path('event/<pk>/', events_detail, name='event'),
