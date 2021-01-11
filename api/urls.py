@@ -6,6 +6,8 @@ from django.conf.urls import url
 
 router = DefaultRouter()
 
+# router.register(r'speakerperson', users_view.SpeakerPersonSerializer)
+
 user_detail = users_view.UserViewSet.as_view({
     'get': 'retrieve',
     'post': 'create',

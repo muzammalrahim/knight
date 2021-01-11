@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User, Group
-from account.models import Event, Speaker, User as CustomUser, Price, Specialty, EventSpeaker
+from account.models import Event, Speaker, User as CustomUser, Price, Specialty, EventSpeaker, SpeakerPerson
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
 import json
@@ -76,9 +76,19 @@ class SpecialtySerializer(serializers.ModelSerializer):
 
 
 class SpeakerSerializer(serializers.ModelSerializer):
+    person = serializers.ListField()
+
+
+
     class Meta:
         model = Speaker
         fields = '__all__'
+
+
+# class SpeakerPersonSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = SpeakerPerson
+#         fields = '__all__'
 
 
 class EventSpeakerSerializer(serializers.ModelSerializer):

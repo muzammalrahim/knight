@@ -18,7 +18,7 @@ function ForgotPassword(props) {
   const { intl } = props;
   const [isRequested, setIsRequested] = useState(false);
    const [alertsnack,setalertsnack] = useState({
-                                                    open: false, 
+                                                    open: false,
                                                     severity: '',
                                                      message:'',
                                                      title:''
@@ -49,7 +49,7 @@ function ForgotPassword(props) {
 
  const handleClose=()=>{
     setalertsnack({...alertsnack,open:false, severity: '', message:'' })
-  }   
+  }
 
   const formik = useFormik({
     initialValues,
@@ -64,7 +64,7 @@ function ForgotPassword(props) {
             severity: 'success',
             title:'success',
             message:'Email send and verified Sucessfully',
-              
+
           });
           setTimeout(()=>{props.history.push('/auth/login')}, 6000)
         })
@@ -78,7 +78,7 @@ function ForgotPassword(props) {
                severity: 'error',
                title:'Error',
                 message:'Email not Send ',
-             
+
           });
           setStatus(
             intl.formatMessage(
@@ -97,7 +97,7 @@ function ForgotPassword(props) {
         <AlertTitle>{alertsnack.title}</AlertTitle>
         <strong>{alertsnack.message}</strong>
     </Alert>
-  </Snackbar> 
+  </Snackbar>
 
       {!isRequested && (
         <div className="login-form login-forgot" style={{ display: "block" }}>
@@ -127,15 +127,14 @@ function ForgotPassword(props) {
                 name="email"
                 // onChange={hello}
                 {...formik.getFieldProps("email")}
-               
+
               />
-               
+
               {formik.touched.email && formik.errors.email ? (
                 <div className="fv-plugins-message-container">
                   <div className="fv-help-block">{formik.errors.email}</div>
                 </div>
               ) : null}
-
             </div>
             <div className="form-group d-flex flex-wrap flex-center">
               <button
@@ -143,7 +142,7 @@ function ForgotPassword(props) {
                 type="submit"
                 className="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-4"
                 // disabled={(formik.isSubmitting) || (formik.touched.email)?true:false}
-                disabled={ formik.isSubmitting || !formik.isValid}                    
+                disabled={ formik.isSubmitting || !formik.isValid}
               >
                 Submit
               </button>

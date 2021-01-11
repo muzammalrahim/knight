@@ -18,16 +18,16 @@ class EventRegistrationForm extends React.Component {
 		this.event={
 			name:"", _type:"", date:"", duration:"", web_presential:"", country:"",	state:"",
 			city:"", address:"", solicitant:"", business_unit:"", despartment:"", cost_center:"",
-			speaker:[], virtual_presential:"", 
+			speaker:[], virtual_presential:"",
 		}
 		this.validateEvent={
 			name:false, _type:false, date:false, duration:false, web_presential:false, country:false,	state:false,
 			city:false, address:false, solicitant:false, business_unit:false, despartment:false, cost_center:false, virtual_presential:false, 
-			
+
 		}
 
 		this.alert={
-			open: false, 
+			open: false,
 			severity: '',
 			message:'',
 			title:''
@@ -36,7 +36,7 @@ class EventRegistrationForm extends React.Component {
 		this.validateEventSpeaker={
 			duration:false, role: false, speaker:false , displacement:false
 		}
-	
+
 		this.speaker = {
 			speaker:'',
 			role:'',
@@ -655,11 +655,11 @@ class EventRegistrationForm extends React.Component {
 														</tr>
 													})
 												}
-											
+
 											</tbody>
 										</Table>
 									</div>}
-									
+
 
 									<div className="col-md-12 text-right pt-4">
 										<Button variant="contained" color="default" style={styles.button} style={{float:'left'}} onClick={(e)=>{this.handleTabChange(e, 0)}}>
@@ -758,7 +758,7 @@ class EventRegistrationForm extends React.Component {
 													</div>
 													<div className="col-md-6 col-12">
 														<div className="kt_detail__item_title">Displacement</div>
-														<div>{current_speaker.displacement ? current_speaker.displacement : '---'}</div>
+														<div>{event.displacement ? event.displacement : '---'}</div>
 													</div>
 												</div>
 												<div className="row mb-4">

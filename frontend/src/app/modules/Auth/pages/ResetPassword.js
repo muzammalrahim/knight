@@ -23,12 +23,12 @@ function ResetPassword(props) {
   const [isRequested, setIsRequested] = useState(false);
 
   const [alertsnack,setalertsnack] = useState({
-    open: false, 
+    open: false,
     severity: '',
      message:'',
      title:''
     });
- 
+
   const ForgotPasswordSchema = Yup.object().shape({
 
     email: Yup.string()
@@ -41,7 +41,7 @@ function ResetPassword(props) {
       })
     ),
 
-    newpassword: Yup.string() 
+    newpassword: Yup.string()
       .min(6, "Minimum 6 symbols")
       .max(12, "Maximum 12 symbols")
       .required(
@@ -80,7 +80,7 @@ function ResetPassword(props) {
 
   const handleClose=()=>{
     setalertsnack({...alertsnack,open:false, severity: '', message:'' })
-  } 
+  }
 
 
 const checkNewAndConfirmPassword = (first, sec)=>
@@ -96,9 +96,9 @@ const checkNewAndConfirmPassword = (first, sec)=>
     validationSchema: ForgotPasswordSchema , 
     onSubmit: (values, { setStatus, setSubmitting }) => {
 
-     
+
       if(!checkNewAndConfirmPassword(values.newpassword,values.confirmpassword)){
-        
+
         setSubmitting(false);
         setalertsnack({
           ...alertsnack,
@@ -106,17 +106,17 @@ const checkNewAndConfirmPassword = (first, sec)=>
              severity: 'error',
              title:'Error',
               message:'your password and confirm password are not match !',
-           
+
         });
 
-     
-            } 
-          
-      else{  
+
+            }
+
+      else{
       newPassword(values.newpassword,values.email,id)
-    
+
         .then( () => {
-                        setIsRequested(true) 
+                        setIsRequested(true)
                          setSubmitting(true);
                          setalertsnack({
                           ...alertsnack,
@@ -124,7 +124,7 @@ const checkNewAndConfirmPassword = (first, sec)=>
                              severity: 'success',
                              title:'success',
                               message:'your Email password change Sucessfully',
-                           
+
                         });
                         setTimeout(()=>{props.history.push('/auth/login')}, 3000)
                         })
@@ -132,16 +132,16 @@ const checkNewAndConfirmPassword = (first, sec)=>
           setIsRequested(false);
           setSubmitting(false);
 
-          
+
           setalertsnack({
             ...alertsnack,
                open: true,
                severity: 'error',
                title:'Error',
                 message:'Email and password not change !',
-             
+
           });
-       
+
         });
 
       }
@@ -157,10 +157,10 @@ const checkNewAndConfirmPassword = (first, sec)=>
         <AlertTitle>{alertsnack.title}</AlertTitle>
         <strong>{alertsnack.message}</strong>
     </Alert>
-  </Snackbar> 
+  </Snackbar>
 
 
-     
+
       {!isRequested && (
         <div className="login-form login-forgot" style={{ display: "block" }}>
           <div className="text-center mb-10 mb-lg-20">
@@ -169,7 +169,6 @@ const checkNewAndConfirmPassword = (first, sec)=>
               Enter your New Password & Confirm password
             </div>
           </div>
-
           <form
             onSubmit={formik.handleSubmit}
             className="form fv-plugins-bootstrap fv-plugins-framework animated animate__animated animate__backInUp"
@@ -192,9 +191,9 @@ const checkNewAndConfirmPassword = (first, sec)=>
               name="email"
               // onChange={hello}
               {...formik.getFieldProps("email")}
-             
+
             />
-             
+
             {formik.touched.email && formik.errors.email ? (
               <div className="fv-plugins-message-container">
                 <div className="fv-help-block">{formik.errors.email}</div>
@@ -229,6 +228,7 @@ const checkNewAndConfirmPassword = (first, sec)=>
                 className={`form-control form-control-solid h-auto py-5 px-6 ${getInputClasses(
                   "password"
                 )}`}
+                // onChange = {(e)=>{console.log(e.target.value)}}
                 name="confirmpassword"
                  {...formik.getFieldProps("confirmpassword")}
                 
@@ -248,7 +248,7 @@ const checkNewAndConfirmPassword = (first, sec)=>
                 className="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-4"
                 disabled={formik.isSubmitting || !formik.isValid }
               >
-              
+
                 Submit
               </button>
               <Link to="/auth">

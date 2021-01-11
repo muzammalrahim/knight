@@ -8,8 +8,7 @@ First you need to install Docker on your PC and then run following commands.
 Inside knight folder run below commands
 
 ```bash
-docker-compose up db
-docker-compose up api
+docker-compose up --build
 ```
 and then
 

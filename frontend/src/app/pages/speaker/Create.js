@@ -38,20 +38,20 @@ const civilStatus = defineMessages({
 class SpeakerEditForm extends React.Component{
 	constructor(props){
 		super(props);
-		
-		this.speaker={name: "", father_name: "", mother_name:"", dob:"", birthplace:"", civil_state:"", 
+
+		this.speaker={name: "", father_name: "", mother_name:"", dob:"", birthplace:"", civil_state:"",
 			scholarity: "", social_number: "", service_provider: "", country: "Brasil", state: "", city: "", neighborhood: "",
 			cep: "", ddd: "", address:"", id_number: "", document_issue_date: "", emitting_organ: "", email: "", mobile: "", fax: null, 
-			linkedin: "", lattes: "", orcid: "", juridcal_person:false,foreign_flag: false, national_id:"", company_name:"", cpf:"", cnpj:"", uf_crm:"", uf_city:"", 
+			linkedin: "", lattes: "", orcid: "", juridcal_person:false,foreign_flag: false, national_id:"", company_name:"", cpf:"", cnpj:"", uf_crm:"", uf_city:"",
 			specialty:"", tier:"", juridical_address:"",	account_owner: "", bank_name: "", bank_address: "", swift_bic: "", iban_account: "", pix:"", agency: ""  , addperson :[]
 		}
 
-		this.validateSpeaker={ foreign_flag: false,	accept_information_rule: false,	name: false, father_name: false,	
+		this.validateSpeaker={ foreign_flag: false,	accept_information_rule: false,	name: false, father_name: false,
 			mother_name: false,	dob: false, birthplace: false, civil_state: false, scholarity: false, social_number: false, service_provider: false, 
 			country: false, state: false, city: false, neighborhood: false, cep: false, ddd: false, address: false, id_number: false, 
 			document_issue_date: false, emitting_organ: false, email: false, mobile: false, fax: false, linkedin: false, lattes: false, orcid: false, 
 			registration_in_city: false, social_security: false, juridcal_person: false, national_id: false, company_name: false, cpf: false, cnpj: false,
-			uf_crm: false, uf_city: false, specialty: false, tier: false, juridical_address:false, account_owner: false, bank_name: false, bank_address: false, 
+			uf_crm: false, uf_city: false, specialty: false, tier: false, juridical_address:false, account_owner: false, bank_name: false, bank_address: false,
 			swift_bic: false, iban_account: false, pix: false, agency: false
 		}
 
@@ -85,7 +85,7 @@ this.addperson = {
 
 	handleChange(event){
 		let [key, value, {speaker,validateSpeaker}] = [event.target.name, event.target.value, this.state];
-		
+
 
 		if (speaker['juridcal_person'] === false){
 			validateSpeaker['company_name'] = false;
@@ -98,18 +98,18 @@ this.addperson = {
 			speaker['uf_city'] = "";
 			speaker['juridical_address'] = "";
 		}
-// 
+//
 		// if (validateSpeaker['foreign_flag'] === false){
-// 
+//
 			// console.log("ff",speaker['foreign_flag'])
 			// validateSpeaker['account_owner'] = false;
 			// validateSpeaker['swift_bic'] = false;
 			// validateSpeaker['bank_address'] = false;
-// 
+//
 			// speaker['account_owner'] = "";
 			// speaker['swift_bic'] = "";
 			// speaker['bank_address'] = "";
-// 
+//
 					// }
 
 
@@ -124,9 +124,10 @@ this.addperson = {
 				 }
 				speaker[key]=!(speaker[key]);
 				validateSpeaker[key] = false;
-			
+
 			}else{
-				  
+
+
 				speaker[key]=!(speaker[key]);
 				validateSpeaker[key] = false;
 			}
@@ -157,24 +158,24 @@ handleChangeAddspeaker(e){
 	let [key, value, {current_addperson,}] = [e.target.name, e.target.value, this.state];
 		current_addperson[key]=value;
 this.setState({current_addperson});
-	}	
+	}
 
 	handleAddperson(){
 		let {current_addperson,speaker_addperson,addpersons,speaker} = this.state;
-		
+
 
 		let addperson = addpersons.find(data => data.id == current_addperson.addperson)
 	      console.log(addperson)
 		 list(`api/addperson`, {name:current_addperson.addperson, relation:current_addperson.relation, dob:current_addperson.dob})
 		 .then((response)=>{
-			
+
 			if(!speaker['addperson'].includes(current_addperson.addperson)){
 				speaker['addperson'].push(current_addperson.addperson);
 				speaker_addperson.push(current_addperson)
 			}
 			this.setState({
-				speaker_addperson, 
-				speaker, 
+				speaker_addperson,
+				speaker,
 				current_speaker:{speaker:'', price:0, duration:''}
 			});
 		})
@@ -187,15 +188,15 @@ this.setState({current_addperson});
 	handleSubmit(){
 		let {speaker, validateSpeaker} = this.state;
 		let isSubmit = null;
-		
+
 		Object.keys(validateSpeaker).map((key)=>{
 
 			if(speaker['juridcal_person'] === false && (key === "company_name" || key === "cnpj" || key === "uf_city" || key === "juridical_address" ))
 			{
 				validateSpeaker[key] = false;
 			}
-			   
-			
+
+
 			else if(speaker['foreign_flag'] === false && (key === "account_owner" || key == "swift_bic" || key == "bank_address" ))
 			{
 
@@ -209,18 +210,18 @@ this.setState({current_addperson});
 			else if(key === "pix" && speaker['foreign_flag'] === false){
 				validateSpeaker['pix'] = false;
 				speaker['pix'] = "";
-	
+
 			}
 			else if(key==="foreign_flag" || key==="registration_in_city" || key==="social_security"){
 				validateSpeaker[key] = false;
-	
+
 			}
 			else{
 				validateSpeaker[key] = speaker[key] ? false : true;
 				isSubmit = speaker[key] && isSubmit !== false ? true : false;
 			}
 		})
-		
+
         this.setState({validateSpeaker});
 		isSubmit && post(`api/speakers`, speaker).then((response)=>{
 			this.setState({alert:{open:true, severity:"success", title:"success", message:'User has been updated Sucessfully'}})
@@ -260,6 +261,8 @@ this.setState({current_addperson});
 	render(){
 		let {speaker:{foreign_flag, accept_information_rule, juridcal_person}, speaker, currentTab, countries, 
 			validateSpeaker, alert:{severity, message, title, open}, specialty_list,current_addperson} = this.state;
+		let {speaker:{foreign_flag, accept_information_rule, juridcal_person}, speaker, currentTab, countries,
+			validateSpeaker, alert:{severity, message, title, open}, specialty_list} = this.state;
 		const {formatMessage} = this.props.intl;
 		return (
 			<div style={styles.root}>
@@ -270,7 +273,7 @@ this.setState({current_addperson});
 					</Alert>
 				</Snackbar>
 				<Grid container spacing={3}>
-        			<Grid item xs={12}>	
+        			<Grid item xs={12}>
 						<h3 className="card-label text-center pt-4 pb-2">
 							<FormattedMessage id="Speaker.Registration.Title"/>
 						</h3>
@@ -325,7 +328,7 @@ this.setState({current_addperson});
 											helperText={validateSpeaker['name'] && 'this field is required'}
 										/>
 									</div>
-									
+
 									<div className="col-md-6">
 										<TextField
 											name="father_name"
@@ -700,7 +703,9 @@ this.setState({current_addperson});
 											}}
 										/>
 						<strong> {<FormattedMessage id="Speaker.Registration.Form.Reg_City"/>}</strong>
-						 <br/>  
+						 <br/>
+						<strong className="pl-13"> {<FormattedMessage id="Speaker.Registration.Form.Reg_City2"/>}</strong>
+						 <br/>
 						<strong className="pl-13"> {<FormattedMessage id="Speaker.Registration.Form.Reg_City2"/>}</strong>
 									</div>
 									<div className="col-md-5 mt-4">
@@ -717,8 +722,8 @@ this.setState({current_addperson});
 
 									<div className="container">
 									<div className="row" style={{border:'1px solid gray', margin:'1rem', padding:'1rem'}}>
-									
-			
+
+
 												<div className="col-md-3">
 												  <TextField
 													required
@@ -734,7 +739,7 @@ this.setState({current_addperson});
 												// helperText={validateEvent['add_person_name'] && 'this field is required'}
 												/>
 											</div>
-										
+
 											<div className="col-md-3">
 											<TextField
 											  required
@@ -750,7 +755,7 @@ this.setState({current_addperson});
 										  // helperText={validateEvent['add_person_name'] && 'this field is required'}
 										  />
 										</div>
-									   
+
 						<div className="col-md-3 mt-5">
 											<TextField
 												required
@@ -767,10 +772,10 @@ this.setState({current_addperson});
 												// helperText={validateSpeaker['dob']}
 											/>
 										</div>
-									
-										
-									
-									
+
+
+
+
 										<div className="col-md-12 text-right pt-4">
 											<Button variant="contained" color="primary" style={styles.button} onClick={()=>{this.handleAddperson()}}>
 												Add Person
@@ -808,11 +813,11 @@ this.setState({current_addperson});
 													// </tr>
 												// })
 											 }
-										
+
 										</tbody>
 									</Table>
 									</div>}
-									
+
 
 
 
@@ -827,12 +832,12 @@ this.setState({current_addperson});
 								</>}
 								{currentTab === 1 && <>
 									<div className="col-md-12 text-center">
-										<Checkbox 
-											name="juridcal_person" 
+										<Checkbox
+											name="juridcal_person"
 											value={juridcal_person}
-											checked={juridcal_person ? true : false} 
+											checked={juridcal_person ? true : false}
 											onClick={(event)=>{this.handleChange(event)}}
-										/><strong>Legal Person</strong>
+										/><strong>Juridical Person Data</strong>
 									</div>
 									<div className="col-md-6 text-center">
 										<TextField
@@ -845,7 +850,7 @@ this.setState({current_addperson});
 											variant="outlined"
 											error={validateSpeaker['national_id']}
 											helperText={validateSpeaker['national_id'] && 'this field is required'}
-										/> 
+										/>
 										<TextField
 											name="cpf"
 											label="CPF (Brazilian only)"
@@ -874,13 +879,13 @@ this.setState({current_addperson});
 													<Dropdown.Divider />
 													<Dropdown.Item href="#">Separated link</Dropdown.Item>
 												</DropdownButton>
-												<FormControl 
+												<FormControl
 													name="uf_crm"
-													aria-describedby="basic-addon1" 
+													aria-describedby="basic-addon1"
 													value={speaker.national_id ? speaker.uf_crm : ''}
 													onChange={(event)=>{this.handleChange(event)}}
 												/>
-											</InputGroup> 
+											</InputGroup>
 											{validateSpeaker['uf_crm'] && <FormText className="text-danger">this field is required</FormText>}
 										</>
 										<TextField
@@ -908,7 +913,7 @@ this.setState({current_addperson});
 													{option.label}
 												</option>
 											))}
-										</TextField> 
+										</TextField>
 										<TextField
 											name="tier"
 											select
@@ -980,15 +985,15 @@ this.setState({current_addperson});
 														<Dropdown.Divider />
 														<Dropdown.Item href="#">Separated link</Dropdown.Item>
 													</DropdownButton>
-													<FormControl 
+													<FormControl
 														name="uf_city"
-														aria-describedby="basic-addon1" 
+														aria-describedby="basic-addon1"
 														disabled={!juridcal_person}
 														value={juridcal_person ? speaker.uf_city : ''}
 														onChange={(event)=>{this.handleChange(event)}}/>
 												</InputGroup>
 												{validateSpeaker['uf_city'] && <FormText className="text-danger">this field is required</FormText>}</>
-												
+
 												<TextField
 													disabled={!juridcal_person}
 													name="juridical_address"
@@ -1091,7 +1096,9 @@ this.setState({current_addperson});
 												/> */}
 											</div>
 										</div>
-								
+
+									 {speaker.foreign_flag && <div className="col-md-6">
+
 									 {speaker.foreign_flag && <div className="col-md-6">
 										<TextField
 											name="account_owner"
@@ -1135,6 +1142,8 @@ this.setState({current_addperson});
 										</TextField>
 									</div>	
 									{speaker.foreign_flag && <div className="col-md-6">
+									</div>
+									{speaker.foreign_flag && <div className="col-md-6">
 										<TextField
 											name="bank_address"
 											label="Bank Address"
@@ -1161,7 +1170,9 @@ this.setState({current_addperson});
 											helperText={validateSpeaker['swift_bic'] && 'this field is required'}
 										/>
 										
-									</div>}	
+									</div>}
+
+									</div>}
 									<div className="col-md-6">
 										<TextField
 											name="iban_account"
