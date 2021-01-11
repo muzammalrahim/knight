@@ -140,6 +140,9 @@
   "Speaker.Registration.Form.Reg_City2": "imobiliários (Prefeitura)?",
   "Speaker.Registration.Form.Social_sec": "É contribuinte do INSS (Previdência Social)?",
 
+  "Speaker.add_person_name":"NOME",
+  "Speaker.add_person_relationship":"parentesco",
+  "speaker.add_person.dob":"Date de Nascimento",
 
   "Speaker.List.Title": "Lista de Oradores",
   "Speaker.List.Column.Name": "Nome",

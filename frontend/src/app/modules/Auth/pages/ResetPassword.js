@@ -169,7 +169,6 @@ const checkNewAndConfirmPassword = (first, sec)=>
               Enter your New Password & Confirm password
             </div>
           </div>
-
           <form
             onSubmit={formik.handleSubmit}
             className="form fv-plugins-bootstrap fv-plugins-framework animated animate__animated animate__backInUp"
@@ -229,6 +228,7 @@ const checkNewAndConfirmPassword = (first, sec)=>
                 className={`form-control form-control-solid h-auto py-5 px-6 ${getInputClasses(
                   "password"
                 )}`}
+                // onChange = {(e)=>{console.log(e.target.value)}}
                 name="confirmpassword"
                  {...formik.getFieldProps("confirmpassword")}
 

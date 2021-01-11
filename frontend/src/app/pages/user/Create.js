@@ -58,8 +58,6 @@ class Create extends React.Component {
     }
     changeHandler(e){
         let [key, value, {user, userValidate}] = [e.target.id, e.target.value, this.state];
-        
-		// console.log("value :",value);
         user[key] = value;
         if(userValidate[key])
         {
@@ -83,6 +81,7 @@ class Create extends React.Component {
                 userValidate[key] = user[key] && this.validateEmail(user[key]) ? false : true;
             }else{
                 userValidate[key] = user[key] && user[key].length > 3 ? false : true;
+
 
             }
         })

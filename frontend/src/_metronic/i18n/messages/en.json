@@ -133,6 +133,7 @@
   "Speaker.Registration.Form.Latter_Url": "Lattes URL ",
   "Speaker.Registration.Form.Orcid_Url": "ORCID Link ",
   "Speaker.Registration.Form.Reg_City": "Registration in City ",
+  "Speaker.Registration.Form.Reg_City2": " ",
   "Speaker.Registration.Form.Social_sec": "Social Security Contributor",
 
 
@@ -143,6 +144,10 @@
   "Speaker.List.Column.Email": "Email",
   "Speaker.List.Column.City": "City",
   "Speaker.List.Column.Action":"Action",
+
+  "Speaker.add_person_name":"Name",
+  "Speaker.add_person_relationship":"Relationship",
+  "speaker.add_person.dob":"Birthday",
 
   "User.Registration.Title": "Create User",
   "User.Registration.Form.Email": "Email",

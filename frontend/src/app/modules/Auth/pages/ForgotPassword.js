@@ -135,7 +135,6 @@ function ForgotPassword(props) {
                   <div className="fv-help-block">{formik.errors.email}</div>
                 </div>
               ) : null}
-
             </div>
             <div className="form-group d-flex flex-wrap flex-center">
               <button

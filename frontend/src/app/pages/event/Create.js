@@ -18,38 +18,42 @@ class EventRegistrationForm extends React.Component {
 		this.event={
 			name:"", _type:"", date:"", duration:"", web_presential:"", country:"",	state:"",
 			city:"", address:"", solicitant:"", business_unit:"", despartment:"", cost_center:"",
-			speaker:[], virtual_presential:"", displacement:''
+			speaker:[], virtual_presential:"",
 		}
 		this.validateEvent={
 			name:false, _type:false, date:false, duration:false, web_presential:false, country:false,	state:false,
-			city:false, address:false, solicitant:false, business_unit:false, despartment:false, cost_center:false, virtual_presential:false, 
-			displacement:false
+			city:false, address:false, solicitant:false, business_unit:false, despartment:false, cost_center:false, virtual_presential:false,
+
 		}
-		this.validateEventSpeaker={
-			duration:false, role: false, speaker:false
-		}
+
 		this.alert={
-            open: false, 
-            severity: '',
-            message:'',
-            title:''
+			open: false,
+			severity: '',
+			message:'',
+			title:''
 		}
+
+		this.validateEventSpeaker={
+			duration:false, role: false, speaker:false , displacement:false
+		}
+
 		this.speaker = {
 			speaker:'',
 			role:'',
 			price:0,
-			duration:''
+			duration:'',
+			displacement:''
 		}
 		this.state={
 			event: this.event,
 			validateEvent: this.validateEvent,
-			validateEventSpeaker: this.validateEventSpeaker,
 			alert: this.alert,
 			currentTab: 0,
 			speaker_list:[],
 			speakers:[],
 			countries:[],
 			specialty:[],
+			validateEventSpeaker: this.validateEventSpeaker,
 			event_speaker:[],
 			current_speaker:this.speaker
 		}
@@ -60,10 +64,11 @@ class EventRegistrationForm extends React.Component {
 		let [key, value, {current_speaker, validateEventSpeaker}] = [e.target.name, e.target.value, this.state];
 			current_speaker[key]=value;
 		if(validateEventSpeaker[key]){
-            validateEventSpeaker[key] = current_speaker[key] ? false : true;
-        }
+			validateEventSpeaker[key] = current_speaker[key] ? false : true;
+		   }
 		this.setState({current_speaker, validateEventSpeaker})
 	}
+
 	handleAddSpeaker(){
 		let {event_speaker, event, current_speaker, validateEventSpeaker, speakers} = this.state;
 		let isSubmit = null;
@@ -74,20 +79,23 @@ class EventRegistrationForm extends React.Component {
 		this.setState({validateEventSpeaker})
 
 		let speaker = speakers.find(data => data.id == current_speaker.speaker)
-		isSubmit && list(`api/price`, {specialty:speaker.specialty, program_type:event._type, tier:speaker.tier}).then((response)=>{
-			if(!event['speaker'].includes(current_speaker.speaker) && response.data.length){
-				current_speaker['price'] = response.data[0].hour_price*current_speaker.duration;
+		isSubmit && list(`api/price`, {specialty:speaker.specialty, program_type:event._type, tier:speaker.tier})
+		.then((response)=>{
+			if(!event['speaker'].includes(current_speaker.speaker)){
+				console.log("resoponse:",response.data[0].hour_price)
+		current_speaker['price'] = response.data[0].hour_price*current_speaker.duration;
+//		current_speaker['price'] = 200*current_speaker.duration;
 				event['speaker'].push(current_speaker.speaker);
 				event_speaker.push(current_speaker)
 			}
 			this.setState({
-				event_speaker, 
-				event, 
-				current_speaker:{speaker:'', price:0, duration:''}
+				event_speaker,
+				event,
+				current_speaker:{speaker:'', price:0, duration:'',displacement:''}
 			});
 		})
 	}
-		
+
 	handleChange(e){
 		let [key, value, {event, validateEvent}] = [e.target.name, e.target.value, this.state];
 		event[key]=value;
@@ -149,7 +157,7 @@ class EventRegistrationForm extends React.Component {
 	}
 	handleClose(){
         this.setState({alert:{open:false, severity: '', message:'' }})
-    }   
+    }
 	componentDidMount(){
 		this.getSpeakers();
 		fetch('https://restcountries.eu/rest/v2/all')
@@ -432,7 +440,7 @@ class EventRegistrationForm extends React.Component {
 											helperText={validateEvent['business_unit'] && 'this field is required'}
 											margin="normal"
 											variant="outlined"
-										>	
+										>
 											<option value={null}>
 												Select Business Unit....
 											</option>
@@ -470,7 +478,7 @@ class EventRegistrationForm extends React.Component {
 											error={validateEvent['cost_center']}
 											helperText={validateEvent['cost_center'] && 'this field is required'}
 										/>
-									</div>									
+									</div>
 									<div className="col-md-6">
 										<TextField
 											required
@@ -490,7 +498,7 @@ class EventRegistrationForm extends React.Component {
 											helperText={validateEvent['virtual_presential'] && 'this field is required'}
 											margin="normal"
 											variant="outlined"
-										>	
+										>
 											<option value={null}>
 												Select Virtual / Presential....
 											</option>
@@ -501,6 +509,7 @@ class EventRegistrationForm extends React.Component {
 											))}
 										</TextField>
 									</div>
+
 									<div className="container">
 										<div className="row" style={{border:'1px solid gray', margin:'1rem', padding:'1rem'}}>
 											<div className="col-md-6">
@@ -599,8 +608,8 @@ class EventRegistrationForm extends React.Component {
 													aria-label="Gender"
 													name="displacement"
 													style={styles.group}
-													value={event.displacement}
-													onChange={(e)=>{this.handleChange(e)}}
+													value={current_speaker.displacement}
+													onChange={(e)=>{this.handleChangeSpeaker(e)}}
 												>
 													<FormControlLabel value="local" control={<Radio />} label="Local (at the same State)" />
 													<FormControlLabel value="regional" control={<Radio />} label="Regional (at the same Country)" />
@@ -650,6 +659,7 @@ class EventRegistrationForm extends React.Component {
 											</tbody>
 										</Table>
 									</div>}
+
 
 									<div className="col-md-12 text-right pt-4">
 										<Button variant="contained" color="default" style={styles.button} style={{float:'left'}} onClick={(e)=>{this.handleTabChange(e, 0)}}>
