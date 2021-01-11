@@ -1,8 +1,8 @@
 import React from "react";
-import { TextField, Button, Icon, AppBar, Tabs, Tab, Checkbox, Grid, Typography, Snackbar } from "@material-ui/core";
+import { TextField, Button, Icon, AppBar, Tabs, Tab,Table, Checkbox, Grid, Typography, Snackbar } from "@material-ui/core";
 import { Dropdown, FormControl, InputGroup, DropdownButton, FormText } from "react-bootstrap";
 import PropTypes from 'prop-types';
-import {ChevronLeft} from '@material-ui/icons';
+import {ChevronLeft,Delete,} from '@material-ui/icons';
 import { FormattedMessage } from "react-intl";
 import {
 	getCurrentDate
@@ -42,8 +42,8 @@ class SpeakerEditForm extends React.Component{
 		this.speaker={name: "", father_name: "", mother_name:"", dob:"", birthplace:"", civil_state:"", 
 			scholarity: "", social_number: "", service_provider: "", country: "Brasil", state: "", city: "", neighborhood: "",
 			cep: "", ddd: "", address:"", id_number: "", document_issue_date: "", emitting_organ: "", email: "", mobile: "", fax: null, 
-			linkedin: "", lattes: "", orcid: "", juridcal_person:false, national_id:"", company_name:"", cpf:"", cnpj:"", uf_crm:"", uf_city:"", 
-			specialty:"", tier:"", juridical_address:"",	account_owner: "", bank_name: "", bank_address: "", swift_bic: "", iban_account: "", pix:"", agency: ""
+			linkedin: "", lattes: "", orcid: "", juridcal_person:false,foreign_flag: false, national_id:"", company_name:"", cpf:"", cnpj:"", uf_crm:"", uf_city:"", 
+			specialty:"", tier:"", juridical_address:"",	account_owner: "", bank_name: "", bank_address: "", swift_bic: "", iban_account: "", pix:"", agency: ""  , addperson :[]
 		}
 
 		this.validateSpeaker={ foreign_flag: false,	accept_information_rule: false,	name: false, father_name: false,	
@@ -61,6 +61,13 @@ class SpeakerEditForm extends React.Component{
             message:'',
             title:''
         }
+
+this.addperson = {
+			addperson:'',
+			relation:'',
+			dob:'',
+		}
+
 		this.state={
 			speaker: this.speaker,
 			validateSpeaker: this.validateSpeaker,
@@ -68,13 +75,18 @@ class SpeakerEditForm extends React.Component{
 			currentTab: 0,
 			onlyNums:'',
 			countries:[{value:'Select country ....', label:'Select country ....'}],
-			specialty_list:[]
+			specialty_list:[],
+			addpersons:[],
+			speaker_addperson:[],
+			current_addperson:this.addperson,
 		}
 		this.handleTabChange = this.handleTabChange.bind(this);
 	}
 
 	handleChange(event){
-		let [key, value, {speaker, validateSpeaker}] = [event.target.name, event.target.value, this.state];
+		let [key, value, {speaker,validateSpeaker}] = [event.target.name, event.target.value, this.state];
+		
+
 		if (speaker['juridcal_person'] === false){
 			validateSpeaker['company_name'] = false;
 			validateSpeaker['cnpj'] = false;
@@ -86,7 +98,23 @@ class SpeakerEditForm extends React.Component{
 			speaker['uf_city'] = "";
 			speaker['juridical_address'] = "";
 		}
-		if(key==="foreign_flag" || key==="registration_in_city" || key==="social_security" ||  		    key==="accept_information_rule"||  key == "juridcal_person"){
+// 
+		// if (validateSpeaker['foreign_flag'] === false){
+// 
+			// console.log("ff",speaker['foreign_flag'])
+			// validateSpeaker['account_owner'] = false;
+			// validateSpeaker['swift_bic'] = false;
+			// validateSpeaker['bank_address'] = false;
+// 
+			// speaker['account_owner'] = "";
+			// speaker['swift_bic'] = "";
+			// speaker['bank_address'] = "";
+// 
+					// }
+
+
+		if(key==="foreign_flag" || key==="registration_in_city" || key==="social_security" ||  		    key==="accept_information_rule"||  key == "juridcal_person")
+		{
 			if(key === "foreign_flag")
 			 {
 				validateSpeaker['pix'] = speaker[key] ? true : false;
@@ -96,6 +124,7 @@ class SpeakerEditForm extends React.Component{
 				 }
 				speaker[key]=!(speaker[key]);
 				validateSpeaker[key] = false;
+			
 			}else{
 				  
 				speaker[key]=!(speaker[key]);
@@ -103,23 +132,54 @@ class SpeakerEditForm extends React.Component{
 			}
 
 		}
-		else if(key==="id_number" || key==="fax" || key==="mobile"){
+		else if(key==="id_number" || key==="fax" || key==="mobile")
+		{
 			if(event.keyCode !== 107 && event.keyCode !== 109 && event.keyCode !== 187 && event.keyCode !== 189){
 				speaker[key]=value;
 			}
 			else {
 				event.target.value = speaker[key];
-			}
+				}
 		}
-		else {
+		else{
 			speaker[key]= value;
 		}
+
 		if(validateSpeaker[key]){
 			validateSpeaker[key] = speaker[key] ? false : true;
 		}
 		
-		this.setState({speaker, validateSpeaker});
+		this.setState({speaker, validateSpeaker,});
 	}
+
+
+handleChangeAddspeaker(e){
+	let [key, value, {current_addperson,}] = [e.target.name, e.target.value, this.state];
+		current_addperson[key]=value;
+this.setState({current_addperson});
+	}	
+
+	handleAddperson(){
+		let {current_addperson,speaker_addperson,addpersons,speaker} = this.state;
+		
+
+		let addperson = addpersons.find(data => data.id == current_addperson.addperson)
+	      console.log(addperson)
+		 list(`api/addperson`, {name:current_addperson.addperson, relation:current_addperson.relation, dob:current_addperson.dob})
+		 .then((response)=>{
+			
+			if(!speaker['addperson'].includes(current_addperson.addperson)){
+				speaker['addperson'].push(current_addperson.addperson);
+				speaker_addperson.push(current_addperson)
+			}
+			this.setState({
+				speaker_addperson, 
+				speaker, 
+				current_speaker:{speaker:'', price:0, duration:''}
+			});
+		})
+	}
+
 
 	handleTabChange(event, currentTab) {
 		this.setState({currentTab});
@@ -129,9 +189,19 @@ class SpeakerEditForm extends React.Component{
 		let isSubmit = null;
 		
 		Object.keys(validateSpeaker).map((key)=>{
-			if(speaker['juridcal_person'] === false && (key === "company_name" || key === "cnpj" || key === "uf_city" || key === "juridical_address" )){
+
+			if(speaker['juridcal_person'] === false && (key === "company_name" || key === "cnpj" || key === "uf_city" || key === "juridical_address" ))
+			{
 				validateSpeaker[key] = false;
 			}
+			   
+			
+			else if(speaker['foreign_flag'] === false && (key === "account_owner" || key == "swift_bic" || key == "bank_address" ))
+			{
+
+				validateSpeaker[key] = false;
+			}
+
 			//Skip Optional Fields form Validation
 			else if(key === "lattes" || key === "linkedin" || key === "ddd" || key === "fax" || key === "orcid" || key === "juridcal_person"){
 				validateSpeaker[key] = false;
@@ -139,6 +209,7 @@ class SpeakerEditForm extends React.Component{
 			else if(key === "pix" && speaker['foreign_flag'] === false){
 				validateSpeaker['pix'] = false;
 				speaker['pix'] = "";
+	
 			}
 			else if(key==="foreign_flag" || key==="registration_in_city" || key==="social_security"){
 				validateSpeaker[key] = false;
@@ -188,7 +259,7 @@ class SpeakerEditForm extends React.Component{
     }
 	render(){
 		let {speaker:{foreign_flag, accept_information_rule, juridcal_person}, speaker, currentTab, countries, 
-			validateSpeaker, alert:{severity, message, title, open}, specialty_list} = this.state;
+			validateSpeaker, alert:{severity, message, title, open}, specialty_list,current_addperson} = this.state;
 		const {formatMessage} = this.props.intl;
 		return (
 			<div style={styles.root}>
@@ -218,7 +289,8 @@ class SpeakerEditForm extends React.Component{
 									<div className="col-md-3">
 										<Checkbox
 											name="foreign_flag"
-											checked={foreign_flag}
+											value={foreign_flag}
+											checked={foreign_flag ? true : false}
 											onChange={(event)=>{this.handleChange(event)}}
 											inputProps={{
 											'aria-label': 'primary checkbox',
@@ -226,6 +298,7 @@ class SpeakerEditForm extends React.Component{
 										/>
 										<strong> {<FormattedMessage id="Speaker.Registration.Form.F_Flag"/>}</strong>
 									</div>
+
 									<div className="col-md-9">
 										<Checkbox
 											checked={accept_information_rule}
@@ -641,6 +714,109 @@ class SpeakerEditForm extends React.Component{
 										/>
 										<strong> {<FormattedMessage id="Speaker.Registration.Form.Social_sec"/>} </strong>
 									</div>
+
+									<div className="container">
+									<div className="row" style={{border:'1px solid gray', margin:'1rem', padding:'1rem'}}>
+									
+			
+												<div className="col-md-3">
+												  <TextField
+													required
+													name="addperson"
+													label={<FormattedMessage id="Speaker.add_person_name"/>}
+													style={styles.textField}
+													value={current_addperson.addperson}
+													onChange={(e)=>{this.handleChangeAddspeaker(e)}}
+													margin="normal"
+													variant="outlined"
+													// error={validateEvent['add_person_name']}
+													// helperText={validateEvent['add_person_name']}
+												// helperText={validateEvent['add_person_name'] && 'this field is required'}
+												/>
+											</div>
+										
+											<div className="col-md-3">
+											<TextField
+											  required
+											  name="relation"
+											  label={<FormattedMessage id="Speaker.add_person_relationship"/>}
+											  style={styles.textField}
+											  value={current_addperson.relation}
+											  onChange={(e)=>{this.handleChangeAddspeaker(e)}}
+											  margin="normal"
+											  variant="outlined"
+											  // error={validateEvent['add_person_name']}
+											  // helperText={validateEvent['add_person_name']}
+										  // helperText={validateEvent['add_person_name'] && 'this field is required'}
+										  />
+										</div>
+									   
+						<div className="col-md-3 mt-5">
+											<TextField
+												required
+												name="dob"
+												label={<FormattedMessage id="speaker.add_person.dob"/>}
+												type="date"
+												value={current_addperson.dob ? current_addperson.dob : getCurrentDate()}
+												style={styles.textField}
+												InputLabelProps={{
+													shrink: true
+												}}
+												onChange={(event) =>{this.handleChangeAddspeaker(event)}}
+												// error={validateSpeaker['dob']}
+												// helperText={validateSpeaker['dob']}
+											/>
+										</div>
+									
+										
+									
+									
+										<div className="col-md-12 text-right pt-4">
+											<Button variant="contained" color="primary" style={styles.button} onClick={()=>{this.handleAddperson()}}>
+												Add Person
+												<Icon style={styles.rightIcon}>add</Icon>
+											</Button>
+										</div>
+									</div>
+									</div>
+									{speaker.addperson.length > 0 && <div className="col-md-12 m-4">
+									<h5>Selected person</h5>
+									<Table striped bordered hover className="ml-4 mr-4">
+										<thead>
+											<tr>
+											<th>Name</th>
+											<th>Relationship</th>
+											<th>Date of Birth</th>
+											<th style={{textAlign:'center'}}>Action</th>
+											</tr>
+										</thead>
+										<tbody>
+											// {
+												// speaker.addperson.map((speaker)=>{
+													// let spk = speakers.find(data => data.id == speaker)
+													// let data = event_speaker.find(data => data.speaker == speaker)
+													// return spk && <tr>
+														// <td>{spk.name}</td>
+														// <td>{spk.specialty && specialty.find(specialty => spk.specialty == specialty.id).name}</td>
+														// <td>{data && data.price}</td>
+														// <td style={{textAlign:'center'}}>
+														// <Delete style={{cursor:'pointer'}} onClick={()=>{
+																// speaker.addperson = speaker.addperson.filter(e => e !== speaker)
+																// this.setState({speaker})
+															// }}
+														// /></td>
+													// </tr>
+												// })
+											 }
+										
+										</tbody>
+									</Table>
+									</div>}
+									
+
+
+
+
 									<div className="col-md-12 text-right pt-4">
 										<Button variant="contained" color="primary" style={styles.button} onClick={(e)=>{this.handleTabChange(e,1)}}>
 											Next
@@ -656,7 +832,7 @@ class SpeakerEditForm extends React.Component{
 											value={juridcal_person}
 											checked={juridcal_person ? true : false} 
 											onClick={(event)=>{this.handleChange(event)}}
-										/><strong>Juridical Person Data</strong>
+										/><strong>Legal Person</strong>
 									</div>
 									<div className="col-md-6 text-center">
 										<TextField

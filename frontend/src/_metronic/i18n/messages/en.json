@@ -145,6 +145,10 @@
   "Speaker.List.Column.City": "City",
   "Speaker.List.Column.Action":"Action",
 
+  "Speaker.add_person_name":"Name",
+  "Speaker.add_person_relationship":"Relationship",
+  "speaker.add_person.dob":"Birthday",
+
   "User.Registration.Title": "Create User",
   "User.Registration.Form.Email": "Email",
   "User.Registration.Form.User_Name": "Username",
