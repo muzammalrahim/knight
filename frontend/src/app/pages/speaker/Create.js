@@ -7,7 +7,8 @@ import { FormattedMessage } from "react-intl";
 import {
 	getCurrentDate
   } from "../../../_metronic/_helpers";
-import list, {post} from '../helper/api';
+import list,{post} from '../helper/api';
+import addpersonlist from '../helper/api';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import {defineMessages, injectIntl, intlShape} from 'react-intl';
 
@@ -76,6 +77,8 @@ this.addperson = {
 			onlyNums:'',
 			countries:[{value:'Select country ....', label:'Select country ....'}],
 			specialty_list:[],
+
+			addperson_list:[],
 			addpersons:[],
 			speaker_addperson:[],
 			current_addperson:this.addperson,
@@ -161,15 +164,16 @@ this.setState({current_addperson});
 	}
 
 	handleAddperson(){
-		let {current_addperson,speaker_addperson,addpersons,speaker} = this.state;
+		let {speaker_addperson,speaker,current_addperson,addpersons} = this.state;
 
-
+		//let isSubmit = null;
 		let addperson = addpersons.find(data => data.id == current_addperson.addperson)
-	      console.log(addperson)
-		 list(`api/addperson`, {name:current_addperson.addperson, relation:current_addperson.relation, dob:current_addperson.dob})
+	      console.log(current_addperson)
+		 addpersonlist(`api/speakerperson`, {name:current_addperson.addperson, relation:current_addperson.relation, dob:current_addperson.dob})
 		 .then((response)=>{
 
-			if(!speaker['addperson'].includes(current_addperson.addperson)){
+			if(!speaker['addperson'].includes(current_addperson.addperson))
+			{
 				speaker['addperson'].push(current_addperson.addperson);
 				speaker_addperson.push(current_addperson)
 			}
@@ -223,6 +227,7 @@ this.setState({current_addperson});
 		})
 
         this.setState({validateSpeaker});
+         speaker['speaker_addperson']=this.state.speaker_addperson;
 		isSubmit && post(`api/speakers`, speaker).then((response)=>{
 			this.setState({alert:{open:true, severity:"success", title:"success", message:'User has been updated Sucessfully'}})
 			setTimeout(()=>{
@@ -234,7 +239,21 @@ this.setState({current_addperson});
 				})
 			})
 	}
+		getAddpersons(){
+				addpersonlist('api/speakerperson').then((response)=>{
+
+						let addperson_list = [];
+
+						response.data.map((row)=>{
+			  addperson_list.push({label:row.name, value:row.id})
+		  })
+						 this.setState({addperson_list, addpersons:response.data});
+		} )
+		}
+
+
 	componentDidMount(){
+		this.getAddpersons();
 		fetch('https://restcountries.eu/rest/v2/all')
 		.then(response => response.json())
 		.then((data) => {
@@ -259,8 +278,9 @@ this.setState({current_addperson});
         this.setState({alert:{open:false, severity: '', message:'' }})
     }
 	render(){
-		let {speaker:{foreign_flag, accept_information_rule, juridcal_person}, speaker, currentTab, countries,
+		let {speaker:{foreign_flag, accept_information_rule, juridcal_person}, speaker, currentTab,addperson_list, countries,
 			validateSpeaker, alert:{severity, message, title, open}, specialty_list,current_addperson} = this.state;
+
 		const {formatMessage} = this.props.intl;
 		return (
 			<div style={styles.root}>
@@ -1139,6 +1159,7 @@ this.setState({current_addperson});
 											))}
 										</TextField>
 									</div>
+
 									{speaker.foreign_flag && <div className="col-md-6">
 										<TextField
 											name="bank_address"
