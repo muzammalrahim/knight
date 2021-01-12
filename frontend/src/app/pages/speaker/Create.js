@@ -41,22 +41,22 @@ class SpeakerEditForm extends React.Component{
 
 		this.speaker={name: "", father_name: "", mother_name:"", dob:"", birthplace:"", civil_state:"",
 			scholarity: "", social_number: "", service_provider: "", country: "Brasil", state: "", city: "", neighborhood: "",
-			cep: "", ddd: "", address:"", id_number: "", document_issue_date: "", emitting_organ: "", email: "", mobile: "", fax: null, 
+			cep: "", ddd: "", address:"", id_number: "", document_issue_date: "", emitting_organ: "", email: "", mobile: "", fax: null,
 			linkedin: "", lattes: "", orcid: "", juridcal_person:false,foreign_flag: false, national_id:"", company_name:"", cpf:"", cnpj:"", uf_crm:"", uf_city:"",
 			specialty:"", tier:"", juridical_address:"",	account_owner: "", bank_name: "", bank_address: "", swift_bic: "", iban_account: "", pix:"", agency: ""  , addperson :[]
 		}
 
 		this.validateSpeaker={ foreign_flag: false,	accept_information_rule: false,	name: false, father_name: false,
-			mother_name: false,	dob: false, birthplace: false, civil_state: false, scholarity: false, social_number: false, service_provider: false, 
-			country: false, state: false, city: false, neighborhood: false, cep: false, ddd: false, address: false, id_number: false, 
-			document_issue_date: false, emitting_organ: false, email: false, mobile: false, fax: false, linkedin: false, lattes: false, orcid: false, 
+			mother_name: false,	dob: false, birthplace: false, civil_state: false, scholarity: false, social_number: false, service_provider: false,
+			country: false, state: false, city: false, neighborhood: false, cep: false, ddd: false, address: false, id_number: false,
+			document_issue_date: false, emitting_organ: false, email: false, mobile: false, fax: false, linkedin: false, lattes: false, orcid: false,
 			registration_in_city: false, social_security: false, juridcal_person: false, national_id: false, company_name: false, cpf: false, cnpj: false,
 			uf_crm: false, uf_city: false, specialty: false, tier: false, juridical_address:false, account_owner: false, bank_name: false, bank_address: false,
 			swift_bic: false, iban_account: false, pix: false, agency: false
 		}
 
         this.alert={
-            open: false, 
+            open: false,
             severity: '',
             message:'',
             title:''
@@ -149,7 +149,7 @@ this.addperson = {
 		if(validateSpeaker[key]){
 			validateSpeaker[key] = speaker[key] ? false : true;
 		}
-		
+
 		this.setState({speaker, validateSpeaker,});
 	}
 
@@ -259,9 +259,9 @@ this.setState({current_addperson});
         this.setState({alert:{open:false, severity: '', message:'' }})
     }
 	render(){
-		let {speaker:{foreign_flag, accept_information_rule, juridcal_person}, speaker, currentTab, countries, 
+		let {speaker:{foreign_flag, accept_information_rule, juridcal_person}, speaker, currentTab, countries,
 			validateSpeaker, alert:{severity, message, title, open}, specialty_list,current_addperson} = this.state;
-		
+
 		const {formatMessage} = this.props.intl;
 		return (
 			<div style={styles.root}>
@@ -938,7 +938,7 @@ this.setState({current_addperson});
 													{option.label}
 												</option>
 											))}
-										</TextField> 
+										</TextField>
 									</div>
 									<div className="col-md-6 text-center">
 										<div style={{opacity: !juridcal_person && "0.5"}}>
@@ -1139,8 +1139,8 @@ this.setState({current_addperson});
 												</option>
 											))}
 										</TextField>
-									</div>	
-									
+									</div>
+
 									{speaker.foreign_flag && <div className="col-md-6">
 										<TextField
 											name="bank_address"
@@ -1167,7 +1167,7 @@ this.setState({current_addperson});
 											error={validateSpeaker['swift_bic']}
 											helperText={validateSpeaker['swift_bic'] && 'this field is required'}
 										/>
-										
+
 									</div>}
 
 									</div>}

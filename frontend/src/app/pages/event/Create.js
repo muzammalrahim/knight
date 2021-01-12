@@ -22,7 +22,7 @@ class EventRegistrationForm extends React.Component {
 		}
 		this.validateEvent={
 			name:false, _type:false, date:false, duration:false, web_presential:false, country:false,	state:false,
-			city:false, address:false, solicitant:false, business_unit:false, despartment:false, cost_center:false, virtual_presential:false, 
+			city:false, address:false, solicitant:false, business_unit:false, despartment:false, cost_center:false, virtual_presential:false,
 
 		}
 
@@ -89,13 +89,13 @@ class EventRegistrationForm extends React.Component {
 				event_speaker.push(current_speaker)
 			}
 			this.setState({
-				event_speaker, 
-				event, 
+				event_speaker,
+				event,
 				current_speaker:{speaker:'', price:0, duration:'',displacement:''}
 			});
 		})
 	}
-		
+
 	handleChange(e){
 		let [key, value, {event, validateEvent}] = [e.target.name, e.target.value, this.state];
 		event[key]=value;
@@ -157,7 +157,7 @@ class EventRegistrationForm extends React.Component {
 	}
 	handleClose(){
         this.setState({alert:{open:false, severity: '', message:'' }})
-    }   
+    }
 	componentDidMount(){
 		this.getSpeakers();
 		fetch('https://restcountries.eu/rest/v2/all')
@@ -440,7 +440,7 @@ class EventRegistrationForm extends React.Component {
 											helperText={validateEvent['business_unit'] && 'this field is required'}
 											margin="normal"
 											variant="outlined"
-										>	
+										>
 											<option value={null}>
 												Select Business Unit....
 											</option>
@@ -478,7 +478,7 @@ class EventRegistrationForm extends React.Component {
 											error={validateEvent['cost_center']}
 											helperText={validateEvent['cost_center'] && 'this field is required'}
 										/>
-									</div>									
+									</div>
 									<div className="col-md-6">
 										<TextField
 											required
@@ -498,7 +498,7 @@ class EventRegistrationForm extends React.Component {
 											helperText={validateEvent['virtual_presential'] && 'this field is required'}
 											margin="normal"
 											variant="outlined"
-										>	
+										>
 											<option value={null}>
 												Select Virtual / Presential....
 											</option>

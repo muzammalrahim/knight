@@ -75,7 +75,7 @@ class Speaker(models.Model):
         ordering = ['created_at']
 
 class SpeakerPerson(models.Model):
-    speaker = models.ForeignKey(Speaker, models.CASCADE, blank=True, null=True)
+    speaker = models.ForeignKey(Speaker, models.CASCADE)
     name = models.CharField(max_length=191)
     birthday = models.DateField(auto_now=False, auto_now_add=False)
     relationship = models.CharField(max_length=191)
