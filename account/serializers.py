@@ -76,9 +76,6 @@ class SpecialtySerializer(serializers.ModelSerializer):
 
 
 class SpeakerSerializer(serializers.ModelSerializer):
-    person = serializers.ListField()
-
-
 
     class Meta:
         model = Speaker

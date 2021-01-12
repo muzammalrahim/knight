@@ -261,8 +261,7 @@ this.setState({current_addperson});
 	render(){
 		let {speaker:{foreign_flag, accept_information_rule, juridcal_person}, speaker, currentTab, countries, 
 			validateSpeaker, alert:{severity, message, title, open}, specialty_list,current_addperson} = this.state;
-		let {speaker:{foreign_flag, accept_information_rule, juridcal_person}, speaker, currentTab, countries,
-			validateSpeaker, alert:{severity, message, title, open}, specialty_list} = this.state;
+		
 		const {formatMessage} = this.props.intl;
 		return (
 			<div style={styles.root}>
@@ -1141,8 +1140,7 @@ this.setState({current_addperson});
 											))}
 										</TextField>
 									</div>	
-									{speaker.foreign_flag && <div className="col-md-6">
-									</div>
+									
 									{speaker.foreign_flag && <div className="col-md-6">
 										<TextField
 											name="bank_address"
