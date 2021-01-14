@@ -8,7 +8,6 @@ import {
 	getCurrentDate
   } from "../../../_metronic/_helpers";
 import list,{post} from '../helper/api';
-import addpersonlist from '../helper/api';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import {defineMessages, injectIntl, intlShape} from 'react-intl';
 
@@ -44,7 +43,7 @@ class SpeakerEditForm extends React.Component{
 			scholarity: "", social_number: "", service_provider: "", country: "Brasil", state: "", city: "", neighborhood: "",
 			cep: "", ddd: "", address:"", id_number: "", document_issue_date: "", emitting_organ: "", email: "", mobile: "", fax: null,
 			linkedin: "", lattes: "", orcid: "", juridcal_person:false,foreign_flag: false, national_id:"", company_name:"", cpf:"", cnpj:"", uf_crm:"", uf_city:"",
-			specialty:"", tier:"", juridical_address:"",	account_owner: "", bank_name: "", bank_address: "", swift_bic: "", iban_account: "", pix:"", agency: ""  , addperson :[]
+			specialty:"", tier:"", juridical_address:"",	account_owner: "", bank_name: "", bank_address: "", swift_bic: "", iban_account: "", pix:"", agency: ""  , 
 		}
 
 		this.validateSpeaker={ foreign_flag: false,	accept_information_rule: false,	name: false, father_name: false,
@@ -81,7 +80,7 @@ this.addperson = {
 			addperson_list:[],
 			addpersons:[],
 			speaker_addperson:[],
-			current_addperson:this.addperson,
+			current_addperson:{},
 		}
 		this.handleTabChange = this.handleTabChange.bind(this);
 	}
@@ -158,31 +157,41 @@ this.addperson = {
 
 
 handleChangeAddspeaker(e){
-	let [key, value, {current_addperson,}] = [e.target.name, e.target.value, this.state];
+	let [key, value, {current_addperson}] = [e.target.name, e.target.value, this.state];
 		current_addperson[key]=value;
 this.setState({current_addperson});
 	}
 
 	handleAddperson(){
 		let {speaker_addperson,speaker,current_addperson,addpersons} = this.state;
+		speaker_addperson.push({
+			name:current_addperson.name, 
+			relationship: current_addperson.relationship,
+			birthday: current_addperson.birthday
+		});
 
+		this.setState({speaker_addperson})
 		//let isSubmit = null;
-		let addperson = addpersons.find(data => data.id == current_addperson.addperson)
-	      console.log(current_addperson)
-		 addpersonlist(`api/speakerperson`, {name:current_addperson.addperson, relation:current_addperson.relation, dob:current_addperson.dob})
-		 .then((response)=>{
-
-			if(!speaker['addperson'].includes(current_addperson.addperson))
-			{
-				speaker['addperson'].push(current_addperson.addperson);
-				speaker_addperson.push(current_addperson)
-			}
-			this.setState({
-				speaker_addperson,
-				speaker,
-				current_speaker:{speaker:'', price:0, duration:''}
-			});
-		})
+		// let addperson = addpersons.find(data => data.addperson == current_addperson.addperson)
+		// post(`api/speakerperson`, speaker_addperson).then((response)=>{
+			// console.log('this api is called')
+		// })
+		//   .then((response)=>{
+// 
+			//  if(!speaker['addperson'].includes(current_addperson.addperson))
+			//  {
+				//  console.log("current_addperson:",current_addperson)
+				// speaker['addperson'].push(current_addperson.addperson);
+				// speaker_addperson.push(current_addperson)
+			//   }
+			// this.setState({
+				// speaker_addperson,
+				// speaker,
+				// current_speaker:{addperson:'', relation:'', dob:''},
+				// 
+			// });
+			// console.log("wai kana:",speaker_addperson)
+		//  })
 	}
 
 
@@ -197,6 +206,7 @@ this.setState({current_addperson});
 
 			if(speaker['juridcal_person'] === false && (key === "company_name" || key === "cnpj" || key === "uf_city" || key === "juridical_address" ))
 			{
+
 				validateSpeaker[key] = false;
 			}
 
@@ -226,8 +236,11 @@ this.setState({current_addperson});
 			}
 		})
 
+		console.log('is submit', isSubmit);
+
         this.setState({validateSpeaker});
-         speaker['speaker_addperson']=this.state.speaker_addperson;
+		 speaker['person']=this.state.speaker_addperson;
+		 console.log("che tabh:",speaker)
 		isSubmit && post(`api/speakers`, speaker).then((response)=>{
 			this.setState({alert:{open:true, severity:"success", title:"success", message:'User has been updated Sucessfully'}})
 			setTimeout(()=>{
@@ -239,21 +252,11 @@ this.setState({current_addperson});
 				})
 			})
 	}
-		getAddpersons(){
-				addpersonlist('api/speakerperson').then((response)=>{
 
-						let addperson_list = [];
-
-						response.data.map((row)=>{
-			  addperson_list.push({label:row.name, value:row.id})
-		  })
-						 this.setState({addperson_list, addpersons:response.data});
-		} )
-		}
-
+	
 
 	componentDidMount(){
-		this.getAddpersons();
+		
 		fetch('https://restcountries.eu/rest/v2/all')
 		.then(response => response.json())
 		.then((data) => {
@@ -279,9 +282,11 @@ this.setState({current_addperson});
     }
 	render(){
 		let {speaker:{foreign_flag, accept_information_rule, juridcal_person}, speaker, currentTab,addperson_list, countries,
-			validateSpeaker, alert:{severity, message, title, open}, specialty_list,current_addperson} = this.state;
+			validateSpeaker, alert:{severity, message, title, open}, specialty_list,current_addperson,speaker_addperson} = this.state;
 
 		const {formatMessage} = this.props.intl;
+		
+		// console.log('speaker add person', speaker_addperson, current_addperson)
 		return (
 			<div style={styles.root}>
 				<Snackbar open={open} autoHideDuration={4000} anchorOrigin={{ vertical:'top', horizontal:'right' }} onClose={()=>{this.handleClose()}}>
@@ -724,7 +729,7 @@ this.setState({current_addperson});
 						 <br/>
 						<strong className="pl-13"> {<FormattedMessage id="Speaker.Registration.Form.Reg_City2"/>}</strong>
 						 <br/>
-						<strong className="pl-13"> {<FormattedMessage id="Speaker.Registration.Form.Reg_City2"/>}</strong>
+						
 									</div>
 									<div className="col-md-5 mt-4">
 										<Checkbox
@@ -745,10 +750,10 @@ this.setState({current_addperson});
 												<div className="col-md-3">
 												  <TextField
 													required
-													name="addperson"
+													name="name"
 													label={<FormattedMessage id="Speaker.add_person_name"/>}
 													style={styles.textField}
-													value={current_addperson.addperson}
+													value={current_addperson.name}
 													onChange={(e)=>{this.handleChangeAddspeaker(e)}}
 													margin="normal"
 													variant="outlined"
@@ -761,10 +766,10 @@ this.setState({current_addperson});
 											<div className="col-md-3">
 											<TextField
 											  required
-											  name="relation"
+											  name="relationship"
 											  label={<FormattedMessage id="Speaker.add_person_relationship"/>}
 											  style={styles.textField}
-											  value={current_addperson.relation}
+											  value={current_addperson.relationship}
 											  onChange={(e)=>{this.handleChangeAddspeaker(e)}}
 											  margin="normal"
 											  variant="outlined"
@@ -777,10 +782,10 @@ this.setState({current_addperson});
 						<div className="col-md-3 mt-5">
 											<TextField
 												required
-												name="dob"
+												name="birthday"
 												label={<FormattedMessage id="speaker.add_person.dob"/>}
 												type="date"
-												value={current_addperson.dob ? current_addperson.dob : getCurrentDate()}
+												value={current_addperson.birthday ? current_addperson.birthday: getCurrentDate()}
 												style={styles.textField}
 												InputLabelProps={{
 													shrink: true
@@ -802,7 +807,10 @@ this.setState({current_addperson});
 										</div>
 									</div>
 									</div>
-									{speaker.addperson.length > 0 && <div className="col-md-12 m-4">
+								
+							
+		   {		console.log("check length:",speaker_addperson), speaker_addperson.length > 0 && <div className="col-md-12 m-4">
+									
 									<h5>Selected person</h5>
 									<Table striped bordered hover className="ml-4 mr-4">
 										<thead>
@@ -814,22 +822,23 @@ this.setState({current_addperson});
 											</tr>
 										</thead>
 										<tbody>
-											// {
-												// speaker.addperson.map((speaker)=>{
-													// let spk = speakers.find(data => data.id == speaker)
-													// let data = event_speaker.find(data => data.speaker == speaker)
-													// return spk && <tr>
-														// <td>{spk.name}</td>
-														// <td>{spk.specialty && specialty.find(specialty => spk.specialty == specialty.id).name}</td>
-														// <td>{data && data.price}</td>
-														// <td style={{textAlign:'center'}}>
-														// <Delete style={{cursor:'pointer'}} onClick={()=>{
-																// speaker.addperson = speaker.addperson.filter(e => e !== speaker)
-																// this.setState({speaker})
-															// }}
-														// /></td>
-													// </tr>
-												// })
+											 {
+												speaker_addperson.map((addperson,index)=>{
+													
+												
+									          return <tr>
+														<td>{addperson.name}</td>
+														<td>{addperson.relationship}</td>
+														<td>{addperson.birthday}</td>
+
+														<td style={{textAlign:'center'}}>
+														<Delete style={{cursor:'pointer'}} onClick={()=>{
+															speaker_addperson = speaker_addperson.filter(e => e !== speaker_addperson.name)
+																this.setState({speaker,speaker_addperson})
+															}}
+														/></td>
+													</tr>
+												})
 											 }
 
 										</tbody>
@@ -860,7 +869,7 @@ this.setState({current_addperson});
 									<div className="col-md-6 text-center">
 										<TextField
 											name="national_id"
-											label="National ID"
+										label={<FormattedMessage id="Speaker.Registration.Form.National_ID"/>}
 											style={styles.textField}
 											value={speaker.national_id ? speaker.national_id : ''}
 											onChange={(event)=>{this.handleChange(event)}}
@@ -871,7 +880,7 @@ this.setState({current_addperson});
 										/>
 										<TextField
 											name="cpf"
-											label="CPF (Brazilian only)"
+											label={<FormattedMessage id="Speaker.Registration.Form.CPF"/>}
 											style={styles.textField}
 											value={speaker.national_id ? speaker.cpf : ''}
 											onChange={(event)=>{this.handleChange(event)}}
@@ -909,7 +918,7 @@ this.setState({current_addperson});
 										<TextField
 											name="specialty"
 											select
-											label="specialty"
+											label={<FormattedMessage id="Speaker.Registration.Form.Specialy"/>}
 											style={styles.textField}
 											onChange={(event)=>{this.handleChange(event)}}
 											SelectProps={{
@@ -924,7 +933,7 @@ this.setState({current_addperson});
 											variant="outlined"
 											>
 											<option value={null}>
-												Select Specialty....
+										
 											</option>
 											{specialty_list.map(option => (
 												<option key={option.value} value={option.value}>
@@ -935,7 +944,7 @@ this.setState({current_addperson});
 										<TextField
 											name="tier"
 											select
-											label="Tier"
+											label={<FormattedMessage id="Speaker.Registration.Form.Select_Tier"/>}
 											style={styles.textField}
 											onChange={(event)=>{this.handleChange(event)}}
 											SelectProps={{
@@ -951,6 +960,7 @@ this.setState({current_addperson});
 										>
 											<option value={null}>
 												Select Tier....
+											
 											</option>
 											{tier.map(option => (
 												<option key={option.value} value={option.value}>
@@ -964,7 +974,7 @@ this.setState({current_addperson});
 												<TextField
 													disabled={!juridcal_person}
 													name="company_name"
-													label="Company Name"
+													label={<FormattedMessage id="Speaker.Registration.Form.Company_Name"/>}
 													style={styles.textField}
 													value={juridcal_person ? speaker.company_name : ''}
 													onChange={(event)=>{this.handleChange(event)}}
@@ -976,7 +986,7 @@ this.setState({current_addperson});
 												<TextField
 													disabled={!juridcal_person}
 													name="cnpj"
-													label="CNPJ (Brazilian only)"
+													label={<FormattedMessage id="Speaker.Registration.Form.CNPJ"/>}
 													style={styles.textField}
 													value={juridcal_person ? speaker.cnpj : ''}
 													onChange={(event)=>{this.handleChange(event)}}
@@ -988,7 +998,7 @@ this.setState({current_addperson});
 												<>
 													<InputGroup className="pt-4 ml-2">
 													<InputGroup.Prepend>
-														<InputGroup.Text>UF / City</InputGroup.Text>
+														<InputGroup.Text>{<FormattedMessage id="Speaker.Registration.Form.UF_City"/>}</InputGroup.Text>
 													</InputGroup.Prepend>
 													<DropdownButton
 														disabled={!juridcal_person}
@@ -1015,7 +1025,7 @@ this.setState({current_addperson});
 												<TextField
 													disabled={!juridcal_person}
 													name="juridical_address"
-													label="Address"
+													label={<FormattedMessage id="Speaker.Registration.Form.Address2"/>}
 													style={styles.textField}
 													value={juridcal_person ? speaker.juridical_address : ''}
 													onChange={(event)=>{this.handleChange(event)}}
@@ -1120,7 +1130,7 @@ this.setState({current_addperson});
 									 {speaker.foreign_flag && <div className="col-md-6">
 										<TextField
 											name="account_owner"
-											label="Account Owner"
+											label={<FormattedMessage id="Speaker.Registration.Form.AccountOwner"/>}
 											style={styles.textField}
 											value={speaker.national_id ? speaker.account_owner : ''}
 											onChange={(event)=>{this.handleChange(event)}}
@@ -1134,7 +1144,7 @@ this.setState({current_addperson});
 										<TextField
 											name="bank_name"
 											select
-											label="Bank Name"
+											label={<FormattedMessage id="Speaker.Registration.Form.Bank_Name"/>}
 											style={styles.textField}
 											value={speaker.national_id ? speaker.bank_name : ''}
 											onChange={(event)=>{this.handleChange(event)}}
@@ -1163,7 +1173,7 @@ this.setState({current_addperson});
 									{speaker.foreign_flag && <div className="col-md-6">
 										<TextField
 											name="bank_address"
-											label="Bank Address"
+											label={<FormattedMessage id="Speaker.Registration.Form.BankAddress"/>}
 											style={styles.textField}
 											value={speaker.national_id ? speaker.bank_address : ''}
 											onChange={(event)=>{this.handleChange(event)}}
@@ -1177,7 +1187,7 @@ this.setState({current_addperson});
 									{speaker.foreign_flag && <div className="col-md-6">
 										<TextField
 											name="swift_bic"
-											label="Swift / BIC"
+											label={<FormattedMessage id="Speaker.Registration.Form.Swift"/>}
 											style={styles.textField}
 											value={speaker.national_id ? speaker.swift_bic : ''}
 											onChange={(event)=>{this.handleChange(event)}}
@@ -1193,7 +1203,7 @@ this.setState({current_addperson});
 									<div className="col-md-6">
 										<TextField
 											name="iban_account"
-											label="IBAN / Account"
+											label={<FormattedMessage id="Speaker.Registration.Form.IBAN"/>}
 											style={styles.textField}
 											value={speaker.national_id ? speaker.iban_account : ''}
 											onChange={(event)=>{this.handleChange(event)}}
@@ -1219,7 +1229,7 @@ this.setState({current_addperson});
 									<div className="col-md-6">
 										<TextField
 											name="agency"
-											label="Agency"
+											label={<FormattedMessage id="Speaker.Registration.Form.Agency"/>}
 											style={styles.textField}
 											value={speaker.national_id ? speaker.agency : ''}
 											onChange={(event)=>{this.handleChange(event)}}
