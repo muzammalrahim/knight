@@ -77,14 +77,16 @@ class EventRegistrationForm extends React.Component {
 			isSubmit = current_speaker[key] && isSubmit !== false ? true : false;
 		})
 		this.setState({validateEventSpeaker})
-
+		console.log("current_speaker.speaker :",current_speaker.speaker)
 		let speaker = speakers.find(data => data.id == current_speaker.speaker)
-		isSubmit && list(`api/price`, {specialty:speaker.specialty, program_type:event._type, tier:speaker.tier})
-		.then((response)=>{
+		 isSubmit && list(`api/price`, {specialty:speaker.specialty, program_type:event._type, tier:speaker.tier})
+		 .then((response)=>{
 			if(!event['speaker'].includes(current_speaker.speaker)){
-				console.log("resoponse:",response.data[0].hour_price)
-		current_speaker['price'] = response.data[0].hour_price*current_speaker.duration;
-//		current_speaker['price'] = 200*current_speaker.duration;
+
+				console.log("resoponse:",response)
+
+				current_speaker['price'] = response.data[0].hour_price*current_speaker.duration;
+				current_speaker['price'] = 200*current_speaker.duration;
 				event['speaker'].push(current_speaker.speaker);
 				event_speaker.push(current_speaker)
 			}
@@ -627,7 +629,8 @@ class EventRegistrationForm extends React.Component {
 											</div>
 										</div>
 									</div>
-									{event.speaker.length > 0 && <div className="col-md-12 m-4">
+
+									{console.log("check length:",event.speaker.length), event.speaker.length > 0 && <div className="col-md-12 m-4">
 										<h5>Selected Speakers</h5>
 										<Table striped bordered hover className="ml-4 mr-4">
 											<thead>
@@ -640,9 +643,20 @@ class EventRegistrationForm extends React.Component {
 											</thead>
 											<tbody>
 												{
+													// event.speaker array full from handle add speaker
+													// event['speaker'].push(current_speaker.speaker);
 													event.speaker.map((speaker)=>{
+														console.log("speaker 1:",speaker)
+
+														console.log("speakers 2 :",speakers)
 														let spk = speakers.find(data => data.id == speaker)
-														let data = event_speaker.find(data => data.speaker == speaker)
+
+														console.log("event_speaker :",event_speaker)
+												let data = event_speaker.find(data =>  data.speaker == speaker)
+
+
+														console.log("spk : 3",spk)
+														console.log("data 4:",data)
 														return spk && <tr>
 															<td>{spk.name}</td>
 															<td>{spk.specialty && specialty.find(specialty => spk.specialty == specialty.id).name}</td>
@@ -758,7 +772,7 @@ class EventRegistrationForm extends React.Component {
 													</div>
 													<div className="col-md-6 col-12">
 														<div className="kt_detail__item_title">Displacement</div>
-														<div>{event.displacement ? event.displacement : '---'}</div>
+														<div>{current_speaker.displacement ? current_speaker.displacement : '---'}</div>
 													</div>
 												</div>
 												<div className="row mb-4">

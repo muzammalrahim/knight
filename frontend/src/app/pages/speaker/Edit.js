@@ -1,15 +1,16 @@
 import React from "react";
-import { TextField, Button, Icon, AppBar, Tabs, Tab, Checkbox, Grid, Typography, Snackbar } from "@material-ui/core";
+import { TextField, Button, Icon, AppBar, Tabs, Tab, Checkbox, Grid, Typography, Snackbar,Table } from "@material-ui/core";
 import { Dropdown, FormControl, InputGroup, DropdownButton, FormText } from "react-bootstrap";
 import PropTypes from 'prop-types';
-import {ChevronLeft} from '@material-ui/icons';
+import {ChevronLeft,Delete} from '@material-ui/icons';
 import { FormattedMessage } from "react-intl";
 import {
 	getCurrentDate
   } from "../../../_metronic/_helpers";
-import list, {put} from '../helper/api';
+import list, {put,get} from '../helper/api';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import {defineMessages, injectIntl, intlShape} from 'react-intl';
+
 
 
 const civilStatus = defineMessages({
@@ -67,7 +68,10 @@ class SpeakerEditForm extends React.Component{
 			currentTab: 0,
 			onlyNums:'',
 			countries:[{value:'Select country ....', label:'Select country ....'}],
-			specialty_list:[]
+			specialty_list:[],
+
+			speaker_addperson:[],
+			current_addperson:{},
 		}
 		this.handleTabChange = this.handleTabChange.bind(this);
 	}
@@ -144,7 +148,8 @@ class SpeakerEditForm extends React.Component{
 				isSubmit = speaker[key] && isSubmit !== false ? true : false;
 			}
 		})
-        this.setState({validateSpeaker});
+		this.setState({validateSpeaker});
+		speaker['person']=this.state.speaker_addperson;
 		isSubmit && put(`api/speaker/${speaker.id}`, speaker).then((response)=>{
 			this.setState({alert:{open:true, severity:"success", title:"success", message:'User has been updated Sucessfully'}})
 			setTimeout(()=>{
@@ -157,6 +162,48 @@ class SpeakerEditForm extends React.Component{
 			})
 	}
 
+
+	handleChangeAddspeaker(e){
+		let [key, value, {current_addperson}] = [e.target.name, e.target.value, this.state];
+			current_addperson[key]=value;
+	this.setState({current_addperson});
+		}
+
+		handleAddperson(){
+			let {speaker_addperson,speaker,current_addperson,addpersons} = this.state;
+			speaker_addperson.push({
+				name:current_addperson.name,
+			relationship: current_addperson.relationship,
+			birthday: current_addperson.birthday
+			});
+
+			this.setState({speaker_addperson})
+			//let isSubmit = null;
+			// let addperson = addpersons.find(data => data.addperson == current_addperson.addperson)
+			// post(`api/speakerperson`, speaker_addperson).then((response)=>{
+				// console.log('this api is called')
+			// })
+			//   .then((response)=>{
+	//
+				//  if(!speaker['addperson'].includes(current_addperson.addperson))
+				//  {
+					//  console.log("current_addperson:",current_addperson)
+					// speaker['addperson'].push(current_addperson.addperson);
+					// speaker_addperson.push(current_addperson)
+				//   }
+				// this.setState({
+					// speaker_addperson,
+					// speaker,
+					// current_speaker:{addperson:'', relation:'', dob:''},
+					//
+				// });
+				// console.log("wai kana:",speaker_addperson)
+			//  })
+		}
+
+
+
+
 	getSpeaker(){
 		let {speaker} = this.state;
 		list(`api/speaker/${speaker.id}`).then((response)=>{
@@ -164,13 +211,31 @@ class SpeakerEditForm extends React.Component{
 		})
 	}
 
+		getAddpersons(){
+				     list('api/speakerperson').then((response)=>{
+
+						let addperson_list = [];
+							console.log("response",response)
+							console.log("data:",response.data)
+						response.data.map((row)=>{
+
+			  addperson_list.push({name:row.name,relationship:row.relationship ,birthday:row.birthday,})
+		  })
+		  					console.log("list add person",addperson_list)
+						 this.setState({speaker_addperson:addperson_list,});
+		} )
+		}
+
+
+
 	componentDidMount(){
+	   this.getAddpersons();
 		this.getSpeaker();
 		fetch('https://restcountries.eu/rest/v2/all')
 		.then(response => response.json())
 		.then((data) => {
 			let list_data = []
-			data.map((country)=>{	
+			data.map((country)=>{
 				if(country.name === "Brazil"){
 					list_data.push({label:"Brasil", value: "Brasil"})
 				}else{
@@ -191,8 +256,8 @@ class SpeakerEditForm extends React.Component{
         this.setState({alert:{open:false, severity: '', message:'' }})
     }
 	render(){
-		let {speaker:{foreign_flag, accept_information_rule, juridcal_person}, speaker, currentTab, countries, 
-			validateSpeaker, alert:{severity, message, title, open}, specialty_list} = this.state;
+		let {speaker:{foreign_flag, accept_information_rule, juridcal_person}, speaker, currentTab, countries,
+			validateSpeaker, alert:{severity, message, title, open}, specialty_list,current_addperson,speaker_addperson} = this.state;
 		const {formatMessage} = this.props.intl;
 		return (
 			<div style={styles.root}>
@@ -203,7 +268,7 @@ class SpeakerEditForm extends React.Component{
 					</Alert>
 				</Snackbar>
 				<Grid container spacing={3}>
-        			<Grid item xs={12}>	
+        			<Grid item xs={12}>
 						<h3 className="card-label text-center pt-4 pb-2">
 							<FormattedMessage id="Speaker.Registration.Title"/>
 						</h3>
@@ -256,7 +321,7 @@ class SpeakerEditForm extends React.Component{
 											helperText={validateSpeaker['name'] && 'this field is required'}
 										/>
 									</div>
-									
+
 									<div className="col-md-6">
 										<TextField
 											name="father_name"
@@ -647,6 +712,111 @@ class SpeakerEditForm extends React.Component{
 										/>
 										<strong> {<FormattedMessage id="Speaker.Registration.Form.Social_sec"/>} </strong>
 									</div>
+
+									<div className="container">
+									<div className="row" style={{border:'1px solid gray', margin:'1rem', padding:'1rem'}}>
+
+
+												<div className="col-md-3">
+												  <TextField
+													required
+													name="name"
+													label={<FormattedMessage id="Speaker.add_person_name"/>}
+													style={styles.textField}
+													value={current_addperson.name}
+													onChange={(e)=>{this.handleChangeAddspeaker(e)}}
+													margin="normal"
+													variant="outlined"
+													// error={validateEvent['add_person_name']}
+													// helperText={validateEvent['add_person_name']}
+												// helperText={validateEvent['add_person_name'] && 'this field is required'}
+												/>
+											</div>
+
+											<div className="col-md-3">
+											<TextField
+											  required
+											  name="relationship"
+											  label={<FormattedMessage id="Speaker.add_person_relationship"/>}
+											  style={styles.textField}
+											  value={current_addperson.relationship}
+											  onChange={(e)=>{this.handleChangeAddspeaker(e)}}
+											  margin="normal"
+											  variant="outlined"
+											  // error={validateEvent['add_person_name']}
+											  // helperText={validateEvent['add_person_name']}
+										  // helperText={validateEvent['add_person_name'] && 'this field is required'}
+										  />
+										</div>
+
+						<div className="col-md-3 mt-5">
+											<TextField
+												required
+												name="birthday"
+												label={<FormattedMessage id="speaker.add_person.dob"/>}
+												type="date"
+												value={current_addperson.birthday ? current_addperson.birthday : getCurrentDate()}
+												style={styles.textField}
+												InputLabelProps={{
+													shrink: true
+												}}
+												onChange={(event) =>{this.handleChangeAddspeaker(event)}}
+												// error={validateSpeaker['dob']}
+												// helperText={validateSpeaker['dob']}
+											/>
+										</div>
+
+
+
+
+										<div className="col-md-12 text-right pt-4">
+											<Button variant="contained" color="primary" style={styles.button} onClick={()=>{this.handleAddperson()}}>
+												Add Person
+												<Icon style={styles.rightIcon}>add</Icon>
+											</Button>
+										</div>
+									</div>
+									</div>
+
+
+		   {		console.log("check length:",speaker_addperson), speaker_addperson.length > 0 && <div className="col-md-12 m-4">
+
+									<h5>Selected person</h5>
+									<Table striped bordered hover className="ml-4 mr-4">
+										<thead>
+											<tr>
+											<th>Name</th>
+											<th>Relationship</th>
+											<th>Date of Birth</th>
+											<th style={{textAlign:'center'}}>Action</th>
+											</tr>
+										</thead>
+										<tbody>
+											 {
+												speaker_addperson.map((addperson,index)=>{
+
+
+									          return <tr>
+														<td>{addperson.name}</td>
+														<td>{addperson.relationship}</td>
+														<td>{addperson.birthday}</td>
+
+														<td style={{textAlign:'center'}}>
+														<Delete style={{cursor:'pointer'}} onClick={()=>{
+															speaker_addperson = speaker_addperson.filter(e => e !== addperson.name)
+																this.setState({speaker,speaker_addperson})
+															}}
+														/></td>
+													</tr>
+												})
+											 }
+
+										</tbody>
+									</Table>
+									</div>}
+
+
+
 									<div className="col-md-12 text-right pt-4">
 										<Button variant="contained" color="primary" style={styles.button} onClick={(e)=>{this.handleTabChange(e,1)}}>
 											Next
