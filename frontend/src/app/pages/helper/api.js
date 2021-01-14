@@ -30,6 +30,25 @@ export  function addpersonlist(endpoint, params={}) {
 	  headers: headers,
 	  params: params,
 	}
+	return axios.get(API_URL+endpoint, config).then(response => {
+		if(response.data.results !== undefined) {
+			response.extra_data = {
+				count : response.data.count,
+				next : response.data.next,
+				previous : response.data.previous,
+			}
+			response.data = response.data.results;
+    }
+		return response;
+	})
+}
+
+
+export  function addpersonlist(endpoint, params={}) {
+	let config = {
+	  headers: headers,
+	  params: params,
+	}
 	 console.log(params)
 	return axios.get(API_URL+endpoint, config).then(response => {
 		if(response.data.results !== undefined) {
@@ -62,7 +81,6 @@ export function post(endpoint, data) {
   let config = {
     headers: headers,
   }
-    console.log("data api",data)
   return axios.post(API_URL + endpoint, data, config)
 }
 
