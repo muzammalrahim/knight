@@ -30,6 +30,7 @@ export  function addpersonlist(endpoint, params={}) {
 	  headers: headers,
 	  params: params,
 	}
+	 console.log(params)
 	return axios.get(API_URL+endpoint, config).then(response => {
 		if(response.data.results !== undefined) {
 			response.extra_data = {
@@ -61,6 +62,7 @@ export function post(endpoint, data) {
   let config = {
     headers: headers,
   }
+    console.log("data api",data)
   return axios.post(API_URL + endpoint, data, config)
 }
 

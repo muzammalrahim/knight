@@ -18,15 +18,15 @@ class EventRegistrationForm extends React.Component {
 		this.event={
 			id:this.props.match.params.id,	name:"", _type:"", date:"", duration:"", web_presential:"", country:"",	state:"",
 			city:"", address:"", solicitant:"", business_unit:"", despartment:"", cost_center:"",
-			speaker:[], virtual_presential:"", displacement:''
+			speaker:[], virtual_presential:"", 
 		}
 		this.validateEvent={
 			name:false, _type:false, date:false, duration:false, web_presential:false, country:false,	state:false,
 			city:false, address:false, solicitant:false, business_unit:false, despartment:false, cost_center:false, virtual_presential:false, 
-			displacement:false
+			
 		}
 		this.validateEventSpeaker={
-			duration:false, role: false, speaker:false
+			duration:false, role: false, speaker:false,displacement:false
 		}
 		this.alert={
             open: false, 
@@ -38,7 +38,8 @@ class EventRegistrationForm extends React.Component {
 			speaker:'',
 			role:'',
 			price:0,
-			duration:''
+			duration:'',
+			displacement:''
 		}
 		this.state={
 			event: this.event,
@@ -83,7 +84,7 @@ class EventRegistrationForm extends React.Component {
 			this.setState({
 				event_speaker, 
 				event, 
-				current_speaker:{speaker:'', price:0, duration:''}
+				current_speaker:{speaker:'', price:0, duration:'',displacement:''}
 			});
 		})
 	}
@@ -600,6 +601,25 @@ class EventRegistrationForm extends React.Component {
 													helperText={validateEventSpeaker['price'] && 'this field is required'}
 												/>
 											</div> */}
+											<div className="col-md-12 pt-4 ml-4">
+											<h5>Displacement</h5>
+											<div className="col-md-12 pt-4 ml-4">
+												<FormControl component="fieldset" style={styles.formControl}>
+													<RadioGroup
+														aria-label="Gender"
+														name="displacement"
+														style={styles.group}
+														value={current_speaker.displacement}
+														onChange={(e)=>{this.handleChangeSpeaker(e)}}
+													>
+														<FormControlLabel value="local" control={<Radio />} label="Local (at the same State)" />
+														<FormControlLabel value="regional" control={<Radio />} label="Regional (at the same Country)" />
+														<FormControlLabel value="international" control={<Radio />} label="International (at different Country)" />
+													</RadioGroup>
+												</FormControl>
+											</div>
+										</div>
+
 											<div className="col-md-12 text-right pt-4">
 												<Button variant="contained" color="primary" style={styles.button} onClick={()=>{this.handleAddSpeaker()}}>
 													Add Speaker
@@ -638,7 +658,7 @@ class EventRegistrationForm extends React.Component {
 											</tbody>
 										</Table>
 									</div>}
-									<div className="col-md-12 pt-4 ml-4">
+								{/*	<div className="col-md-12 pt-4 ml-4">
 										<h5>Displacement</h5>
 										<div className="col-md-12 pt-4 ml-4">
 											<FormControl component="fieldset" style={styles.formControl}>
@@ -655,7 +675,7 @@ class EventRegistrationForm extends React.Component {
 												</RadioGroup>
 											</FormControl>
 										</div>
-									</div>
+											</div> */}
 									<div className="col-md-12 text-right pt-4">
 										<Button variant="contained" color="default" style={styles.button} style={{float:'left'}} onClick={(e)=>{this.handleTabChange(e, 0)}}>
 											<ChevronLeft/>
@@ -753,7 +773,7 @@ class EventRegistrationForm extends React.Component {
 													</div>
 													<div className="col-md-6 col-12">
 														<div className="kt_detail__item_title">Displacement</div>
-														<div>{event.displacement ? event.displacement : '---'}</div>
+														<div>{current_speaker.displacement ? current_speaker.displacement : '---'}</div>
 													</div>
 												</div>
 												<div className="row mb-4">
