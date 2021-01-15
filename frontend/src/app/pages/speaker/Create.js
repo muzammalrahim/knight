@@ -39,7 +39,7 @@ class SpeakerEditForm extends React.Component{
 	constructor(props){
 		super(props);
 
-		this.speaker={name: "", father_name: "", mother_name:"", dob:"", birthplace:"", civil_state:"",
+		this.speaker={name: "", father_name: "", mother_name:"", dob:"", birthplace:"", civil_state:"single",
 			scholarity: "", social_number: "", service_provider: "", country: "Brasil", state: "", city: "", neighborhood: "",
 			cep: "", ddd: "", address:"", id_number: "", document_issue_date: "", emitting_organ: "", email: "", mobile: "", fax: null,
 			linkedin: "", lattes: "", orcid: "", juridcal_person:false,foreign_flag: false, national_id:"", company_name:"", cpf:"", cnpj:"", uf_crm:"", uf_city:"",
@@ -357,11 +357,10 @@ this.setState({current_addperson});
 									</div>
 									<div className="col-md-3">
 										<TextField
-											required
 											name="dob"
 											label={<FormattedMessage id="Speaker.Registration.Form.Birthday"/>}
 											type="date"
-											value={speaker.dob ? speaker.dob : getCurrentDate()}
+											value={speaker.dob ? speaker.dob : ''}
 											style={styles.textField}
 											InputLabelProps={{
 												shrink: true
@@ -701,8 +700,6 @@ this.setState({current_addperson});
 											}}
 										/>
 						<strong> {<FormattedMessage id="Speaker.Registration.Form.Reg_City"/>}</strong>
-						 <br/>
-						<strong className="pl-13"> {<FormattedMessage id="Speaker.Registration.Form.Reg_City2"/>}</strong>
 						 <br/>
 						<strong className="pl-13"> {<FormattedMessage id="Speaker.Registration.Form.Reg_City2"/>}</strong>
 									</div>
