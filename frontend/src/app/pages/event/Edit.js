@@ -141,6 +141,7 @@ class EventRegistrationForm extends React.Component {
 		list('api/speakers').then((response)=>{
 		  let speaker_list = [];
 		  response.data.map((row)=>{
+			//   console.log("get spk:",row)
 			  speaker_list.push({label:row.name, value:row.id})
 		  })
 		  this.setState({speaker_list, speakers:response.data});

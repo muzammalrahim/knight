@@ -14,7 +14,7 @@ and then
 
 Inside frontend folder run below command
 ```bash
-docker-composer up
+docker-compose up
 ```
 then you need to create user 
 

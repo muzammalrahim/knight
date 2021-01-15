@@ -43,7 +43,7 @@ class SpeakerEditForm extends React.Component{
 			scholarity: "", social_number: "", service_provider: "", country: "Brasil", state: "", city: "", neighborhood: "",
 			cep: "", ddd: "", address:"", id_number: "", document_issue_date: "", emitting_organ: "", email: "", mobile: "", fax: null,
 			linkedin: "", lattes: "", orcid: "", juridcal_person:false,foreign_flag: false, national_id:"", company_name:"", cpf:"", cnpj:"", uf_crm:"", uf_city:"",
-			specialty:"", tier:"", juridical_address:"",	account_owner: "", bank_name: "", bank_address: "", swift_bic: "", iban_account: "", pix:"", agency: ""  , 
+			specialty:"", tier:"", juridical_address:"",	account_owner: "", bank_name: "", bank_address: "", swift_bic: "", iban_account: "", pix:"", agency: ""  , addperson :[]
 		}
 
 		this.validateSpeaker={ foreign_flag: false,	accept_information_rule: false,	name: false, father_name: false,
@@ -167,20 +167,20 @@ this.setState({current_addperson});
 	}
 
 	handleAddperson(){
-		
+
 		let {current_addperson,speaker_addperson,addpersons,speaker,Validateaddperson} = this.state;
 		let isSubmit = null;
-// 
+//
 		// Object.keys(this.Validateaddperson).map((key)=>{
-			//   
+			//
 			// Validateaddperson[key] = speaker_addperson[key] ? false : true;
 			// isSubmit = speaker[key] && isSubmit !== false ? true : false;
-		// 
+		//
 			// })
-			// 
+			//
 			// isSubmit&&
 			speaker_addperson.push({
-				name:current_addperson.addperson, 
+				name:current_addperson.addperson,
 				relationship: current_addperson.relation,
 				birthday: current_addperson.dob
 			});
@@ -193,7 +193,7 @@ this.setState({current_addperson});
 			// console.log('this api is called')
 		// })
 		//   .then((response)=>{
-// 
+//
 			//  if(!speaker['addperson'].includes(current_addperson.addperson))
 			//  {
 				//  console.log("current_addperson:",current_addperson)
@@ -204,7 +204,7 @@ this.setState({current_addperson});
 				// speaker_addperson,
 				// speaker,
 				// current_speaker:{addperson:'', relation:'', dob:''},
-				// 
+				//
 			// });
 			// console.log("wai kana:",speaker_addperson)
 		//  })
@@ -251,7 +251,7 @@ this.setState({current_addperson});
 				isSubmit = speaker[key] && isSubmit !== false ? true : false;
 			}
 		})
-             console.log("ahhaha",validateSpeaker)
+
         this.setState({validateSpeaker});
 		 speaker['person']=this.state.speaker_addperson;
 		 console.log("che tabh:",speaker)
@@ -270,9 +270,9 @@ this.setState({current_addperson});
 	// no need
 		// getAddpersons(){
 				// addpersonlist('api/speakerperson').then((response)=>{
-// 
+//
 						// let addperson_list = [];
-// 
+//
 						// response.data.map((row)=>{
 			//   addperson_list.push({label:row.name, value:row.id})
 		//   })
@@ -311,8 +311,6 @@ this.setState({current_addperson});
 			validateSpeaker, alert:{severity, message, title, open}, specialty_list,current_addperson,addpersons,speaker_addperson} = this.state;
 
 		const {formatMessage} = this.props.intl;
-		
-		// console.log('speaker add person', speaker_addperson, current_addperson)
 		return (
 			<div style={styles.root}>
 				<Snackbar open={open} autoHideDuration={4000} anchorOrigin={{ vertical:'top', horizontal:'right' }} onClose={()=>{this.handleClose()}}>
@@ -755,7 +753,7 @@ this.setState({current_addperson});
 						 <br/>
 						<strong className="pl-13"> {<FormattedMessage id="Speaker.Registration.Form.Reg_City2"/>}</strong>
 						 <br/>
-						
+
 									</div>
 									<div className="col-md-5 mt-4">
 										<Checkbox
@@ -785,7 +783,7 @@ this.setState({current_addperson});
 													variant="outlined"
 													// error={validateEvent['add_person_name']}
 													// helperText={validateEvent['add_person_name']}
-										
+
 												/>
 											</div>
 
@@ -801,7 +799,7 @@ this.setState({current_addperson});
 											  variant="outlined"
 											  // error={validateEvent['add_person_name']}
 											  // helperText={validateEvent['add_person_name']}
-										 
+
 										  />
 										</div>
 
@@ -818,7 +816,7 @@ this.setState({current_addperson});
 												}}
 												onChange={(event) =>{this.handleChangeAddspeaker(event)}}
 												// error={validateSpeaker['dob']}
-												helperText={ 'this field is required'}
+												// helperText={validateSpeaker['dob']}
 											/>
 										</div>
 
@@ -833,10 +831,7 @@ this.setState({current_addperson});
 										</div>
 									</div>
 									</div>
-								
-							
-		   {		console.log("check length:",speaker_addperson), speaker_addperson.length > 0 && <div className="col-md-12 m-4">
-									
+									{speaker.addperson.length > 0 && <div className="col-md-12 m-4">
 									<h5>Selected person</h5>
 									<Table striped bordered hover className="ml-4 mr-4">
 										<thead>
@@ -850,8 +845,8 @@ this.setState({current_addperson});
 										<tbody>
 											 {
 												speaker_addperson.map((addperson,index)=>{
-													
-												
+
+
 									          return <tr>
 														<td>{addperson.name}</td>
 														<td>{addperson.relationship}</td>
@@ -959,7 +954,7 @@ this.setState({current_addperson});
 											variant="outlined"
 											>
 											<option value={null}>
-										
+												Select Specialty....
 											</option>
 											{specialty_list.map(option => (
 												<option key={option.value} value={option.value}>
@@ -1194,7 +1189,6 @@ this.setState({current_addperson});
 											))}
 										</TextField>
 									</div>
-
 									{speaker.foreign_flag && <div className="col-md-6">
 										<TextField
 											name="bank_address"
