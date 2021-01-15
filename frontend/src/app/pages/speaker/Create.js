@@ -410,7 +410,7 @@ this.setState({current_addperson});
 											name="dob"
 											label={<FormattedMessage id="Speaker.Registration.Form.Birthday"/>}
 											type="date"
-											value={speaker.dob ? speaker.dob : getCurrentDate()}
+											value={speaker.dob ? speaker.dob : ''}
 											style={styles.textField}
 											InputLabelProps={{
 												shrink: true
@@ -809,7 +809,7 @@ this.setState({current_addperson});
 												name="dob"
 												label={<FormattedMessage id="speaker.add_person.dob"/>}
 												type="date"
-												value={current_addperson.dob ? current_addperson.dob : getCurrentDate()}
+												value={current_addperson.dob ? current_addperson.dob :''}
 												style={styles.textField}
 												InputLabelProps={{
 													shrink: true
