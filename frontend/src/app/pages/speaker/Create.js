@@ -39,11 +39,11 @@ class SpeakerEditForm extends React.Component{
 	constructor(props){
 		super(props);
 
-		this.speaker={name: "", father_name: "", mother_name:"", dob:"", birthplace:"", civil_state:"",
+		this.speaker={name: "", father_name: "", mother_name:"", dob:"", birthplace:"", civil_state:"single",
 			scholarity: "", social_number: "", service_provider: "", country: "Brasil", state: "", city: "", neighborhood: "",
 			cep: "", ddd: "", address:"", id_number: "", document_issue_date: "", emitting_organ: "", email: "", mobile: "", fax: null,
 			linkedin: "", lattes: "", orcid: "", juridcal_person:false,foreign_flag: false, national_id:"", company_name:"", cpf:"", cnpj:"", uf_crm:"", uf_city:"",
-			specialty:"", tier:"", juridical_address:"",	account_owner: "", bank_name: "", bank_address: "", swift_bic: "", iban_account: "", pix:"", agency: ""  , 
+			specialty:"", tier:"", juridical_address:"",	account_owner: "", bank_name: "", bank_address: "", swift_bic: "", iban_account: "", pix:"", agency: ""  ,
 		}
 
 		this.validateSpeaker={ foreign_flag: false,	accept_information_rule: false,	name: false, father_name: false,
@@ -154,7 +154,7 @@ this.addperson = {
 handleChangeAddspeaker(e){
 	let [key, value, {current_addperson,validateAddperson}] = [e.target.name, e.target.value, this.state];
 		current_addperson[key]=value;
-		
+
 		if(validateAddperson[key]){
 			validateAddperson[key] = current_addperson[key] ? false : true;
 		   }
@@ -172,13 +172,13 @@ this.setState({current_addperson});
 		this.setState({validateAddperson})
 
 		isSubmit &&	speaker_addperson.push({
-			name:current_addperson.addperson, 
+			name:current_addperson.addperson,
 			relationship: current_addperson.relation,
 			birthday: current_addperson.dob
 		});
 
 		this.setState({speaker_addperson})
-	
+
 	}
 
 
@@ -236,9 +236,9 @@ this.setState({current_addperson});
 	// no need
 		// getAddpersons(){
 				// addpersonlist('api/speakerperson').then((response)=>{
-// 
+//
 						// let addperson_list = [];
-// 
+//
 						// response.data.map((row)=>{
 			//   addperson_list.push({label:row.name, value:row.id})
 		//   })
@@ -376,7 +376,7 @@ this.setState({current_addperson});
 											name="dob"
 											label={<FormattedMessage id="Speaker.Registration.Form.Birthday"/>}
 											type="date"
-											value={speaker.dob ? speaker.dob : getCurrentDate()}
+											value={speaker.dob ? speaker.dob : ''}
 											style={styles.textField}
 											InputLabelProps={{
 												shrink: true
@@ -719,7 +719,7 @@ this.setState({current_addperson});
 						 <br/>
 						<strong className="pl-13"> {<FormattedMessage id="Speaker.Registration.Form.Reg_City2"/>}</strong>
 						 <br/>
-						
+
 									</div>
 									<div className="col-md-5 mt-4">
 										<Checkbox
@@ -773,7 +773,7 @@ this.setState({current_addperson});
 												name="dob"
 												label={<FormattedMessage id="speaker.add_person.dob"/>}
 												type="date"
-												value={current_addperson.dob }
+												value={current_addperson.dob ? current_addperson.dob :''}
 												style={styles.textField}
 												InputLabelProps={{
 													shrink: true
@@ -781,7 +781,7 @@ this.setState({current_addperson});
 												onChange={(event) =>{this.handleChangeAddspeaker(event)}}
 												error={validateAddperson['dob']}
 													helperText={validateAddperson['dob'] && 'this field is required'}
-											
+
 											/>
 										</div>
 
@@ -796,10 +796,10 @@ this.setState({current_addperson});
 										</div>
 									</div>
 									</div>
-								
-							
+
+
 		   { speaker_addperson.length > 0 && <div className="col-md-12 m-4">
-									
+
 									<h5>Selected person</h5>
 									<Table striped bordered hover className="ml-4 mr-4">
 										<thead>
@@ -813,8 +813,8 @@ this.setState({current_addperson});
 										<tbody>
 											 {
 												speaker_addperson.map((addperson,index)=>{
-													
-												
+
+
 									          return <tr>
 														<td>{addperson.name}</td>
 														<td>{addperson.relationship}</td>
@@ -922,7 +922,7 @@ this.setState({current_addperson});
 											variant="outlined"
 											>
 											<option value={null}>
-										
+												Select Specialty....
 											</option>
 											{specialty_list.map(option => (
 												<option key={option.value} value={option.value}>
