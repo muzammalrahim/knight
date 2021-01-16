@@ -55,6 +55,20 @@ class SpeakerEditForm extends React.Component{
 			uf_crm: false, uf_city: false, specialty: false, tier: false, juridical_address:false, account_owner: false, bank_name: false, bank_address: false, 
 			swift_bic: false, iban_account: false, pix: false, agency: false
 		}
+
+this.validateAddperson = {
+			addperson:false,
+			relation:false,
+			dob:false,
+		}
+
+this.addperson = {
+			addperson:'',
+			relation:'',
+			dob:'',
+		}
+
+
         this.alert={
             open: false, 
             severity: '',
@@ -70,8 +84,11 @@ class SpeakerEditForm extends React.Component{
 			countries:[{value:'Select country ....', label:'Select country ....'}],
 			specialty_list:[],
 
+			addperson_list:[],
+			addpersons:[],
 			speaker_addperson:[],
 			current_addperson:{},
+			validateAddperson:this.validateAddperson
 		}
 		this.handleTabChange = this.handleTabChange.bind(this);
 	}
@@ -89,7 +106,8 @@ class SpeakerEditForm extends React.Component{
 			speaker['uf_city'] = "";
 			speaker['juridical_address'] = "";
 		}
-		if(key==="foreign_flag" || key==="registration_in_city" || key==="social_security" || key == "juridcal_person"){
+		if(key==="foreign_flag" || key==="registration_in_city" || key==="social_security" || key==="accept_information_rule"||  key == "juridcal_person")
+		{
 			if(key === "foreign_flag"){
 				validateSpeaker['pix'] = speaker[key] ? true : false;
 				if(speaker[key]){
@@ -120,17 +138,58 @@ class SpeakerEditForm extends React.Component{
 		this.setState({speaker, validateSpeaker});
 	}
 
+
+
+	handleChangeAddspeaker(e){
+		let [key, value, {current_addperson,validateAddperson}] = [e.target.name, e.target.value, this.state];
+			current_addperson[key]=value;
+			
+			if(validateAddperson[key]){
+				validateAddperson[key] = current_addperson[key] ? false : true;
+			   }
+	
+				this.setState({current_addperson});
+			}
+	
+		handleAddperson(){
+			let {speaker_addperson,speaker,current_addperson,addpersons,validateAddperson} = this.state;
+			let isSubmit = null;
+			Object.keys(validateAddperson).map((key)=>{
+				validateAddperson[key] = current_addperson[key] ? false : true;
+				isSubmit = current_addperson[key] && isSubmit !== false ? true : false;
+			})
+			this.setState({validateAddperson})
+	
+			isSubmit &&	speaker_addperson.push({
+				name:current_addperson.addperson, 
+				relationship: current_addperson.relation,
+				birthday: current_addperson.dob
+			});
+	
+			this.setState({speaker_addperson})
+			
+		}
+	
+
+
 	handleTabChange(event, currentTab) {
 		this.setState({currentTab});
 	}
 	handleSubmit(){
-		let {speaker, validateSpeaker} = this.state;
+		let {speaker, validateSpeaker,speaker_addperson} = this.state;
 		let isSubmit = null;
 		
 		Object.keys(validateSpeaker).map((key)=>{
 			if(speaker['juridcal_person'] === false && (key === "company_name" || key === "cnpj" || key === "uf_city" || key === "juridical_address" )){
 				validateSpeaker[key] = false;
 			}
+
+			else if(speaker['foreign_flag'] === false && (key === "account_owner" || key == "swift_bic" || key == "bank_address" ||  key =="bank_name" ))
+			{
+				validateSpeaker[key] = false;
+			
+			}
+
 			//Skip Optional Fields form Validation
 			else if(key === "lattes" || key === "linkedin" || key === "ddd" || key === "fax" || key === "orcid" || key === "juridcal_person"){
 				validateSpeaker[key] = false;
@@ -139,9 +198,9 @@ class SpeakerEditForm extends React.Component{
 				validateSpeaker['pix'] = false;
 				speaker['pix'] = "";
 			}
-			else if(key==="foreign_flag" || key==="registration_in_city" || key==="social_security"){
+			else if(key==="foreign_flag" || key==="registration_in_city" || key==="social_security"   ||key==="accept_information_rule"){
 				validateSpeaker[key] = false;
-	
+
 			}
 			else{
 				validateSpeaker[key] = speaker[key] ? false : true;
@@ -163,47 +222,6 @@ class SpeakerEditForm extends React.Component{
 	}
 
 
-	handleChangeAddspeaker(e){
-		let [key, value, {current_addperson}] = [e.target.name, e.target.value, this.state];
-			current_addperson[key]=value;
-	this.setState({current_addperson});
-		}
-
-		handleAddperson(){
-			let {speaker_addperson,speaker,current_addperson,addpersons} = this.state;
-			speaker_addperson.push({
-				name:current_addperson.name,
-			relationship: current_addperson.relationship,
-			birthday: current_addperson.birthday
-			});
-
-			this.setState({speaker_addperson})
-			//let isSubmit = null;
-			// let addperson = addpersons.find(data => data.addperson == current_addperson.addperson)
-			// post(`api/speakerperson`, speaker_addperson).then((response)=>{
-				// console.log('this api is called')
-			// })
-			//   .then((response)=>{
-	//
-				//  if(!speaker['addperson'].includes(current_addperson.addperson))
-				//  {
-					//  console.log("current_addperson:",current_addperson)
-					// speaker['addperson'].push(current_addperson.addperson);
-					// speaker_addperson.push(current_addperson)
-				//   }
-				// this.setState({
-					// speaker_addperson,
-					// speaker,
-					// current_speaker:{addperson:'', relation:'', dob:''},
-					//
-				// });
-				// console.log("wai kana:",speaker_addperson)
-			//  })
-		}
-
-
-
-
 	getSpeaker(){
 		let {speaker} = this.state;
 		list(`api/speaker/${speaker.id}`).then((response)=>{
@@ -215,13 +233,11 @@ class SpeakerEditForm extends React.Component{
 				     list('api/speakerperson').then((response)=>{
 
 						let addperson_list = [];
-							console.log("response",response)
-							console.log("data:",response.data)
 						response.data.map((row)=>{
 
 			  addperson_list.push({name:row.name,relationship:row.relationship ,birthday:row.birthday,})
 		  })
-		  					console.log("list add person",addperson_list)
+		  		
 						 this.setState({speaker_addperson:addperson_list,});
 		} )
 		}
@@ -257,7 +273,7 @@ class SpeakerEditForm extends React.Component{
     }
 	render(){
 		let {speaker:{foreign_flag, accept_information_rule, juridcal_person}, speaker, currentTab, countries,
-			validateSpeaker, alert:{severity, message, title, open}, specialty_list,current_addperson,speaker_addperson} = this.state;
+			validateSpeaker, alert:{severity, message, title, open}, specialty_list,current_addperson,addpersons,speaker_addperson,validateAddperson} = this.state;
 		const {formatMessage} = this.props.intl;
 		return (
 			<div style={styles.root}>
@@ -713,6 +729,7 @@ class SpeakerEditForm extends React.Component{
 										<strong> {<FormattedMessage id="Speaker.Registration.Form.Social_sec"/>} </strong>
 									</div>
 
+									
 									<div className="container">
 									<div className="row" style={{border:'1px solid gray', margin:'1rem', padding:'1rem'}}>
 
@@ -720,49 +737,48 @@ class SpeakerEditForm extends React.Component{
 												<div className="col-md-3">
 												  <TextField
 													required
-													name="name"
+													name="addperson"
 													label={<FormattedMessage id="Speaker.add_person_name"/>}
 													style={styles.textField}
-													value={current_addperson.name}
+													value={current_addperson.addperson}
 													onChange={(e)=>{this.handleChangeAddspeaker(e)}}
 													margin="normal"
 													variant="outlined"
-													// error={validateEvent['add_person_name']}
-													// helperText={validateEvent['add_person_name']}
-												// helperText={validateEvent['add_person_name'] && 'this field is required'}
+													error={validateAddperson['addperson']}
+													helperText={validateAddperson['addperson'] && 'this field is required'}
 												/>
 											</div>
 
 											<div className="col-md-3">
 											<TextField
 											  required
-											  name="relationship"
+											  name="relation"
 											  label={<FormattedMessage id="Speaker.add_person_relationship"/>}
 											  style={styles.textField}
-											  value={current_addperson.relationship}
+											  value={current_addperson.relation}
 											  onChange={(e)=>{this.handleChangeAddspeaker(e)}}
 											  margin="normal"
 											  variant="outlined"
-											  // error={validateEvent['add_person_name']}
-											  // helperText={validateEvent['add_person_name']}
-										  // helperText={validateEvent['add_person_name'] && 'this field is required'}
+											  error={validateAddperson['relation']}
+											  helperText={validateAddperson['relation'] && 'this field is required'}
 										  />
 										</div>
 
 						<div className="col-md-3 mt-5">
 											<TextField
 												required
-												name="birthday"
+												name="dob"
 												label={<FormattedMessage id="speaker.add_person.dob"/>}
 												type="date"
-												value={current_addperson.birthday ? current_addperson.birthday : getCurrentDate()}
+												value={current_addperson.dob }
 												style={styles.textField}
 												InputLabelProps={{
 													shrink: true
 												}}
 												onChange={(event) =>{this.handleChangeAddspeaker(event)}}
-												// error={validateSpeaker['dob']}
-												// helperText={validateSpeaker['dob']}
+												error={validateAddperson['dob']}
+													helperText={validateAddperson['dob'] && 'this field is required'}
+											
 											/>
 										</div>
 
@@ -777,10 +793,10 @@ class SpeakerEditForm extends React.Component{
 										</div>
 									</div>
 									</div>
-
-
-		   {		console.log("check length:",speaker_addperson), speaker_addperson.length > 0 && <div className="col-md-12 m-4">
-
+								
+							
+		   { speaker_addperson.length > 0 && <div className="col-md-12 m-4">
+									
 									<h5>Selected person</h5>
 									<Table striped bordered hover className="ml-4 mr-4">
 										<thead>
@@ -794,8 +810,8 @@ class SpeakerEditForm extends React.Component{
 										<tbody>
 											 {
 												speaker_addperson.map((addperson,index)=>{
-
-
+													
+												
 									          return <tr>
 														<td>{addperson.name}</td>
 														<td>{addperson.relationship}</td>
@@ -803,7 +819,7 @@ class SpeakerEditForm extends React.Component{
 
 														<td style={{textAlign:'center'}}>
 														<Delete style={{cursor:'pointer'}} onClick={()=>{
-															speaker_addperson = speaker_addperson.filter(e => e !== addperson.name)
+															speaker_addperson = speaker_addperson.filter(e => e !== addperson)
 																this.setState({speaker,speaker_addperson})
 															}}
 														/></td>
@@ -814,7 +830,6 @@ class SpeakerEditForm extends React.Component{
 										</tbody>
 									</Table>
 									</div>}
-
 
 
 									<div className="col-md-12 text-right pt-4">
