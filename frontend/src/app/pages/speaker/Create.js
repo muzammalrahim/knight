@@ -153,6 +153,7 @@ this.addperson = {
 
 handleChangeAddspeaker(e){
 	let [key, value, {current_addperson,validateAddperson}] = [e.target.name, e.target.value, this.state];
+	let [key, value, {current_addperson}] = [e.target.name, e.target.value, this.state];
 		current_addperson[key]=value;
 
 		if(validateAddperson[key]){

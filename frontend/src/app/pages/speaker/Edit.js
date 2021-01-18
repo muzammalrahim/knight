@@ -143,14 +143,14 @@ this.addperson = {
 	handleChangeAddspeaker(e){
 		let [key, value, {current_addperson,validateAddperson}] = [e.target.name, e.target.value, this.state];
 			current_addperson[key]=value;
-			
+
 			if(validateAddperson[key]){
 				validateAddperson[key] = current_addperson[key] ? false : true;
 			   }
-	
+
 				this.setState({current_addperson});
 			}
-	
+
 		handleAddperson(){
 			let {speaker_addperson,speaker,current_addperson,addpersons,validateAddperson} = this.state;
 			let isSubmit = null;
@@ -159,17 +159,17 @@ this.addperson = {
 				isSubmit = current_addperson[key] && isSubmit !== false ? true : false;
 			})
 			this.setState({validateAddperson})
-	
+
 			isSubmit &&	speaker_addperson.push({
-				name:current_addperson.addperson, 
+				name:current_addperson.addperson,
 				relationship: current_addperson.relation,
 				birthday: current_addperson.dob
 			});
-	
+
 			this.setState({speaker_addperson})
-			
+
 		}
-	
+
 
 
 	handleTabChange(event, currentTab) {
@@ -187,7 +187,7 @@ this.addperson = {
 			else if(speaker['foreign_flag'] === false && (key === "account_owner" || key == "swift_bic" || key == "bank_address" ||  key =="bank_name" ))
 			{
 				validateSpeaker[key] = false;
-			
+
 			}
 
 			//Skip Optional Fields form Validation
@@ -237,7 +237,7 @@ this.addperson = {
 
 			  addperson_list.push({name:row.name,relationship:row.relationship ,birthday:row.birthday,})
 		  })
-		  		
+
 						 this.setState({speaker_addperson:addperson_list,});
 		} )
 		}
@@ -729,7 +729,7 @@ this.addperson = {
 										<strong> {<FormattedMessage id="Speaker.Registration.Form.Social_sec"/>} </strong>
 									</div>
 
-									
+
 									<div className="container">
 									<div className="row" style={{border:'1px solid gray', margin:'1rem', padding:'1rem'}}>
 
@@ -778,7 +778,7 @@ this.addperson = {
 												onChange={(event) =>{this.handleChangeAddspeaker(event)}}
 												error={validateAddperson['dob']}
 													helperText={validateAddperson['dob'] && 'this field is required'}
-											
+
 											/>
 										</div>
 
@@ -793,10 +793,10 @@ this.addperson = {
 										</div>
 									</div>
 									</div>
-								
-							
+
+
 		   { speaker_addperson.length > 0 && <div className="col-md-12 m-4">
-									
+
 									<h5>Selected person</h5>
 									<Table striped bordered hover className="ml-4 mr-4">
 										<thead>
@@ -810,8 +810,8 @@ this.addperson = {
 										<tbody>
 											 {
 												speaker_addperson.map((addperson,index)=>{
-													
-												
+
+
 									          return <tr>
 														<td>{addperson.name}</td>
 														<td>{addperson.relationship}</td>
