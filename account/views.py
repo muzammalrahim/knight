@@ -174,7 +174,6 @@ class SpeakerPersonViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         request_data = json.loads(request.body.decode('utf-8'))
-        print(request_data)
         if 'id' in request_data:
             for id in request_data['id']:
                 SpeakerPerson.objects.filter(id=id).delete()
@@ -195,8 +194,6 @@ def api_root(request, format=None):
 def login(request):
     email = request.data.get("email")
     password = request.data.get("password")
-    print(email)
-    print(password)
     if email is None or password is None:
         return Response({'error': 'Please provide both email and password'},
                         status=HTTP_400_BAD_REQUEST)

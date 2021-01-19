@@ -7,7 +7,7 @@ import { FormattedMessage } from "react-intl";
 import {
 	getCurrentDate
   } from "../../../_metronic/_helpers";
-import list, {put,get} from '../helper/api';
+import list, {put,get, del} from '../helper/api';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import {defineMessages, injectIntl, intlShape} from 'react-intl';
 
@@ -150,6 +150,13 @@ this.addperson = {
 
 				this.setState({current_addperson});
 			}
+			
+		handleDeleteSpeakerPerson(id){
+			del(`api/speakerperson/${id}`).then((response)=>{
+				this.getAddpersons();
+
+			})
+		}
 
 		handleAddperson(){
 			let {speaker_addperson,speaker,current_addperson,addpersons,validateAddperson} = this.state;
@@ -235,7 +242,7 @@ this.addperson = {
 						let addperson_list = [];
 						response.data.map((row)=>{
 
-			  addperson_list.push({name:row.name,relationship:row.relationship ,birthday:row.birthday,})
+			  addperson_list.push({ id:row.id, name:row.name,relationship:row.relationship ,birthday:row.birthday,})
 		  })
 
 						 this.setState({speaker_addperson:addperson_list,});
@@ -816,10 +823,10 @@ this.addperson = {
 														<td>{addperson.name}</td>
 														<td>{addperson.relationship}</td>
 														<td>{addperson.birthday}</td>
-
 														<td style={{textAlign:'center'}}>
 														<Delete style={{cursor:'pointer'}} onClick={()=>{
-															speaker_addperson = speaker_addperson.filter(e => e !== addperson)
+															this.handleDeleteSpeakerPerson(addperson.id)
+															// speaker_addperson = speaker_addperson.filter(e => e !== addperson)
 																this.setState({speaker,speaker_addperson})
 															}}
 														/></td>
