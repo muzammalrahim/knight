@@ -172,6 +172,15 @@ class SpeakerPersonViewSet(viewsets.ModelViewSet):
     queryset = SpeakerPerson.objects.all()
     serializer_class = SpeakerPersonSerializer
 
+    def destroy(self, request, *args, **kwargs):
+        request_data = json.loads(request.body.decode('utf-8'))
+        print(request_data)
+        if 'id' in request_data:
+            for id in request_data['id']:
+                SpeakerPerson.objects.filter(id=id).delete()
+            return Response(status=HTTP_204_NO_CONTENT)
+        else:
+            return super(SpeakerPersonViewSet, self).destroy(request, *args, **kwargs)
 
 @api_view(['GET'])
 def api_root(request, format=None):
@@ -186,11 +195,13 @@ def api_root(request, format=None):
 def login(request):
     email = request.data.get("email")
     password = request.data.get("password")
+    print(email)
+    print(password)
     if email is None or password is None:
         return Response({'error': 'Please provide both email and password'},
                         status=HTTP_400_BAD_REQUEST)
     user = authenticate(email=email, password=password)
-    print(user)
+    print('>>',user)
     if not user:
         return Response({'error': 'Invalid Credentials'},
                         status=HTTP_404_NOT_FOUND)
