@@ -83,12 +83,21 @@
 
   "Event.Create.Title": "Event Registration",
 
+  "Event.Create.Displacement": "Displacement",
   "Event.Create.Eve_Name": "Event Name",
   "Event.Create.Type": "Type",
   "Event.Create.Date": "Date",
   "Event.Create.Duration": "Duration",
   "Event.Create.Web_OR_pres": "Web/Presential",
   "Event.Create.Price": "Price",
+  "Event.Create.displacement_Loc": "Local (at the same State)",
+  "Event.Create.displacement_Reg": "Regional (at the same Country)",
+  "Event.Create.displacement_Int": "International (at different Country)",
+
+  "Event.add_Speaker_Name": "Name",
+  "Event.add_Speaker_Specialty": " Specialty",
+  "Event.add_Speaker_Cost": "Cost",
+  "Event.add_Speaker_Action": "Action",
 
   "Event.List.Title": "Events List",
 
@@ -102,6 +111,7 @@
   "Event.List.Column.Department": "Department",
   "Event.List.Column.Cost": "Cost Center",
   "Event.List.Column.Speaker": "Speaker Name",
+  "Event.List.Column.Role": "Select Role",
   "Event.List.Column.Virtual": "Virtual / Presential",
 
   "Speaker.Registration.Title": "Speaker Registration",
@@ -144,13 +154,17 @@
   "Speaker.Registration.Form.UF_City" : "UF/City",
   "Speaker.Registration.Form.Specialy" : "Select Speciaity",
   "Speaker.Registration.Form.Address2" : "Address",
-  "Speaker.Registration.Form.Select_Tier" : "Tier",
+  "Speaker.Registration.Form.Select_Tier" : "Select Tier",
   "Speaker.Registration.Form.IBAN" : "IBAN/Account",
   "Speaker.Registration.Form.Agency" : "Agency",
   "Speaker.Registration.Form.Swift" : "Swift",
   "Speaker.Registration.Form.BankAddress" : "Bank Address",
   "Speaker.Registration.Form.Bank_Name" : "Bank Name",
   "Speaker.Registration.Form.AccountOwner" : "Account Owner",
+
+  "Speaker.Registration.Tier.One":"Tier 1",
+  "Speaker.Registration.Tier.Two":"Tier 2",
+  "Speaker.Registration.Tier.Three":"Tier 3",
 
   "Speaker.List.Title": "Speakers List",
   "Speaker.List.Column.Name": "Name",
@@ -163,6 +177,9 @@
   "Speaker.add_person_name":"Name",
   "Speaker.add_person_relationship":"Relationship",
   "speaker.add_person.dob":"Birthday",
+  "speaker.add_person.addperson_head":"Add Person",
+  "speaker.add_person.addperson_SelectedPerson":"Selected Person",
+
 
   "User.Registration.Title": "Create User",
   "User.Registration.Form.Email": "Email",

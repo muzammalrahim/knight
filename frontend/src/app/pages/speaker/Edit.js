@@ -40,7 +40,7 @@ class SpeakerEditForm extends React.Component{
 	constructor(props){
 		super(props);
 		this.speaker={
-			id:this.props.match.params.id, name: "", accept_information_rule: true, father_name: "", mother_name:"", dob:"", birthplace:"", civil_state:"", 
+			id:this.props.match.params.id, name: "", accept_information_rule: false, father_name: "", mother_name:"", dob:"", birthplace:"", civil_state:"", 
 			scholarity: "", social_number: "", service_provider: "", country: "Brasil", state: "", city: "", neighborhood: "",
 			cep: "", ddd: "", address:"", id_number: "", document_issue_date: "", emitting_organ: "", email: "", mobile: "", fax: null, 
 			linkedin: "", lattes: "", orcid: "", juridcal_person:false, national_id:"", company_name:"", cpf:"", cnpj:"", uf_crm:"", uf_city:"", 
@@ -167,6 +167,7 @@ this.addperson = {
 			});
 	
 			this.setState({speaker_addperson})
+			Object.keys(current_addperson).forEach((k) =>  current_addperson[k]="")
 			
 		}
 	
@@ -187,6 +188,7 @@ this.addperson = {
 			else if(speaker['foreign_flag'] === false && (key === "account_owner" || key == "swift_bic" || key == "bank_address" ||  key =="bank_name" ))
 			{
 				validateSpeaker[key] = false;
+				speaker[key] = "";
 			
 			}
 
@@ -1108,7 +1110,7 @@ this.addperson = {
 												/> */}
 											</div>
 										</div>
-									<div className="col-md-6">
+										{speaker.foreign_flag &&<div className="col-md-6">
 										<TextField
 											name="account_owner"
 											label="Account Owner"
@@ -1120,7 +1122,7 @@ this.addperson = {
 											error={validateSpeaker['account_owner']}
 											helperText={validateSpeaker['account_owner'] && 'this field is required'}
 										/>
-									</div>	
+									</div>}
 									<div className="col-md-6">
 										<TextField
 											name="bank_name"
@@ -1150,7 +1152,7 @@ this.addperson = {
 											))}
 										</TextField>
 									</div>	
-									<div className="col-md-6">
+									{speaker.foreign_flag && <div className="col-md-6">
 										<TextField
 											name="bank_address"
 											label="Bank Address"
@@ -1162,8 +1164,8 @@ this.addperson = {
 											error={validateSpeaker['bank_address']}
 											helperText={validateSpeaker['bank_address'] && 'this field is required'}
 										/>
-									</div>	
-									<div className="col-md-6">
+									</div>}	
+									{speaker.foreign_flag &&<div className="col-md-6">
 										<TextField
 											name="swift_bic"
 											label="Swift / BIC"
@@ -1176,7 +1178,7 @@ this.addperson = {
 											helperText={validateSpeaker['swift_bic'] && 'this field is required'}
 										/>
 										
-									</div>	
+									</div>}
 									<div className="col-md-6">
 										<TextField
 											name="iban_account"

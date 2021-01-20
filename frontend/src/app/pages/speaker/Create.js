@@ -42,8 +42,8 @@ class SpeakerEditForm extends React.Component{
 		this.speaker={name: "", father_name: "", mother_name:"", dob:"", birthplace:"", civil_state:"single",
 			scholarity: "", social_number: "", service_provider: "", country: "Brasil", state: "", city: "", neighborhood: "",
 			cep: "", ddd: "", address:"", id_number: "", document_issue_date: "", emitting_organ: "", email: "", mobile: "", fax: null,
-			linkedin: "", lattes: "", orcid: "", juridcal_person:false,foreign_flag: false, national_id:"", company_name:"", cpf:"", cnpj:"", uf_crm:"", uf_city:"",
-			specialty:"", tier:"", juridical_address:"",	account_owner: "", bank_name: "", bank_address: "", swift_bic: "", iban_account: "", pix:"", agency: ""  ,
+			linkedin: "", lattes: "", orcid: "", juridcal_person:false,foreign_flag: false,accept_information_rule: true, national_id:"", company_name:"", cpf:"", cnpj:"", uf_crm:"", uf_city:"",
+			specialty:"", tier:"1", juridical_address:"",	account_owner: "", bank_name: "", bank_address: "", swift_bic: "", iban_account: "", pix:"", agency: ""  ,
 		}
 
 		this.validateSpeaker={ foreign_flag: false,	accept_information_rule: false,	name: false, father_name: false,
@@ -174,11 +174,11 @@ this.setState({current_addperson});
 		isSubmit &&	speaker_addperson.push({
 			name:current_addperson.addperson,
 			relationship: current_addperson.relation,
-			birthday: current_addperson.dob
+			birthday: current_addperson.dob,
 		});
 
 		this.setState({speaker_addperson})
-
+		Object.keys(current_addperson).forEach((k) =>  current_addperson[k]="")
 	}
 
 
@@ -198,6 +198,7 @@ this.setState({current_addperson});
 			else if(speaker['foreign_flag'] === false && (key === "account_owner" || key == "swift_bic" || key == "bank_address" ||  key =="bank_name" ))
 			{
 				validateSpeaker[key] = false;
+				speaker[key] = "";
 			}
 
 			//Skip Optional Fields form Validation
@@ -233,22 +234,7 @@ this.setState({current_addperson});
 			})
 	}
 
-	// no need
-		// getAddpersons(){
-				// addpersonlist('api/speakerperson').then((response)=>{
-//
-						// let addperson_list = [];
-//
-						// response.data.map((row)=>{
-			//   addperson_list.push({label:row.name, value:row.id})
-		//   })
-						//  this.setState({addperson_list, addpersons:response.data});
-		// } )
-		// }
-
-
 	componentDidMount(){
-		// this.getAddpersons();
 		fetch('https://restcountries.eu/rest/v2/all')
 		.then(response => response.json())
 		.then((data) => {
@@ -317,7 +303,7 @@ this.setState({current_addperson});
 
 									<div className="col-md-9">
 										<Checkbox
-											checked={accept_information_rule}
+											checked={accept_information_rule? true : false}
 											name="accept_information_rule"
 											onChange={(event)=>{this.handleChange(event)}}
 											value={accept_information_rule}
@@ -666,7 +652,6 @@ this.setState({current_addperson});
 											type="number"
 											margin="normal"
 											variant="outlined"
-											// onKeyUp={(e)=>{this.numberChange(e)}}
 											onKeyUp={(event)=>{this.handleChange(event)}}
 										/>
 									</div>
@@ -790,7 +775,7 @@ this.setState({current_addperson});
 
 										<div className="col-md-12 text-right pt-4">
 											<Button variant="contained" color="primary" style={styles.button} onClick={()=>{this.handleAddperson()}}>
-												Add Person
+												{<FormattedMessage id="speaker.add_person.addperson_head"/>}
 												<Icon style={styles.rightIcon}>add</Icon>
 											</Button>
 										</div>
@@ -800,14 +785,14 @@ this.setState({current_addperson});
 
 		   { speaker_addperson.length > 0 && <div className="col-md-12 m-4">
 
-									<h5>Selected person</h5>
+									<h5>{<FormattedMessage id="speaker.add_person.addperson_SelectedPerson"/>} </h5>
 									<Table striped bordered hover className="ml-4 mr-4">
 										<thead>
 											<tr>
-											<th>Name</th>
-											<th>Relationship</th>
-											<th>Date of Birth</th>
-											<th style={{textAlign:'center'}}>Action</th>
+											<th>{<FormattedMessage id="Speaker.add_person_name"/>}</th>
+											<th>{<FormattedMessage id="Speaker.add_person_relationship"/>}</th>
+											<th>{<FormattedMessage id="speaker.add_person.dob"/>}</th>
+											<th style={{textAlign:'center'}}>{<FormattedMessage id="Event.add_Speaker_Action"/>}</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -935,6 +920,7 @@ this.setState({current_addperson});
 											select
 											label={<FormattedMessage id="Speaker.Registration.Form.Select_Tier"/>}
 											style={styles.textField}
+											value={speaker.tier}
 											onChange={(event)=>{this.handleChange(event)}}
 											SelectProps={{
 												native: true,
@@ -946,15 +932,14 @@ this.setState({current_addperson});
 											helperText={validateSpeaker['tier'] && 'this field is required'}
 											margin="normal"
 											variant="outlined"
-										>
-											<option value={null}>
-												Select Tier....
-											</option>
-											{tier.map(option => (
-												<option key={option.value} value={option.value}>
-													{option.label}
-												</option>
-											))}
+										>	
+									
+											{Object.keys(tier).map((key, index) => {
+															return <option key={index} value={tier[key].defaultMessage}>
+															{formatMessage(tier[key])}
+														</option>
+											})}
+
 										</TextField>
 									</div>
 									<div className="col-md-6 text-center">
@@ -1113,7 +1098,7 @@ this.setState({current_addperson});
 											</div>
 										</div>
 
-									 {speaker.foreign_flag && <div className="col-md-6">
+								{speaker.foreign_flag && <div className="col-md-6">
 
 									 {speaker.foreign_flag && <div className="col-md-6">
 										<TextField
@@ -1128,7 +1113,7 @@ this.setState({current_addperson});
 											helperText={validateSpeaker['account_owner'] && 'this field is required'}
 										/>
 									</div>}
-									<div className="col-md-6">
+									{speaker.foreign_flag &&<div className="col-md-6">
 										<TextField
 											name="bank_name"
 											select
@@ -1156,12 +1141,12 @@ this.setState({current_addperson});
 												</option>
 											))}
 										</TextField>
-									</div>
+									</div>}
 
 									{speaker.foreign_flag && <div className="col-md-6">
 										<TextField
 											name="bank_address"
-											label={<FormattedMessage id="Speaker.Registration.Form.BankAdress"/>}
+											label={<FormattedMessage id="Speaker.Registration.Form.BankAddress"/>}
 											style={styles.textField}
 											value={speaker.national_id ? speaker.bank_address : ''}
 											onChange={(event)=>{this.handleChange(event)}}
@@ -1253,20 +1238,25 @@ this.setState({current_addperson});
 
 export default injectIntl(SpeakerEditForm)
 
-const tier = [
-	{
-		value: "1",
-		label: "Tier 1"
-	},
-	{
-		value: "2",
-		label: "Tier 2"
-	},
-	{
-		value: "3",
-		label: "Tier 3"
-	}
-];
+
+const tier = defineMessages({
+    one: {
+        id: 'Speaker.Registration.Tier.One',
+        defaultMessage: '1',
+    },
+    two: {
+        id: 'Speaker.Registration.Tier.Two',
+        defaultMessage: '2',
+    },
+    three: {
+        id: 'Speaker.Registration.Tier.Three',
+        defaultMessage: '3',
+    },
+  
+});
+
+
+
 
 function TabContainer(props) {
 	return (
