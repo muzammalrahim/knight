@@ -172,6 +172,14 @@ class SpeakerPersonViewSet(viewsets.ModelViewSet):
     queryset = SpeakerPerson.objects.all()
     serializer_class = SpeakerPersonSerializer
 
+    def destroy(self, request, *args, **kwargs):
+        request_data = json.loads(request.body.decode('utf-8'))
+        if 'id' in request_data:
+            for id in request_data['id']:
+                SpeakerPerson.objects.filter(id=id).delete()
+            return Response(status=HTTP_204_NO_CONTENT)
+        else:
+            return super(SpeakerPersonViewSet, self).destroy(request, *args, **kwargs)
 
 @api_view(['GET'])
 def api_root(request, format=None):
@@ -190,7 +198,7 @@ def login(request):
         return Response({'error': 'Please provide both email and password'},
                         status=HTTP_400_BAD_REQUEST)
     user = authenticate(email=email, password=password)
-    print(user)
+    print('>>',user)
     if not user:
         return Response({'error': 'Invalid Credentials'},
                         status=HTTP_404_NOT_FOUND)
@@ -221,7 +229,7 @@ def forget_password(request):
         else:
             CustomUser.objects.update(password_link=random_id, user=user)
         user.save()
-        reset_link = '{}/auth/reset_password/{}'.format(settings.SITE_URL, random_id)
+        reset_link = '{}/auth/reset-password/{}'.format(settings.SITE_URL, random_id)
         html_content = get_template('account/general.html') \
             .render({'reset_link': reset_link})
 

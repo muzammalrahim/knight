@@ -75,6 +75,7 @@ urlpatterns = format_suffix_patterns([
     path('login', users_view.login),
     path('logout', users_view.logout),
     path('speakerperson', speaker_person, name='events'),
+    path('speakerperson/<pk>/', speaker_person, name='events'),
 
     path('users/<pk>/', user_detail),
 

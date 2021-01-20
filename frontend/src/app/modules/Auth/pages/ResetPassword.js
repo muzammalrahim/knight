@@ -50,7 +50,7 @@ function ResetPassword(props) {
         })
       ),
 
-      confirmpassword: Yup.string()
+      confirmpassword: Yup.string()  
       .min(6, "Minimum 6 symbols")
       .max(12, "Maximum 12 symbols")
       .required(
@@ -75,7 +75,7 @@ function ResetPassword(props) {
 
     return "";
 
-
+ 
   };
 
   const handleClose=()=>{
@@ -93,7 +93,7 @@ const checkNewAndConfirmPassword = (first, sec)=>
 
   const formik = useFormik({
     initialValues,
-    validationSchema: ForgotPasswordSchema ,
+    validationSchema: ForgotPasswordSchema , 
     onSubmit: (values, { setStatus, setSubmitting }) => {
 
 
@@ -231,9 +231,9 @@ const checkNewAndConfirmPassword = (first, sec)=>
                 // onChange = {(e)=>{console.log(e.target.value)}}
                 name="confirmpassword"
                  {...formik.getFieldProps("confirmpassword")}
-
+                
               />
-
+              
               {formik.touched.confirmpassword && formik.errors.confirmpassword ? (
                 <div className="fv-plugins-message-container">
                   <div className="fv-help-block">{formik.errors.confirmpassword}</div>

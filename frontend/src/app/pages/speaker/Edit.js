@@ -7,7 +7,7 @@ import { FormattedMessage } from "react-intl";
 import {
 	getCurrentDate
   } from "../../../_metronic/_helpers";
-import list, {put,get} from '../helper/api';
+import list, {put,get, del} from '../helper/api';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import {defineMessages, injectIntl, intlShape} from 'react-intl';
 
@@ -40,7 +40,7 @@ class SpeakerEditForm extends React.Component{
 	constructor(props){
 		super(props);
 		this.speaker={
-			id:this.props.match.params.id, name: "", accept_information_rule: false, father_name: "", mother_name:"", dob:"", birthplace:"", civil_state:"", 
+			id:this.props.match.params.id, name: "", accept_information_rule: false, father_name: "", mother_name:"", dob:"", birthplace:"", civil_state:"",
 			scholarity: "", social_number: "", service_provider: "", country: "Brasil", state: "", city: "", neighborhood: "",
 			cep: "", ddd: "", address:"", id_number: "", document_issue_date: "", emitting_organ: "", email: "", mobile: "", fax: null, 
 			linkedin: "", lattes: "", orcid: "", juridcal_person:false, national_id:"", company_name:"", cpf:"", cnpj:"", uf_crm:"", uf_city:"", 
@@ -150,7 +150,14 @@ this.addperson = {
 	
 				this.setState({current_addperson});
 			}
-	
+
+		handleDeleteSpeakerPerson(id){
+			del(`api/speakerperson/${id}`).then((response)=>{
+				this.getAddpersons();
+
+			})
+		}
+
 		handleAddperson(){
 			let {speaker_addperson,speaker,current_addperson,addpersons,validateAddperson} = this.state;
 			let isSubmit = null;
@@ -159,18 +166,19 @@ this.addperson = {
 				isSubmit = current_addperson[key] && isSubmit !== false ? true : false;
 			})
 			this.setState({validateAddperson})
-	
+
 			isSubmit &&	speaker_addperson.push({
-				name:current_addperson.addperson, 
+				name:current_addperson.addperson,
 				relationship: current_addperson.relation,
 				birthday: current_addperson.dob
 			});
-	
+
 			this.setState({speaker_addperson})
+
 			Object.keys(current_addperson).forEach((k) =>  current_addperson[k]="")
-			
+
 		}
-	
+
 
 
 	handleTabChange(event, currentTab) {
@@ -189,7 +197,7 @@ this.addperson = {
 			{
 				validateSpeaker[key] = false;
 				speaker[key] = "";
-			
+
 			}
 
 			//Skip Optional Fields form Validation
@@ -237,7 +245,7 @@ this.addperson = {
 						let addperson_list = [];
 						response.data.map((row)=>{
 
-			  addperson_list.push({name:row.name,relationship:row.relationship ,birthday:row.birthday,})
+			  addperson_list.push({ id:row.id, name:row.name,relationship:row.relationship ,birthday:row.birthday,})
 		  })
 		  		
 						 this.setState({speaker_addperson:addperson_list,});
@@ -731,7 +739,7 @@ this.addperson = {
 										<strong> {<FormattedMessage id="Speaker.Registration.Form.Social_sec"/>} </strong>
 									</div>
 
-									
+
 									<div className="container">
 									<div className="row" style={{border:'1px solid gray', margin:'1rem', padding:'1rem'}}>
 
@@ -780,7 +788,7 @@ this.addperson = {
 												onChange={(event) =>{this.handleChangeAddspeaker(event)}}
 												error={validateAddperson['dob']}
 													helperText={validateAddperson['dob'] && 'this field is required'}
-											
+
 											/>
 										</div>
 
@@ -795,10 +803,10 @@ this.addperson = {
 										</div>
 									</div>
 									</div>
-								
-							
+
+
 		   { speaker_addperson.length > 0 && <div className="col-md-12 m-4">
-									
+
 									<h5>Selected person</h5>
 									<Table striped bordered hover className="ml-4 mr-4">
 										<thead>
@@ -812,16 +820,16 @@ this.addperson = {
 										<tbody>
 											 {
 												speaker_addperson.map((addperson,index)=>{
-													
-												
+
+
 									          return <tr>
 														<td>{addperson.name}</td>
 														<td>{addperson.relationship}</td>
 														<td>{addperson.birthday}</td>
-
 														<td style={{textAlign:'center'}}>
 														<Delete style={{cursor:'pointer'}} onClick={()=>{
-															speaker_addperson = speaker_addperson.filter(e => e !== addperson)
+															this.handleDeleteSpeakerPerson(addperson.id)
+															// speaker_addperson = speaker_addperson.filter(e => e !== addperson)
 																this.setState({speaker,speaker_addperson})
 															}}
 														/></td>
@@ -1164,7 +1172,7 @@ this.addperson = {
 											error={validateSpeaker['bank_address']}
 											helperText={validateSpeaker['bank_address'] && 'this field is required'}
 										/>
-									</div>}	
+									</div>}
 									{speaker.foreign_flag &&<div className="col-md-6">
 										<TextField
 											name="swift_bic"

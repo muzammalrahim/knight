@@ -7,7 +7,7 @@ import { FormattedMessage } from "react-intl";
 import {
 	getCurrentDate
   } from "../../../_metronic/_helpers";
-import list,{post} from '../helper/api';
+import list,{post, del} from '../helper/api';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import {defineMessages, injectIntl, intlShape} from 'react-intl';
 
@@ -153,6 +153,7 @@ this.addperson = {
 
 handleChangeAddspeaker(e){
 	let [key, value, {current_addperson,validateAddperson}] = [e.target.name, e.target.value, this.state];
+	// let [key, value, {current_addperson}] = [e.target.name, e.target.value, this.state];
 		current_addperson[key]=value;
 
 		if(validateAddperson[key]){
@@ -179,6 +180,12 @@ this.setState({current_addperson});
 
 		this.setState({speaker_addperson})
 		Object.keys(current_addperson).forEach((k) =>  current_addperson[k]="")
+	}
+
+	handleDeleteSpeakerPerson(id){
+		del(`api/speakerperson/${id}/`).then((response)=>{
+				console.log('person deleted')
+		})
 	}
 
 
@@ -807,6 +814,7 @@ this.setState({current_addperson});
 
 														<td style={{textAlign:'center'}}>
 														<Delete style={{cursor:'pointer'}} onClick={()=>{
+															// this.handleDeleteSpeakerPerson(addperson.id)
 															speaker_addperson = speaker_addperson.filter(e => e !== addperson)
 																this.setState({speaker,speaker_addperson})
 															}}
