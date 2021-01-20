@@ -25,9 +25,6 @@ export default function list(endpoint, params={}) {
 	})
 }
 
-
-
-
 export function put(endpoint, data) {
   let config = {
     headers: headers,

@@ -87,12 +87,23 @@
   
   "Event.Create.Title": "Registro de Evento ",
 
+  "Event.Create.Displacement": "Deslocamento",
   "Event.Create.Eve_Name": "Nome do evento",
   "Event.Create.Type": "Tipo ",
   "Event.Create.Date": "Encontro",
   "Event.Create.Duration": "Duração ",
   "Event.Create.Web_OR_pres": "Web / Presencial",
   "Event.Create.Price": "Preço",
+  "Event.Create.displacement_Loc": "Local (no mesmo estado)",
+  "Event.Create.displacement_Reg": "Regional (no mesmo país)",
+  "Event.Create.displacement_Int": "Internacional (em outro país)",
+
+  "Event.add_Speaker_Name": "Nome",
+  "Event.add_Speaker_Specialty": "Especialidade",
+  "Event.add_Speaker_Cost": "Custo",
+  "Event.add_Speaker_Action": "Açao",
+
+
 
   "Event.List.Title": "Lista de Eventos",
 
@@ -106,6 +117,7 @@
   "Event.List.Column.Department": "Departamento",
   "Event.List.Column.Cost": "Centro de custo",
   "Event.List.Column.Speaker": "Nome do Palestrante",
+  "Event.List.Column.Role": "Selecione a função",
   "Event.List.Column.Virtual": "Virtual / Presencial",
   
   "Speaker.Registration.Title": "Registro de palestrante",
@@ -139,7 +151,7 @@
   "Speaker.Registration.Form.Reg_City": "possui cadastro junta ao CCM-Cadastro de Contribuintes",
   "Speaker.Registration.Form.Reg_City2": "imobiliários (Prefeitura)?",
   "Speaker.Registration.Form.Social_sec": "É contribuinte do INSS (Previdência Social)?",
-
+  
   "Speaker.Registration.Form.National_ID": "Identidade Nacional",
   "Speaker.Registration.Form.Company_Name": "Nome da Empresa",
   "Speaker.Registration.Form.CPF" : "CPF (Somente brasileiro)",
@@ -156,9 +168,31 @@
   "Speaker.Registration.Form.Bank_Name" : "Nome do banco",
   "Speaker.Registration.Form.AccountOwner" : "Dono da conta",
 
+  "Speaker.Registration.Form.National_ID": "Identidade Nacional",
+  "Speaker.Registration.Form.Company_Name": "Nome da Empresa",
+  "Speaker.Registration.Form.CPF" : "CPF (Somente brasileiro)",
+  "Speaker.Registration.Form.CNPJ" : "CNPJ ",
+  "Speaker.Registration.Form.UF-CRM" : "UF - CRM",
+  "Speaker.Registration.Form.UF_City" : "UF/Cidade",
+  "Speaker.Registration.Form.Specialy" : "Selecione especialidade",
+  "Speaker.Registration.Form.Address2" : "endereço",
+  "Speaker.Registration.Form.Select_Tier" : "Selecionar camada",
+  "Speaker.Registration.Form.IBAN" : "IBAN/Conta",
+  "Speaker.Registration.Form.Agency" : "Agência",
+  "Speaker.Registration.Form.Swift" : "Rápida",
+  "Speaker.Registration.Form.BankAddress" : "Endereço do banco",
+  "Speaker.Registration.Form.Bank_Name" : "Nome do banco",
+  "Speaker.Registration.Form.AccountOwner" : "Dono da conta",
+
+  "Speaker.Registration.Tier.One":"camada 1",
+  "Speaker.Registration.Tier.Two":"camada 2",
+  "Speaker.Registration.Tier.Three":"camada 3",
+
   "Speaker.add_person_name":"NOME",
   "Speaker.add_person_relationship":"parentesco",
   "speaker.add_person.dob":"Date de Nascimento",
+  "speaker.add_person.addperson_head":"Adicionar Pessoa",
+  "speaker.add_person.addperson_SelectedPerson":"Pessoa Selecionada",
 
   "Speaker.List.Title": "Lista de Oradores",
   "Speaker.List.Column.Name": "Nome",

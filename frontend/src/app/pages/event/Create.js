@@ -4,6 +4,7 @@ import { TextField, Button, Icon, AppBar, Tabs, Tab, Typography, Table, Checkbox
 import PropTypes from 'prop-types';
 import {ChevronLeft, CheckBox as CheckBoxIcon, CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, Delete, Edit} from '@material-ui/icons';
 import { FormattedMessage } from "react-intl";
+import FormHelperText from '@material-ui/core/FormHelperText';
 import {
 	getCurrentDate
   } from "../../../_metronic/_helpers";
@@ -77,14 +78,10 @@ class EventRegistrationForm extends React.Component {
 			isSubmit = current_speaker[key] && isSubmit !== false ? true : false;
 		})
 		this.setState({validateEventSpeaker})
-		console.log("current_speaker.speaker :",current_speaker.speaker)
 		let speaker = speakers.find(data => data.id == current_speaker.speaker)
 		 isSubmit && list(`api/price`, {specialty:speaker.specialty, program_type:event._type, tier:speaker.tier})
 		 .then((response)=>{
 			if(!event['speaker'].includes(current_speaker.speaker)){
-
-				console.log("resoponse:",response)
-
 				current_speaker['price'] = response.data[0].hour_price*current_speaker.duration;
 				current_speaker['price'] = 200*current_speaker.duration;
 				event['speaker'].push(current_speaker.speaker);
@@ -603,9 +600,9 @@ class EventRegistrationForm extends React.Component {
 												/>
 											</div> */}
 											<div className="col-md-12 pt-4 ml-4">
-										<h5>Displacement</h5>
+										<h5>{<FormattedMessage id="Event.Create.Displacement"/>}</h5>
 										<div className="col-md-12 pt-4 ml-4">
-											<FormControl component="fieldset" style={styles.formControl}>
+											<FormControl component="fieldset" error={validateEventSpeaker['displacement'] && 'this field is required'} style={styles.formControl}>
 												<RadioGroup
 													aria-label="Gender"
 													name="displacement"
@@ -613,10 +610,11 @@ class EventRegistrationForm extends React.Component {
 													value={current_speaker.displacement}
 													onChange={(e)=>{this.handleChangeSpeaker(e)}}
 												>
-													<FormControlLabel value="local" control={<Radio />} label="Local (at the same State)" />
-													<FormControlLabel value="regional" control={<Radio />} label="Regional (at the same Country)" />
-													<FormControlLabel value="international" control={<Radio />} label="International (at different Country)" />
+													<FormControlLabel value="local" control={<Radio />} label={<FormattedMessage id="Event.Create.displacement_Loc"/>} />
+													<FormControlLabel value="regional" control={<Radio />} label={<FormattedMessage id="Event.Create.displacement_Reg"/>} />
+													<FormControlLabel value="international" control={<Radio />} label={<FormattedMessage id="Event.Create.displacement_Int"/>} />
 												</RadioGroup>
+												<FormHelperText>{validateEventSpeaker['displacement'] && <h6>this field is required</h6>}</FormHelperText>
 											</FormControl>
 										</div>
 									</div>
@@ -630,15 +628,15 @@ class EventRegistrationForm extends React.Component {
 										</div>
 									</div>
 
-									{console.log("check length:",event.speaker.length), event.speaker.length > 0 && <div className="col-md-12 m-4">
-										<h5>Selected Speakers</h5>
+									{ event.speaker.length > 0 && <div className="col-md-12 m-4">
+										<h5>speaker.add_person.addperson_SelectedPerson</h5>
 										<Table striped bordered hover className="ml-4 mr-4">
 											<thead>
 												<tr>
-												<th>Name</th>
-												<th>Specialty</th>
-												<th>Cost</th>
-												<th style={{textAlign:'center'}}>Action</th>
+												<th>{<FormattedMessage id="Event.add_Speaker_Name"/>}   </th>
+												<th>{<FormattedMessage id="Event.add_Speaker_Specialty"/>} </th>
+												<th>{<FormattedMessage id="Event.add_Speaker_Cost"/>}</th>
+												<th style={{textAlign:'center'}}>{<FormattedMessage id="Event.add_Speaker_Action"/>} </th>
 												</tr>
 											</thead>
 											<tbody>
@@ -646,17 +644,10 @@ class EventRegistrationForm extends React.Component {
 													// event.speaker array full from handle add speaker
 													// event['speaker'].push(current_speaker.speaker);
 													event.speaker.map((speaker)=>{
-														console.log("speaker 1:",speaker)
-
-														console.log("speakers 2 :",speakers)
+						
 														let spk = speakers.find(data => data.id == speaker)
 
-														console.log("event_speaker :",event_speaker)
 												let data = event_speaker.find(data =>  data.speaker == speaker)
-
-
-														console.log("spk : 3",spk)
-														console.log("data 4:",data)
 														return spk && <tr>
 															<td>{spk.name}</td>
 															<td>{spk.specialty && specialty.find(specialty => spk.specialty == specialty.id).name}</td>

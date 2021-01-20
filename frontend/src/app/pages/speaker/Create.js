@@ -7,7 +7,7 @@ import { FormattedMessage } from "react-intl";
 import {
 	getCurrentDate
   } from "../../../_metronic/_helpers";
-import list,{post} from '../helper/api';
+import list,{post, del} from '../helper/api';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import {defineMessages, injectIntl, intlShape} from 'react-intl';
 
@@ -39,11 +39,11 @@ class SpeakerEditForm extends React.Component{
 	constructor(props){
 		super(props);
 
-		this.speaker={name: "", father_name: "", mother_name:"", dob:"", birthplace:"", civil_state:"",
+		this.speaker={name: "", father_name: "", mother_name:"", dob:"", birthplace:"", civil_state:"single",
 			scholarity: "", social_number: "", service_provider: "", country: "Brasil", state: "", city: "", neighborhood: "",
 			cep: "", ddd: "", address:"", id_number: "", document_issue_date: "", emitting_organ: "", email: "", mobile: "", fax: null,
-			linkedin: "", lattes: "", orcid: "", juridcal_person:false,foreign_flag: false, national_id:"", company_name:"", cpf:"", cnpj:"", uf_crm:"", uf_city:"",
-			specialty:"", tier:"", juridical_address:"",	account_owner: "", bank_name: "", bank_address: "", swift_bic: "", iban_account: "", pix:"", agency: ""  , addperson :[]
+			linkedin: "", lattes: "", orcid: "", juridcal_person:false,foreign_flag: false,accept_information_rule: true, national_id:"", company_name:"", cpf:"", cnpj:"", uf_crm:"", uf_city:"",
+			specialty:"", tier:"1", juridical_address:"",	account_owner: "", bank_name: "", bank_address: "", swift_bic: "", iban_account: "", pix:"", agency: ""  ,
 		}
 
 		this.validateSpeaker={ foreign_flag: false,	accept_information_rule: false,	name: false, father_name: false,
@@ -62,15 +62,16 @@ class SpeakerEditForm extends React.Component{
             title:''
         }
 
+		this.validateAddperson = {
+			addperson:false,
+			relation:false,
+			dob:false,
+		}
+
 this.addperson = {
 			addperson:'',
 			relation:'',
 			dob:'',
-		}
-		this.Validateaddperson = {
-			name:false,
-			relationship:false,
-			birthday:false,
 		}
 
 		this.state={
@@ -86,6 +87,9 @@ this.addperson = {
 			addpersons:[],
 			speaker_addperson:[],
 			current_addperson:{},
+
+			validateAddperson:this.validateAddperson
+
 		}
 		this.handleTabChange = this.handleTabChange.bind(this);
 	}
@@ -105,20 +109,6 @@ this.addperson = {
 			speaker['uf_city'] = "";
 			speaker['juridical_address'] = "";
 		}
-//
-		// if (validateSpeaker['foreign_flag'] === false){
-//
-			// console.log("ff",speaker['foreign_flag'])
-			// validateSpeaker['account_owner'] = false;
-			// validateSpeaker['swift_bic'] = false;
-			// validateSpeaker['bank_address'] = false;
-//
-			// speaker['account_owner'] = "";
-			// speaker['swift_bic'] = "";
-			// speaker['bank_address'] = "";
-//
-					// }
-
 
 		if(key==="foreign_flag" || key==="registration_in_city" || key==="social_security" ||  		    key==="accept_information_rule"||  key == "juridcal_person")
 		{
@@ -134,8 +124,9 @@ this.addperson = {
 
 			}else{
 
-				     speaker[key]=!(speaker[key]);
-				     validateSpeaker[key] = false;
+
+				speaker[key]=!(speaker[key]);
+				validateSpeaker[key] = false;
 			}
 
 		}
@@ -161,53 +152,40 @@ this.addperson = {
 
 
 handleChangeAddspeaker(e){
-	let [key, value, {current_addperson}] = [e.target.name, e.target.value, this.state];
+	let [key, value, {current_addperson,validateAddperson}] = [e.target.name, e.target.value, this.state];
+	// let [key, value, {current_addperson}] = [e.target.name, e.target.value, this.state];
 		current_addperson[key]=value;
+
+		if(validateAddperson[key]){
+			validateAddperson[key] = current_addperson[key] ? false : true;
+		   }
+
 this.setState({current_addperson});
 	}
 
 	handleAddperson(){
-
-		let {current_addperson,speaker_addperson,addpersons,speaker,Validateaddperson} = this.state;
+		let {speaker_addperson,speaker,current_addperson,addpersons,validateAddperson} = this.state;
 		let isSubmit = null;
-//
-		// Object.keys(this.Validateaddperson).map((key)=>{
-			//
-			// Validateaddperson[key] = speaker_addperson[key] ? false : true;
-			// isSubmit = speaker[key] && isSubmit !== false ? true : false;
-		//
-			// })
-			//
-			// isSubmit&&
-			speaker_addperson.push({
-				name:current_addperson.addperson,
-				relationship: current_addperson.relation,
-				birthday: current_addperson.dob
-			});
+		Object.keys(validateAddperson).map((key)=>{
+			validateAddperson[key] = current_addperson[key] ? false : true;
+			isSubmit = current_addperson[key] && isSubmit !== false ? true : false;
+		})
+		this.setState({validateAddperson})
 
-	this.setState({speaker_addperson,Validateaddperson});
+		isSubmit &&	speaker_addperson.push({
+			name:current_addperson.addperson,
+			relationship: current_addperson.relation,
+			birthday: current_addperson.dob,
+		});
 
-		//let isSubmit = null;
-		// let addperson = addpersons.find(data => data.addperson == current_addperson.addperson)
-		// post(`api/speakerperson`, speaker_addperson).then((response)=>{
-			// console.log('this api is called')
-		// })
-		//   .then((response)=>{
-//
-			//  if(!speaker['addperson'].includes(current_addperson.addperson))
-			//  {
-				//  console.log("current_addperson:",current_addperson)
-				// speaker['addperson'].push(current_addperson.addperson);
-				// speaker_addperson.push(current_addperson)
-			//   }
-			// this.setState({
-				// speaker_addperson,
-				// speaker,
-				// current_speaker:{addperson:'', relation:'', dob:''},
-				//
-			// });
-			// console.log("wai kana:",speaker_addperson)
-		//  })
+		this.setState({speaker_addperson})
+		Object.keys(current_addperson).forEach((k) =>  current_addperson[k]="")
+	}
+
+	handleDeleteSpeakerPerson(id){
+		del(`api/speakerperson/${id}/`).then((response)=>{
+				console.log('person deleted')
+		})
 	}
 
 
@@ -217,20 +195,17 @@ this.setState({current_addperson});
 	handleSubmit(){
 		let {speaker, validateSpeaker} = this.state;
 		let isSubmit = null;
-
 		Object.keys(validateSpeaker).map((key)=>{
-
 
 			if(speaker['juridcal_person'] === false && (key === "company_name" || key === "cnpj" || key === "uf_city" || key === "juridical_address" ))
 			{
 				validateSpeaker[key] = false;
 			}
 
-
-			else if(speaker['foreign_flag'] === false && (key === "account_owner" || key == "swift_bic" || key == "bank_address" ))
+			else if(speaker['foreign_flag'] === false && (key === "account_owner" || key == "swift_bic" || key == "bank_address" ||  key =="bank_name" ))
 			{
-
 				validateSpeaker[key] = false;
+				speaker[key] = "";
 			}
 
 			//Skip Optional Fields form Validation
@@ -242,7 +217,7 @@ this.setState({current_addperson});
 				speaker['pix'] = "";
 
 			}
-			else if(key==="foreign_flag" || key==="registration_in_city" || key==="social_security" ||  key==="accept_information_rule"){
+			else if(key==="foreign_flag" || key==="registration_in_city" || key==="social_security"   ||key==="accept_information_rule"){
 				validateSpeaker[key] = false;
 
 			}
@@ -252,9 +227,8 @@ this.setState({current_addperson});
 			}
 		})
 
-        this.setState({validateSpeaker});
+		this.setState({validateSpeaker});
 		 speaker['person']=this.state.speaker_addperson;
-		 console.log("che tabh:",speaker)
 		isSubmit && post(`api/speakers`, speaker).then((response)=>{
 			this.setState({alert:{open:true, severity:"success", title:"success", message:'User has been updated Sucessfully'}})
 			setTimeout(()=>{
@@ -267,22 +241,7 @@ this.setState({current_addperson});
 			})
 	}
 
-	// no need
-		// getAddpersons(){
-				// addpersonlist('api/speakerperson').then((response)=>{
-//
-						// let addperson_list = [];
-//
-						// response.data.map((row)=>{
-			//   addperson_list.push({label:row.name, value:row.id})
-		//   })
-						//  this.setState({addperson_list, addpersons:response.data});
-		// } )
-		// }
-
-
 	componentDidMount(){
-		// this.getAddpersons();
 		fetch('https://restcountries.eu/rest/v2/all')
 		.then(response => response.json())
 		.then((data) => {
@@ -308,7 +267,7 @@ this.setState({current_addperson});
     }
 	render(){
 		let {speaker:{foreign_flag, accept_information_rule, juridcal_person}, speaker, currentTab,addperson_list, countries,
-			validateSpeaker, alert:{severity, message, title, open}, specialty_list,current_addperson,addpersons,speaker_addperson} = this.state;
+			validateSpeaker, alert:{severity, message, title, open}, specialty_list,current_addperson,addpersons,speaker_addperson,validateAddperson} = this.state;
 
 		const {formatMessage} = this.props.intl;
 		return (
@@ -351,7 +310,7 @@ this.setState({current_addperson});
 
 									<div className="col-md-9">
 										<Checkbox
-											checked={accept_information_rule}
+											checked={accept_information_rule? true : false}
 											name="accept_information_rule"
 											onChange={(event)=>{this.handleChange(event)}}
 											value={accept_information_rule}
@@ -410,7 +369,7 @@ this.setState({current_addperson});
 											name="dob"
 											label={<FormattedMessage id="Speaker.Registration.Form.Birthday"/>}
 											type="date"
-											value={speaker.dob ? speaker.dob : getCurrentDate()}
+											value={speaker.dob ? speaker.dob : ''}
 											style={styles.textField}
 											InputLabelProps={{
 												shrink: true
@@ -700,7 +659,6 @@ this.setState({current_addperson});
 											type="number"
 											margin="normal"
 											variant="outlined"
-											// onKeyUp={(e)=>{this.numberChange(e)}}
 											onKeyUp={(event)=>{this.handleChange(event)}}
 										/>
 									</div>
@@ -781,9 +739,8 @@ this.setState({current_addperson});
 													onChange={(e)=>{this.handleChangeAddspeaker(e)}}
 													margin="normal"
 													variant="outlined"
-													// error={validateEvent['add_person_name']}
-													// helperText={validateEvent['add_person_name']}
-
+													error={validateAddperson['addperson']}
+													helperText={validateAddperson['addperson'] && 'this field is required'}
 												/>
 											</div>
 
@@ -797,9 +754,8 @@ this.setState({current_addperson});
 											  onChange={(e)=>{this.handleChangeAddspeaker(e)}}
 											  margin="normal"
 											  variant="outlined"
-											  // error={validateEvent['add_person_name']}
-											  // helperText={validateEvent['add_person_name']}
-
+											  error={validateAddperson['relation']}
+											  helperText={validateAddperson['relation'] && 'this field is required'}
 										  />
 										</div>
 
@@ -809,14 +765,15 @@ this.setState({current_addperson});
 												name="dob"
 												label={<FormattedMessage id="speaker.add_person.dob"/>}
 												type="date"
-												value={current_addperson.dob ? current_addperson.dob : getCurrentDate()}
+												value={current_addperson.dob ? current_addperson.dob :''}
 												style={styles.textField}
 												InputLabelProps={{
 													shrink: true
 												}}
 												onChange={(event) =>{this.handleChangeAddspeaker(event)}}
-												// error={validateSpeaker['dob']}
-												// helperText={validateSpeaker['dob']}
+												error={validateAddperson['dob']}
+													helperText={validateAddperson['dob'] && 'this field is required'}
+
 											/>
 										</div>
 
@@ -825,21 +782,24 @@ this.setState({current_addperson});
 
 										<div className="col-md-12 text-right pt-4">
 											<Button variant="contained" color="primary" style={styles.button} onClick={()=>{this.handleAddperson()}}>
-												Add Person
+												{<FormattedMessage id="speaker.add_person.addperson_head"/>}
 												<Icon style={styles.rightIcon}>add</Icon>
 											</Button>
 										</div>
 									</div>
 									</div>
-									{speaker.addperson.length > 0 && <div className="col-md-12 m-4">
-									<h5>Selected person</h5>
+
+
+		   { speaker_addperson.length > 0 && <div className="col-md-12 m-4">
+
+									<h5>{<FormattedMessage id="speaker.add_person.addperson_SelectedPerson"/>} </h5>
 									<Table striped bordered hover className="ml-4 mr-4">
 										<thead>
 											<tr>
-											<th>Name</th>
-											<th>Relationship</th>
-											<th>Date of Birth</th>
-											<th style={{textAlign:'center'}}>Action</th>
+											<th>{<FormattedMessage id="Speaker.add_person_name"/>}</th>
+											<th>{<FormattedMessage id="Speaker.add_person_relationship"/>}</th>
+											<th>{<FormattedMessage id="speaker.add_person.dob"/>}</th>
+											<th style={{textAlign:'center'}}>{<FormattedMessage id="Event.add_Speaker_Action"/>}</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -854,6 +814,7 @@ this.setState({current_addperson});
 
 														<td style={{textAlign:'center'}}>
 														<Delete style={{cursor:'pointer'}} onClick={()=>{
+															// this.handleDeleteSpeakerPerson(addperson.id)
 															speaker_addperson = speaker_addperson.filter(e => e !== addperson)
 																this.setState({speaker,speaker_addperson})
 															}}
@@ -967,6 +928,7 @@ this.setState({current_addperson});
 											select
 											label={<FormattedMessage id="Speaker.Registration.Form.Select_Tier"/>}
 											style={styles.textField}
+											value={speaker.tier}
 											onChange={(event)=>{this.handleChange(event)}}
 											SelectProps={{
 												native: true,
@@ -978,15 +940,14 @@ this.setState({current_addperson});
 											helperText={validateSpeaker['tier'] && 'this field is required'}
 											margin="normal"
 											variant="outlined"
-										>
-											<option value={null}>
-												Select Tier....
-											</option>
-											{tier.map(option => (
-												<option key={option.value} value={option.value}>
-													{option.label}
-												</option>
-											))}
+										>	
+									
+											{Object.keys(tier).map((key, index) => {
+															return <option key={index} value={tier[key].defaultMessage}>
+															{formatMessage(tier[key])}
+														</option>
+											})}
+
 										</TextField>
 									</div>
 									<div className="col-md-6 text-center">
@@ -1145,7 +1106,7 @@ this.setState({current_addperson});
 											</div>
 										</div>
 
-									 {speaker.foreign_flag && <div className="col-md-6">
+								{speaker.foreign_flag && <div className="col-md-6">
 
 									 {speaker.foreign_flag && <div className="col-md-6">
 										<TextField
@@ -1160,7 +1121,7 @@ this.setState({current_addperson});
 											helperText={validateSpeaker['account_owner'] && 'this field is required'}
 										/>
 									</div>}
-									<div className="col-md-6">
+									{speaker.foreign_flag &&<div className="col-md-6">
 										<TextField
 											name="bank_name"
 											select
@@ -1188,11 +1149,12 @@ this.setState({current_addperson});
 												</option>
 											))}
 										</TextField>
-									</div>
+									</div>}
+
 									{speaker.foreign_flag && <div className="col-md-6">
 										<TextField
 											name="bank_address"
-											label={<FormattedMessage id="Speaker.Registration.Form.BankAdress"/>}
+											label={<FormattedMessage id="Speaker.Registration.Form.BankAddress"/>}
 											style={styles.textField}
 											value={speaker.national_id ? speaker.bank_address : ''}
 											onChange={(event)=>{this.handleChange(event)}}
@@ -1284,20 +1246,25 @@ this.setState({current_addperson});
 
 export default injectIntl(SpeakerEditForm)
 
-const tier = [
-	{
-		value: "1",
-		label: "Tier 1"
-	},
-	{
-		value: "2",
-		label: "Tier 2"
-	},
-	{
-		value: "3",
-		label: "Tier 3"
-	}
-];
+
+const tier = defineMessages({
+    one: {
+        id: 'Speaker.Registration.Tier.One',
+        defaultMessage: '1',
+    },
+    two: {
+        id: 'Speaker.Registration.Tier.Two',
+        defaultMessage: '2',
+    },
+    three: {
+        id: 'Speaker.Registration.Tier.Three',
+        defaultMessage: '3',
+    },
+  
+});
+
+
+
 
 function TabContainer(props) {
 	return (
