@@ -7,7 +7,6 @@ from rest_framework.decorators import api_view, action, permission_classes, auth
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import AllowAny
 from account.models import User
-
 from account.serializers import *
 from django.contrib.auth import authenticate
 from rest_framework.response import Response
@@ -131,12 +130,12 @@ class EventSpeakerViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         request_data = json.loads(request.body.decode('utf-8'))
+        print('request_data',request_data)
         if 'ids' in request_data:
             EventSpeaker.objects.filter(id__in=request_data['ids']).delete()
             return Response(status=HTTP_204_NO_CONTENT)
         else:
             return super(EventSpeakerViewSet, self).destroy(request, *args, **kwargs)
-
     def retrieve(self, request: Request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
@@ -149,14 +148,6 @@ class SpeakersViewSet(viewsets.ModelViewSet):
     queryset = Speaker.objects.all()
     serializer_class = SpeakerSerializer
 
-    # def list(self, request, *args, **kwargs):
-    #     print('hellloo222121212121212122')
-    #     queryset = self.filter_queryset(self.get_queryset())
-    #     speaker_id = request.GET.get('speaker_id', None)
-    #     if speaker_id is not None:
-    #         SpeakerPerson.objects.filter(speaker=request.speaker.id, id=speaker_id)
-    #     serializer = self.get_serializer(queryset, many=True)
-    #     return Response(serializer.data)
 
     def destroy(self, request, *args, **kwargs):
         request_data = json.loads(request.body.decode('utf-8'))
