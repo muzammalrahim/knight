@@ -182,11 +182,11 @@ this.setState({current_addperson});
 		Object.keys(current_addperson).forEach((k) =>  current_addperson[k]="")
 	}
 
-	handleDeleteSpeakerPerson(id){
-		del(`api/speakerperson/${id}/`).then((response)=>{
-				console.log('person deleted')
-		})
-	}
+	// handleDeleteSpeakerPerson(id){
+	// 	del(`api/speakerperson/${id}/`).then((response)=>{
+	// 			console.log('person deleted')
+	// 	})
+	// }
 
 
 	handleTabChange(event, currentTab) {
