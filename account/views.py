@@ -22,6 +22,8 @@ from rest_framework.request import Request
 import json
 from django.template.loader import get_template
 
+from account.models import Speaker
+
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -164,13 +166,12 @@ class SpeakersViewSet(viewsets.ModelViewSet):
         else:
             return super(SpeakersViewSet, self).destroy(request, *args, **kwargs)
 
-    def retrieve(self, request: Request):
-        queryset = self.filter_queryset(self.get_queryset())
-        speaker_id = request.GET.get('speaker_id', None)
-        if speaker_id is not None:
-            SpeakerPerson.objects.filter(speaker=request.speaker.id, id=speaker_id)
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+    def retrieve(self, request: Request,*args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        data = serializer.data
+        data['persons'] = SpeakerPerson.objects.filter(speaker=instance).values()
+        return Response(data)
 
 
 
