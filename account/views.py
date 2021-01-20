@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from rest_framework import permissions, authentication
-
+from rest_framework.response import Response
 from account.backend import id_generator
 from rest_framework.decorators import api_view, action, permission_classes, authentication_classes
 from django.views.decorators.csrf import csrf_exempt
@@ -144,13 +144,16 @@ class EventSpeakerViewSet(viewsets.ModelViewSet):
 
 
 class SpeakersViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows groups to be viewed or edited.
-    """
     queryset = Speaker.objects.all()
     serializer_class = SpeakerSerializer
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        speaker_id = request.GET.get('speaker_id', None)
+        if speaker_id is not None:
+            SpeakerPerson.objects.filter(speaker=request.speaker.id, id=speaker_id)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
-    # permission_classes = [permissions.IsAuthenticated]
 
     def retrieve(self, request: Request, *args, **kwargs):
         instance = self.get_object()
@@ -168,7 +171,6 @@ class SpeakersViewSet(viewsets.ModelViewSet):
 
 
 class SpeakerPersonViewSet(viewsets.ModelViewSet):
-
     queryset = SpeakerPerson.objects.all()
     serializer_class = SpeakerPersonSerializer
 
