@@ -39,12 +39,12 @@ events_detail = users_view.EventsViewSet.as_view({
 event_speaker_list = users_view.EventSpeakerViewSet.as_view({
     'get': 'list',
     'post': 'create',
-    'delete': 'destroy'
+    # 'delete': 'destroy'
 })
 event_speaker_detail = users_view.EventSpeakerViewSet.as_view({
     'get': 'retrieve',
     'put': 'update',
-    # 'delete': 'destroy'
+    'delete': 'destroy'
 })
 
 price_list = users_view.PriceViewSet.as_view({
