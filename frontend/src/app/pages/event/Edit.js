@@ -7,7 +7,7 @@ import { FormattedMessage } from "react-intl";
 import {
 	getCurrentDate
   } from "../../../_metronic/_helpers";
-  import list, {put} from '../helper/api';
+  import list, {put, del} from '../helper/api';
   import { Alert, AlertTitle } from '@material-ui/lab';
 
   const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
@@ -141,11 +141,16 @@ class EventRegistrationForm extends React.Component {
 		list('api/speakers').then((response)=>{
 		  let speaker_list = [];
 		  response.data.map((row)=>{
-			//   console.log("get spk:",row)
-			  speaker_list.push({label:row.name, value:row.id})
+			  speaker_list.push({id:row.id, label:row.name, value:row.id})
 		  })
 		  this.setState({speaker_list, speakers:response.data});
 		})
+	}
+
+	handleDeleteSpeaker(id){
+		del(`api/event_speaker/${id}/`).then((response)=>{
+						this.setState({event_speaker:this.state.event_speaker})
+				})
 	}
 	getEvent (){
 		let {event} = this.state;
@@ -649,7 +654,8 @@ class EventRegistrationForm extends React.Component {
 															<td>{spk.specialty && specialty.find(specialty => spk.specialty == specialty.id).name}</td>
 															<td>{30}</td>
 															<td style={{textAlign:'center'}}><Delete style={{cursor:'pointer'}} onClick={()=>{
-																	event.speaker = event.speaker.filter(e => e !== speaker)
+																	// event.speaker = event.speaker.filter(e => e !== speaker)
+																	this.handleDeleteSpeaker(spk.id)
 																	this.setState({event})
 																}}
 															/></td>
