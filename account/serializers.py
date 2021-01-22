@@ -138,6 +138,10 @@ class EventSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         representation = super(EventSerializer, self).to_representation(instance)
+
+        if EventSpeaker.objects.filter(event=instance.id).exists():
+            represe = EventSpeaker.objects.get(event=instance.id)
+            representation['eventspeaker'] = represe.id
         try:
             representation['speaker'] = SpeakerSerializer(instance.speaker, many=True).data
         except:
