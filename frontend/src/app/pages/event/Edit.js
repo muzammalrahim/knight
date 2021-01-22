@@ -148,7 +148,9 @@ class EventRegistrationForm extends React.Component {
 	}
 
 	handleDeleteSpeaker(id){
-		del(`api/event_speaker/${id}/`).then((response)=>{
+		let {event} = this.state
+		id = event.speaker
+		del(`api/event_speaker/${id}`).then((response)=>{
 						this.setState({event_speaker:this.state.event_speaker})
 				})
 	}
@@ -185,6 +187,8 @@ class EventRegistrationForm extends React.Component {
 	render(){
 		let {event:{web_presential}, event, currentTab, speaker_list, speakers, countries, event_speaker,
 			validateEvent, alert:{open, severity, message, title}, specialty, current_speaker, validateEventSpeaker} = this.state;
+			let speaker = event.speaker
+			console.log( speaker )
 		return (
 			<div className="row">
 				<Snackbar open={open} autoHideDuration={4000} anchorOrigin={{ vertical:'top', horizontal:'right' }} onClose={()=>{this.handleClose()}}>
