@@ -7,9 +7,9 @@ import { FormattedMessage } from "react-intl";
 import {
 	getCurrentDate
   } from "../../../_metronic/_helpers";
-import list, {put,get, del, post} from '../helper/api';
+import list, {put, del, post} from '../helper/api';
 import { Alert, AlertTitle } from '@material-ui/lab';
-import {defineMessages, injectIntl, intlShape} from 'react-intl';
+import {defineMessages, injectIntl} from 'react-intl';
 
 
 
@@ -106,7 +106,7 @@ this.addperson = {
 			speaker['uf_city'] = "";
 			speaker['juridical_address'] = "";
 		}
-		if(key==="foreign_flag" || key==="registration_in_city" || key==="social_security" || key==="accept_information_rule"||  key == "juridcal_person")
+		if(key==="foreign_flag" || key==="registration_in_city" || key==="social_security" || key==="accept_information_rule"||  key === "juridcal_person")
 		{
 			if(key === "foreign_flag"){
 				validateSpeaker['pix'] = speaker[key] ? true : false;
@@ -153,13 +153,13 @@ this.addperson = {
 			
 		handleDeleteSpeakerPerson(id){
 			del(`api/speakerperson/${id}`).then((response)=>{
-				this.getAddpersons();
+				this.getSpeaker();
 
 			})
 		}
 
 		handleAddperson(){
-			let {speaker_addperson,speaker,current_addperson,addpersons,validateAddperson} = this.state;
+			let {speaker,current_addperson,validateAddperson} = this.state;
 			let isSubmit = null;
 			Object.keys(validateAddperson).map((key)=>{
 				validateAddperson[key] = current_addperson[key] ? false : true;
@@ -173,11 +173,7 @@ this.addperson = {
 				birthday: current_addperson.dob,
 				speaker:speaker.id,
 			};
-			speaker = speaker.id
-			let currentPerson = {...current_addperson, speaker}
-			console.log(currentPerson)
 			post('api/speakerperson', person).then((response)=>{
-				console.log(response)
                       this.getAddpersons()
 					Object.keys(current_addperson).forEach((k) =>  current_addperson[k]="")
 		}).catch(err=>{
@@ -192,7 +188,7 @@ this.addperson = {
 		this.setState({currentTab});
 	}
 	handleSubmit(){
-		let {speaker, validateSpeaker,speaker_addperson} = this.state;
+		let {speaker, validateSpeaker} = this.state;
 		let isSubmit = null;
 		
 		Object.keys(validateSpeaker).map((key)=>{
@@ -200,7 +196,7 @@ this.addperson = {
 				validateSpeaker[key] = false;
 			}
 
-			else if(speaker['foreign_flag'] === false && (key === "account_owner" || key == "swift_bic" || key == "bank_address" ||  key =="bank_name" ))
+			else if(speaker['foreign_flag'] === false && (key === "account_owner" || key === "swift_bic" || key === "bank_address" ||  key ==="bank_name" ))
 			{
 				validateSpeaker[key] = false;
 
@@ -289,7 +285,7 @@ this.addperson = {
     }
 	render(){
 		let {speaker:{foreign_flag, accept_information_rule, juridcal_person}, speaker, currentTab, countries,
-			validateSpeaker, alert:{severity, message, title, open}, specialty_list,current_addperson,addpersons,speaker_addperson,validateAddperson} = this.state;
+			validateSpeaker, alert:{severity, message, title, open}, specialty_list,current_addperson,speaker_addperson,validateAddperson} = this.state;
 		const {formatMessage} = this.props.intl;
 		return (
 			<div style={styles.root}>
@@ -811,7 +807,7 @@ this.addperson = {
 									</div>
 
 
-		   { speaker_addperson.length > 0 && <div className="col-md-12 m-4">
+		   { speaker?.persons?.length > 0 && <div className="col-md-12 m-4">
 
 									<h5>Selected person</h5>
 									<Table striped bordered hover className="ml-4 mr-4">
@@ -825,7 +821,7 @@ this.addperson = {
 										</thead>
 										<tbody>
 											 {
-												speaker_addperson.map((addperson,index)=>{
+												speaker.persons.map((addperson,index)=>{
 
 
 									          return <tr>

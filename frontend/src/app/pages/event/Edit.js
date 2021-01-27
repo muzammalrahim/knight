@@ -7,7 +7,7 @@ import { FormattedMessage } from "react-intl";
 import {
 	getCurrentDate
   } from "../../../_metronic/_helpers";
-  import list, {put, del} from '../helper/api';
+  import list, {put, del, post} from '../helper/api';
   import { Alert, AlertTitle } from '@material-ui/lab';
 
   const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
@@ -75,17 +75,24 @@ class EventRegistrationForm extends React.Component {
 		this.setState({validateEventSpeaker})
 
 		let speaker = speakers.find(data => data.id == current_speaker.speaker)
-		isSubmit && list(`api/price`, {specialty:speaker.specialty, program_type:event._type, tier:speaker.tier, role:current_speaker.role}).then((response)=>{
-			if(!event['speaker'].includes(current_speaker.speaker)){
-				current_speaker['price'] = response.data[0].hour_price*current_speaker.duration;
+		if(!isSubmit) return false
+		isSubmit && list(`api/price`, {specialty:speaker.specialty, program_type:event._type, tier:speaker.tier, role:current_speaker.role, event:event.id, speaker:speaker.id}).then((response)=>{
+			// if(response.data) return false	
+			current_speaker['price'] = response.data[0].hour_price*parseInt(current_speaker.duration);
 				event['speaker'].push(current_speaker.speaker);
-				event_speaker.push(current_speaker)
-			}
-			this.setState({
-				event_speaker, 
-				event, 
-				current_speaker:{speaker:'', price:0, duration:'',displacement:''}
-			});
+				event_speaker.push(current_speaker);
+				let eventspeaker = {specialty:speaker.specialty, program_type:event._type, price:current_speaker.price, duration:current_speaker.duration, tier:speaker.tier, role:current_speaker.role, event:event.id, speaker:speaker.id} 
+				post("api/event_speaker", eventspeaker).then((res)=>{
+					this.getEvent()
+					this.setState({
+						event_speaker, 
+						event, 
+						current_speaker:{speaker:'', price:0, duration:'',displacement:''}
+					});
+				}).catch((err)=>{
+					console.log(err)
+				})
+			
 		})
 	}
 		
@@ -149,7 +156,7 @@ class EventRegistrationForm extends React.Component {
 
 	handleDeleteSpeaker(id){
 		del(`api/event_speaker/${id}`).then((response)=>{
-			this.getSpeakers();
+			this.getEvent();
 			this.setState({event_speaker:this.state.event_speaker})
 
 				})
@@ -157,11 +164,6 @@ class EventRegistrationForm extends React.Component {
 	getEvent (){
 		let {event} = this.state;
 		list(`api/event/${event.id}`).then((response)=>{
-			let speaker = []
-			response.data.speaker.map((speak)=>{
-				speaker.push(speak.id)
-			})
-			response.data.speaker = speaker;
 		  	this.setState({event:response.data})
 			this.getSpeakers();
 		})
@@ -187,7 +189,8 @@ class EventRegistrationForm extends React.Component {
 	render(){
 		let {event:{web_presential}, event, currentTab, speaker_list, speakers, countries, event_speaker,
 			validateEvent, alert:{open, severity, message, title}, specialty, current_speaker, validateEventSpeaker} = this.state;
-			let id = event.eventspeaker
+			console.log(current_speaker)
+			console.log(event)
 		return (
 			<div className="row">
 				<Snackbar open={open} autoHideDuration={4000} anchorOrigin={{ vertical:'top', horizontal:'right' }} onClose={()=>{this.handleClose()}}>
@@ -651,14 +654,14 @@ class EventRegistrationForm extends React.Component {
 											<tbody>
 												{
 													event.speaker.map((speaker)=>{
-														let spk = speakers.find(data => data.id == speaker)
+														let spk = speakers.find(data => data.id == speaker.id)
 														return spk && <tr>
 															<td>{spk.name}</td>
 															<td>{spk.specialty && specialty.find(specialty => spk.specialty == specialty.id).name}</td>
-															<td>{30}</td>
+															<td>{speaker.event_speaker.price}</td>
 															<td style={{textAlign:'center'}}><Delete style={{cursor:'pointer'}} onClick={()=>{
 																	// event.speaker = event.speaker.filter(e => e !== speaker)
-																	this.handleDeleteSpeaker(id)
+																	this.handleDeleteSpeaker(speaker.event_speaker.id)
 																	this.setState({event})
 																}}
 															/></td>
