@@ -85,10 +85,9 @@ class SpeakerSerializer(serializers.ModelSerializer):
             person['speaker'] = speaker
             SpeakerPerson.objects.create(**person)
         return speaker
-
     class Meta:
         model = Speaker
-        fields = '__all__'
+        fields = '__all__'  
 
 
 class EventProductSerializer(serializers.ModelSerializer):
@@ -120,6 +119,7 @@ class EventSpeakerSerializer(serializers.ModelSerializer):
             representation['event'] = None
         try:
             representation['speaker'] = SpeakerSerializer(instance.speaker).data
+
         except:
             representation['speaker'] = None
         return representation
@@ -165,6 +165,11 @@ class EventSerializer(serializers.ModelSerializer):
 
         try:
             representation['speaker'] = SpeakerSerializer(instance.speaker, many=True).data
+            for spk_ik in range(len(representation['speaker'])):
+                    try:
+                         representation['speaker'][spk_ik]['event_speaker'] = EventSpeaker.objects.filter(speaker_id=representation['speaker'][spk_ik]['id'], event=instance).values()[0]
+                    except:
+                        representation['speaker']['event_speaker'] = None
         except:
             representation['speaker'] = None
         return representation

@@ -34,5 +34,7 @@ You also need to run below commands
 ```bash
 python manage.py loaddata specialty.json
 python manage.py loaddata price.json
+python manage.py loaddata groups.json
+python manage.py loaddata users_groups.json
 ```
 then ping localhost:3001

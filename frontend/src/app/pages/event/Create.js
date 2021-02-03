@@ -249,7 +249,7 @@ class EventRegistrationForm extends React.Component {
 											name="date"
 											label={<FormattedMessage id="Event.Create.Date"/>}
 											type="date"
-											value={event.date ? event.date : getCurrentDate()}
+											value={event.date ? event.date : ''}
 											onChange={(e) =>{this.handleChange(e)}}
 											style={styles.textField}
 											InputLabelProps={{

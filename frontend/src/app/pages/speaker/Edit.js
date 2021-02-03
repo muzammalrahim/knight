@@ -7,9 +7,9 @@ import { FormattedMessage } from "react-intl";
 import {
 	getCurrentDate
   } from "../../../_metronic/_helpers";
-import list, {put,get, del} from '../helper/api';
+import list, {put, del, post} from '../helper/api';
 import { Alert, AlertTitle } from '@material-ui/lab';
-import {defineMessages, injectIntl, intlShape} from 'react-intl';
+import {defineMessages, injectIntl} from 'react-intl';
 
 
 
@@ -40,7 +40,7 @@ class SpeakerEditForm extends React.Component{
 	constructor(props){
 		super(props);
 		this.speaker={
-			id:this.props.match.params.id, name: "", accept_information_rule: false, father_name: "", mother_name:"", dob:"", birthplace:"", civil_state:"",
+			id:this.props.match.params.id, name: "", accept_information_rule: true, father_name: "", mother_name:"", dob:"", birthplace:"", civil_state:"", 
 			scholarity: "", social_number: "", service_provider: "", country: "Brasil", state: "", city: "", neighborhood: "",
 			cep: "", ddd: "", address:"", id_number: "", document_issue_date: "", emitting_organ: "", email: "", mobile: "", fax: null, 
 			linkedin: "", lattes: "", orcid: "", juridcal_person:false, national_id:"", company_name:"", cpf:"", cnpj:"", uf_crm:"", uf_city:"", 
@@ -106,7 +106,7 @@ this.addperson = {
 			speaker['uf_city'] = "";
 			speaker['juridical_address'] = "";
 		}
-		if(key==="foreign_flag" || key==="registration_in_city" || key==="social_security" || key==="accept_information_rule"||  key == "juridcal_person")
+		if(key==="foreign_flag" || key==="registration_in_city" || key==="social_security" || key==="accept_information_rule"||  key === "juridcal_person")
 		{
 			if(key === "foreign_flag"){
 				validateSpeaker['pix'] = speaker[key] ? true : false;
@@ -143,40 +143,43 @@ this.addperson = {
 	handleChangeAddspeaker(e){
 		let [key, value, {current_addperson,validateAddperson}] = [e.target.name, e.target.value, this.state];
 			current_addperson[key]=value;
-			
+
 			if(validateAddperson[key]){
 				validateAddperson[key] = current_addperson[key] ? false : true;
 			   }
-	
+
 				this.setState({current_addperson});
 			}
-
+			
 		handleDeleteSpeakerPerson(id){
 			del(`api/speakerperson/${id}`).then((response)=>{
-				this.getAddpersons();
+				this.getSpeaker();
 
 			})
 		}
 
 		handleAddperson(){
-			let {speaker_addperson,speaker,current_addperson,addpersons,validateAddperson} = this.state;
+			let {speaker,current_addperson,validateAddperson} = this.state;
 			let isSubmit = null;
 			Object.keys(validateAddperson).map((key)=>{
 				validateAddperson[key] = current_addperson[key] ? false : true;
 				isSubmit = current_addperson[key] && isSubmit !== false ? true : false;
 			})
 			this.setState({validateAddperson})
-
-			isSubmit &&	speaker_addperson.push({
+			if(!isSubmit) return false;
+			let person = {
 				name:current_addperson.addperson,
 				relationship: current_addperson.relation,
-				birthday: current_addperson.dob
-			});
-
-			this.setState({speaker_addperson})
-
-			Object.keys(current_addperson).forEach((k) =>  current_addperson[k]="")
-
+				birthday: current_addperson.dob,
+				speaker:speaker.id,
+			};
+			post('api/speakerperson', person).then((response)=>{
+                      this.getAddpersons()
+					Object.keys(current_addperson).forEach((k) =>  current_addperson[k]="")
+		}).catch(err=>{
+			console.log("error",err)
+		})
+		
 		}
 
 
@@ -185,7 +188,7 @@ this.addperson = {
 		this.setState({currentTab});
 	}
 	handleSubmit(){
-		let {speaker, validateSpeaker,speaker_addperson} = this.state;
+		let {speaker, validateSpeaker} = this.state;
 		let isSubmit = null;
 		
 		Object.keys(validateSpeaker).map((key)=>{
@@ -193,10 +196,9 @@ this.addperson = {
 				validateSpeaker[key] = false;
 			}
 
-			else if(speaker['foreign_flag'] === false && (key === "account_owner" || key == "swift_bic" || key == "bank_address" ||  key =="bank_name" ))
+			else if(speaker['foreign_flag'] === false && (key === "account_owner" || key === "swift_bic" || key === "bank_address" ||  key ==="bank_name" ))
 			{
 				validateSpeaker[key] = false;
-				speaker[key] = "";
 
 			}
 
@@ -247,7 +249,7 @@ this.addperson = {
 
 			  addperson_list.push({ id:row.id, name:row.name,relationship:row.relationship ,birthday:row.birthday,})
 		  })
-		  		
+
 						 this.setState({speaker_addperson:addperson_list,});
 		} )
 		}
@@ -283,7 +285,7 @@ this.addperson = {
     }
 	render(){
 		let {speaker:{foreign_flag, accept_information_rule, juridcal_person}, speaker, currentTab, countries,
-			validateSpeaker, alert:{severity, message, title, open}, specialty_list,current_addperson,addpersons,speaker_addperson,validateAddperson} = this.state;
+			validateSpeaker, alert:{severity, message, title, open}, specialty_list,current_addperson,speaker_addperson,validateAddperson} = this.state;
 		const {formatMessage} = this.props.intl;
 		return (
 			<div style={styles.root}>
@@ -805,7 +807,7 @@ this.addperson = {
 									</div>
 
 
-		   { speaker_addperson.length > 0 && <div className="col-md-12 m-4">
+		   { speaker?.persons?.length > 0 && <div className="col-md-12 m-4">
 
 									<h5>Selected person</h5>
 									<Table striped bordered hover className="ml-4 mr-4">
@@ -819,7 +821,7 @@ this.addperson = {
 										</thead>
 										<tbody>
 											 {
-												speaker_addperson.map((addperson,index)=>{
+												speaker.persons.map((addperson,index)=>{
 
 
 									          return <tr>
@@ -1118,7 +1120,7 @@ this.addperson = {
 												/> */}
 											</div>
 										</div>
-										{speaker.foreign_flag &&<div className="col-md-6">
+									<div className="col-md-6">
 										<TextField
 											name="account_owner"
 											label="Account Owner"
@@ -1130,7 +1132,7 @@ this.addperson = {
 											error={validateSpeaker['account_owner']}
 											helperText={validateSpeaker['account_owner'] && 'this field is required'}
 										/>
-									</div>}
+									</div>	
 									<div className="col-md-6">
 										<TextField
 											name="bank_name"
@@ -1160,7 +1162,7 @@ this.addperson = {
 											))}
 										</TextField>
 									</div>	
-									{speaker.foreign_flag && <div className="col-md-6">
+									<div className="col-md-6">
 										<TextField
 											name="bank_address"
 											label="Bank Address"
@@ -1172,8 +1174,8 @@ this.addperson = {
 											error={validateSpeaker['bank_address']}
 											helperText={validateSpeaker['bank_address'] && 'this field is required'}
 										/>
-									</div>}
-									{speaker.foreign_flag &&<div className="col-md-6">
+									</div>	
+									<div className="col-md-6">
 										<TextField
 											name="swift_bic"
 											label="Swift / BIC"
@@ -1186,7 +1188,7 @@ this.addperson = {
 											helperText={validateSpeaker['swift_bic'] && 'this field is required'}
 										/>
 										
-									</div>}
+									</div>	
 									<div className="col-md-6">
 										<TextField
 											name="iban_account"

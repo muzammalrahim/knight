@@ -7,9 +7,9 @@ import { FormattedMessage } from "react-intl";
 import {
 	getCurrentDate
   } from "../../../_metronic/_helpers";
-import list,{post, del} from '../helper/api';
+import list,{post} from '../helper/api';
 import { Alert, AlertTitle } from '@material-ui/lab';
-import {defineMessages, injectIntl, intlShape} from 'react-intl';
+import {defineMessages, injectIntl} from 'react-intl';
 
 
 const civilStatus = defineMessages({
@@ -110,7 +110,7 @@ this.addperson = {
 			speaker['juridical_address'] = "";
 		}
 
-		if(key==="foreign_flag" || key==="registration_in_city" || key==="social_security" ||  		    key==="accept_information_rule"||  key == "juridcal_person")
+		if(key==="foreign_flag" || key==="registration_in_city" || key==="social_security" ||  		    key==="accept_information_rule"||  key === "juridcal_person")
 		{
 			if(key === "foreign_flag")
 			 {
@@ -164,7 +164,7 @@ this.setState({current_addperson});
 	}
 
 	handleAddperson(){
-		let {speaker_addperson,speaker,current_addperson,addpersons,validateAddperson} = this.state;
+		let {speaker_addperson,current_addperson,validateAddperson} = this.state;
 		let isSubmit = null;
 		Object.keys(validateAddperson).map((key)=>{
 			validateAddperson[key] = current_addperson[key] ? false : true;
@@ -182,11 +182,11 @@ this.setState({current_addperson});
 		Object.keys(current_addperson).forEach((k) =>  current_addperson[k]="")
 	}
 
-	handleDeleteSpeakerPerson(id){
-		del(`api/speakerperson/${id}/`).then((response)=>{
-				console.log('person deleted')
-		})
-	}
+	// handleDeleteSpeakerPerson(id){
+	// 	del(`api/speakerperson/${id}/`).then((response)=>{
+	// 			console.log('person deleted')
+	// 	})
+	// }
 
 
 	handleTabChange(event, currentTab) {
@@ -202,7 +202,7 @@ this.setState({current_addperson});
 				validateSpeaker[key] = false;
 			}
 
-			else if(speaker['foreign_flag'] === false && (key === "account_owner" || key == "swift_bic" || key == "bank_address" ||  key =="bank_name" ))
+			else if(speaker['foreign_flag'] === false && (key === "account_owner" || key === "swift_bic" || key === "bank_address" ||  key ==="bank_name" ))
 			{
 				validateSpeaker[key] = false;
 				speaker[key] = "";
@@ -266,8 +266,8 @@ this.setState({current_addperson});
         this.setState({alert:{open:false, severity: '', message:'' }})
     }
 	render(){
-		let {speaker:{foreign_flag, accept_information_rule, juridcal_person}, speaker, currentTab,addperson_list, countries,
-			validateSpeaker, alert:{severity, message, title, open}, specialty_list,current_addperson,addpersons,speaker_addperson,validateAddperson} = this.state;
+		let {speaker:{foreign_flag, accept_information_rule, juridcal_person}, speaker, currentTab, countries,
+			validateSpeaker, alert:{severity, message, title, open}, specialty_list,current_addperson,speaker_addperson,validateAddperson} = this.state;
 
 		const {formatMessage} = this.props.intl;
 		return (
