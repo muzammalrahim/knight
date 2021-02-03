@@ -6,8 +6,13 @@ from django.conf.urls import url
 
 router = DefaultRouter()
 
-# router.register(r'speakerperson', users_view.SpeakerPersonSerializer)
-
+event_product = users_view.EventProductViewSet.as_view({
+    'get': 'list',
+    'post': 'create',
+    'put': 'update',
+    'patch': 'partial_update',
+    'delete': 'destroy'
+})
 speaker_person = users_view.SpeakerPersonViewSet.as_view({
     'get': 'list',
     'post': 'create',
@@ -79,7 +84,6 @@ urlpatterns = format_suffix_patterns([
 
     path('users/<pk>/', user_detail),
 
-
     path('events', events_list, name='events'),
     path('event/<pk>/', events_detail, name='event'),
     path('events/<pk>/', events_list, name='delete'),
@@ -87,6 +91,8 @@ urlpatterns = format_suffix_patterns([
     path('event_speaker', event_speaker_list, name='event_speakers'),
     path('event_speaker/<pk>/', event_speaker_detail, name='event_speaker'),
     path('event_speaker/<pk>/', event_speaker_list, name='event_speaker_delete'),
+
+    path('event_product', event_product, name='event_product'),
 
     path('speakers', speakers_list, name='speakers'),
     path('speaker/<pk>', speakers_detail, name='speaker'),

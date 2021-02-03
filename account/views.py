@@ -23,6 +23,9 @@ from django.template.loader import get_template
 
 from account.models import Speaker
 
+from account.models import EventProduct
+from account.serializers import EventProductSerializer
+
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -119,6 +122,14 @@ class EventsViewSet(viewsets.ModelViewSet):
         return Response(data)
 
 
+class EventProductViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = EventProduct.objects.all()
+    serializer_class = EventProductSerializer
+
+
 class EventSpeakerViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
@@ -130,12 +141,13 @@ class EventSpeakerViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         request_data = json.loads(request.body.decode('utf-8'))
-        print('request_data',request_data)
+        print('request_data', request_data)
         if 'ids' in request_data:
             EventSpeaker.objects.filter(id__in=request_data['ids']).delete()
             return Response(status=HTTP_204_NO_CONTENT)
         else:
             return super(EventSpeakerViewSet, self).destroy(request, *args, **kwargs)
+
     def retrieve(self, request: Request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
@@ -148,7 +160,6 @@ class SpeakersViewSet(viewsets.ModelViewSet):
     queryset = Speaker.objects.all()
     serializer_class = SpeakerSerializer
 
-
     def destroy(self, request, *args, **kwargs):
         request_data = json.loads(request.body.decode('utf-8'))
         if 'ids' in request_data:
@@ -157,14 +168,12 @@ class SpeakersViewSet(viewsets.ModelViewSet):
         else:
             return super(SpeakersViewSet, self).destroy(request, *args, **kwargs)
 
-    def retrieve(self, request: Request,*args, **kwargs):
+    def retrieve(self, request: Request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         data = serializer.data
         data['persons'] = SpeakerPerson.objects.filter(speaker=instance).values()
         return Response(data)
-
-
 
 
 class SpeakerPersonViewSet(viewsets.ModelViewSet):
@@ -198,7 +207,7 @@ def login(request):
         return Response({'error': 'Please provide both email and password'},
                         status=HTTP_400_BAD_REQUEST)
     user = authenticate(email=email, password=password)
-    print('>>',user)
+    print('>>', user)
     if not user:
         return Response({'error': 'Invalid Credentials'},
                         status=HTTP_404_NOT_FOUND)
