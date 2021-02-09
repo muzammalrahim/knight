@@ -151,7 +151,21 @@ class EventSerializer(serializers.ModelSerializer):
             representation['speaker'] = SpeakerSerializer(instance.speaker, many=True).data
             for spk_ik in range(len(representation['speaker'])):
                     try:
-                         representation['speaker'][spk_ik]['event_speaker'] = EventSpeaker.objects.filter(speaker_id=representation['speaker'][spk_ik]['id'], event=instance).values()[0]
+                        event_speakers = EventSpeaker.objects.filter(speaker_id=representation['speaker'][spk_ik]['id'], event=instance)
+                        if event_speakers.count() == 1:
+                            representation['speaker'][spk_ik]['event_speaker'] = event_speakers.values()[0]
+                        else:
+                            existing = False
+                            for e_s_ik in range(len(event_speakers)):
+                                for spkr in range(len(representation['speaker'])):
+                                    for tup in representation['speaker'][spkr]:
+                                        if tup == 'event_speaker':
+                                            if event_speakers[e_s_ik].id == representation['speaker'][spkr][tup]['id']:
+                                                existing = True
+                                
+                                if not existing:
+                                    representation['speaker'][spk_ik]['event_speaker'] = event_speakers.values()[e_s_ik]
+                                    
                     except:
                         representation['speaker']['event_speaker'] = None
         except:
