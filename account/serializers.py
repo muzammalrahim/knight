@@ -139,15 +139,19 @@ class EventSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         event_speaker = validated_data.pop('event_speaker')
-        print('event_ssdsdsdsdsdsddddddddddddddddpeaker', event_speaker)
+        # print('event_ssdsdsdsdsdsddddddddddddddddpeaker', event_speaker)
         event_product = validated_data.pop('event_product')
-        print('event_prossssssssssssssssssssssssssssduct', validated_data)
+        # print('event_prossssssssssssssssssssssssssssduct', validated_data)
         event = Event.objects.create(**validated_data)
-        print('eventeventeventeventevent', event)
+        # print('eventeventeventeventevent', event)
 
-        # for data in event_speaker:
-        #     data['event'] = event
-        #     EventSpeaker.objects.create(**data)
+        for data in event_product:
+            data['event'] = event
+            EventProduct.objects.create(**data)
+
+        for data in event_speaker:
+            data['event'] = event
+            EventSpeaker.objects.create(**data)
         return event
 
     def to_representation(self, instance):
