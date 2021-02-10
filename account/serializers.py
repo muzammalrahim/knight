@@ -84,9 +84,16 @@ class SpeakerSerializer(serializers.ModelSerializer):
             person['speaker'] = speaker
             SpeakerPerson.objects.create(**person)
         return speaker
+
     class Meta:
         model = Speaker
-        fields = '__all__'  
+        fields = '__all__'
+
+
+class EventProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EventProduct
+        fields = '__all__'
 
 
 class SpeakerPersonSerializer(serializers.ModelSerializer):
@@ -128,10 +135,19 @@ class EventSerializer(serializers.ModelSerializer):
         self.fields['speaker'].required = True
 
     event_speaker = EventSpeakerSerializer(many=True, write_only=True)
+    # event_product = EventProductSerializer(many=False, write_only=True)
+    event_product = serializers.ListField(write_only=True)
 
     def create(self, validated_data):
         event_speaker = validated_data.pop('event_speaker')
+        event_product = validated_data.pop('event_product')
         event = Event.objects.create(**validated_data)
+
+        for data in event_product:
+            data['event'] = event
+            print(data['event'])
+            EventProduct.objects.create(**data)
+
         for data in event_speaker:
             data['event'] = event
             EventSpeaker.objects.create(**data)
@@ -140,10 +156,15 @@ class EventSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super(EventSerializer, self).to_representation(instance)
         try:
+            represes = EventProduct.objects.filter(event=instance.id).values()
+            ev_id = list(map(lambda x: x["id"], represes))
+            representation['eventproduct'] = ev_id
+        except:
+            representation['eventproduct'] = None
+
+        try:
             represe = EventSpeaker.objects.filter(event=instance.id).values()
-            ev_id = []
-            for id in represe:
-                ev_id.append(id['id'])
+            ev_id = list(map(lambda x: x["id"], represe))
             representation['eventspeaker'] = ev_id
         except:
             representation['eventspeaker'] = None
@@ -151,10 +172,12 @@ class EventSerializer(serializers.ModelSerializer):
         try:
             representation['speaker'] = SpeakerSerializer(instance.speaker, many=True).data
             for spk_ik in range(len(representation['speaker'])):
-                    try:
-                         representation['speaker'][spk_ik]['event_speaker'] = EventSpeaker.objects.filter(speaker_id=representation['speaker'][spk_ik]['id'], event=instance).values()[0]
-                    except:
-                        representation['speaker']['event_speaker'] = None
+                try:
+                    representation['speaker'][spk_ik]['event_speaker'] = \
+                        EventSpeaker.objects.filter(speaker_id=representation['speaker'][spk_ik]['id'],
+                                                    event=instance).values()[0]
+                except:
+                    representation['speaker']['event_speaker'] = None
         except:
             representation['speaker'] = None
         return representation

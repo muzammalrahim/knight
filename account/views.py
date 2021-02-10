@@ -24,7 +24,6 @@ from django.template.loader import get_template
 from account.models import Speaker
 
 from account.models import EventProduct
-from account.serializers import EventProductSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
