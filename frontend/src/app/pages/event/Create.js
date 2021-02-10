@@ -339,34 +339,18 @@ class EventRegistrationForm extends React.Component {
 											</TextField>
 										</div>
 										<div className="col-md-6">
-											<TextField
+										<TextField
 												required
-												select
 												name="state"
 												label={<FormattedMessage id="Speaker.Registration.Form.state_OR_province"/>}
-												style={styles.textField}
 												value={event.state}
+												style={styles.textField}
 												onChange={(e)=>{this.handleChange(e)}}
-												SelectProps={{
-													native: true,
-													MenuProps: {
-													className: styles.menu
-													}
-												}}
-												error={validateEvent['state']}
-												helperText={validateEvent['state'] && 'this field is required'}
 												margin="normal"
 												variant="outlined"
-												>
-												<option value={null}>
-													Select State / Province....
-												</option>
-												{province.map(option => (
-													<option key={option.value} value={option.value}>
-														{option.label}
-													</option>
-												))}
-											</TextField>
+												error={validateEvent['state']}
+												helperText={validateEvent['state'] && 'this field is required'}
+											/>
 										</div>
 										<div className="col-md-6">
 											<TextField
@@ -471,6 +455,7 @@ class EventRegistrationForm extends React.Component {
 											label={<FormattedMessage id="Event.List.Column.Cost"/>}
 											style={styles.textField}
 											value={event.cost_center}
+											type= "number"
 											onChange={(e)=>{this.handleChange(e)}}
 											margin="normal"
 											variant="outlined"

@@ -78,7 +78,8 @@ class EventRegistrationForm extends React.Component {
 		if(!isSubmit) return false
 		isSubmit && list(`api/price`, {specialty:speaker.specialty, program_type:event._type, tier:speaker.tier, role:current_speaker.role, event:event.id, speaker:speaker.id}).then((response)=>{
 			// if(response.data) return false	
-			current_speaker['price'] = response.data[0].hour_price*parseInt(current_speaker.duration);
+			// current_speaker['price'] = response?.data[0]?.hour_price
+			current_speaker['price'] = response?.data[0]?.hour_price*parseInt(current_speaker.duration);
 				event['speaker'].push(current_speaker.speaker);
 				event_speaker.push(current_speaker);
 				let eventspeaker = {specialty:speaker.specialty, program_type:event._type, price:current_speaker.price, duration:current_speaker.duration, tier:speaker.tier, role:current_speaker.role, event:event.id, speaker:speaker.id} 
@@ -191,6 +192,11 @@ class EventRegistrationForm extends React.Component {
 			validateEvent, alert:{open, severity, message, title}, specialty, current_speaker, validateEventSpeaker} = this.state;
 			console.log(current_speaker)
 			console.log(event)
+		let spk_total_price = 0;
+		// event.speaker.map(speaker=>{
+		// 	speakers.find(data=>data.id === speaker.id)
+		// 	spk_total_price += parseInt(speaker.event_speaker.price)
+		// })
 		return (
 			<div className="row">
 				<Snackbar open={open} autoHideDuration={4000} anchorOrigin={{ vertical:'top', horizontal:'right' }} onClose={()=>{this.handleClose()}}>
@@ -647,7 +653,11 @@ class EventRegistrationForm extends React.Component {
 												<tr>
 												<th>Name</th>
 												<th>Specialty</th>
-												<th>Cost</th>
+												<th>Tier</th>
+												<th>Role</th>
+												<th>Cost(hour)</th>
+												<th>Total hours</th>
+												<th>Total Cost</th>
 												<th style={{textAlign:'center'}}>Action</th>
 												</tr>
 											</thead>
@@ -658,8 +668,14 @@ class EventRegistrationForm extends React.Component {
 														return spk && <tr>
 															<td>{spk.name}</td>
 															<td>{spk.specialty && specialty.find(specialty => spk.specialty == specialty.id).name}</td>
+															<td>{speaker.tier}</td>
+															<td>{speaker.event_speaker.role}</td>
 															<td>{speaker.event_speaker.price}</td>
-															<td style={{textAlign:'center'}}><Delete style={{cursor:'pointer'}} onClick={()=>{
+															<td>{speaker.event_speaker.duration}</td>
+															<td>{speaker.event_speaker.price}</td>
+															<td style={{textAlign:'center'}}>
+																<Edit style={{cursor:'pointer'}}/>
+																<Delete style={{cursor:'pointer'}} onClick={()=>{
 																	// event.speaker = event.speaker.filter(e => e !== speaker)
 																	this.handleDeleteSpeaker(speaker.event_speaker.id)
 																	this.setState({event})
@@ -795,26 +811,35 @@ class EventRegistrationForm extends React.Component {
 														<Table striped bordered hover className="ml-4 mr-4">
 															<thead>
 																<tr>
-																	<th>Name</th>
-																	<th>Specialty</th>
-																	<th>Duration</th>
-																	<th>Cost</th>
+																	<th className="p-2">Name</th>
+																	<th className="p-1">Specialty</th>
+																	<th className="p-1">Tier</th>
+																	<th className="p-1">Role</th>
+																	<th className="p-1">Cost(hour)</th>
+																	<th className="p-1">Duration</th>
+																	<th className="p-1">Total Cost</th>
 																</tr>
 															</thead>
 															<tbody>
 																{
 																	event.speaker.map((speaker)=>{
-																		let spk = speakers.find(data => data.id == speaker)
+																		let spk = speakers.find(data => data.id == speaker.id)
 																		return spk && <tr>
-																			<td>{spk.name}</td>
-																			<td>{spk.specialty && specialty.find(specialty => spk.specialty == specialty.id).name}</td>
-																			<td>{spk.duration}</td>
-																			<td>{spk.price}</td>
+																			<td className="p-2">{spk.name}</td>
+																			<td className="p-1">{spk.specialty && specialty.find(specialty => spk.specialty == specialty.id).name}</td>
+																			<td className="p-1">{speaker.tier}</td>
+																			<td className="p-1">{speaker.event_speaker.role}</td>
+																			<td className="p-1">{speaker.event_speaker.price}</td>
+																			<td className="p-1">{speaker.event_speaker.duration}</td>
+																			<td className="p-1">{speaker.event_speaker.price}</td>
 																		</tr>
 																	})
 																}
 															</tbody>
 														</Table>
+													<hr />
+													<span><h3>Event Total</h3> Speaker Quantity = {event.speaker.length} <br /> 
+													Total Event = {spk_total_price} </span>
 													</div>
 												</div>
 											</div>

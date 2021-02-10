@@ -951,6 +951,7 @@ this.setState({current_addperson});
 										</TextField>
 									</div>
 									<div className="col-md-6 text-center">
+										{ juridcal_person && <>
 										<div style={{opacity: !juridcal_person && "0.5"}}>
 												<TextField
 													disabled={!juridcal_person}
@@ -1104,8 +1105,8 @@ this.setState({current_addperson});
 													helperText={validateSpeaker['agency'] && 'this field is required'}
 												/> */}
 											</div>
+											</> }
 										</div>
-
 								{speaker.foreign_flag && <div className="col-md-6">
 
 									 {speaker.foreign_flag && <div className="col-md-6">
