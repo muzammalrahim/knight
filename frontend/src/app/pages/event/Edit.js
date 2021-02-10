@@ -9,6 +9,7 @@ import {
   } from "../../../_metronic/_helpers";
   import list, {put, del, post} from '../helper/api';
   import { Alert, AlertTitle } from '@material-ui/lab';
+import {Modal} from 'react-bootstrap'
 
   const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
   const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -52,7 +53,9 @@ class EventRegistrationForm extends React.Component {
 			countries:[],
 			specialty:[],
 			event_speaker:[],
-			current_speaker:this.speaker
+			current_speaker:this.speaker,
+			show:false,
+			speaker: []
 		}
 		this.handleTabChange = this.handleTabChange.bind(this);
 	}
@@ -165,7 +168,7 @@ class EventRegistrationForm extends React.Component {
 	getEvent (){
 		let {event} = this.state;
 		list(`api/event/${event.id}`).then((response)=>{
-		  	this.setState({event:response.data})
+		  	this.setState({event:response.data, speaker:response.data.speaker})
 			this.getSpeakers();
 		})
 	}
@@ -187,16 +190,39 @@ class EventRegistrationForm extends React.Component {
 			this.setState({specialty:response.data})
 		})
 	}
+	handleOpen= ()=>{
+		const show = true
+		this.setState({show})
+	}
+	handleClose= ()=>{
+		let show = false
+		this.setState({show})
+	}
+	countId = (speaker)=>{
+		let uniqueId = new Set();
+		console.log(speaker)
+		for(let ord of speaker){
+			uniqueId.add(ord.id);
+		}
+		// the size of the set is the number of unique items we added
+		return uniqueId.size;
+	}
 	render(){
 		let {event:{web_presential}, event, currentTab, speaker_list, speakers, countries, event_speaker,
-			validateEvent, alert:{open, severity, message, title}, specialty, current_speaker, validateEventSpeaker} = this.state;
-			console.log(current_speaker)
-			console.log(event)
+			validateEvent, alert:{open, severity, message, title}, specialty, current_speaker, validateEventSpeaker, speaker } = this.state;
+			// console.log(current_speaker)
+			console.log(speaker)
 		let spk_total_price = 0;
-		// event.speaker.map(speaker=>{
-		// 	speakers.find(data=>data.id === speaker.id)
-		// 	spk_total_price += parseInt(speaker.event_speaker.price)
-		// })
+		event.speaker.map(speaker=>{
+			speakers.find(data=>data.id === speaker.id)
+			spk_total_price += parseInt(speaker.event_speaker.price)
+		})
+		// let total_speaker = 0;
+		let total_speaker = new Set(speaker.map(x => x.id)).size
+		event.speaker.filter(speaker=>{
+			speakers.find(data=>data.id === speaker.id)
+			total_speaker += (speaker.id !== speaker.id)
+		})
 		return (
 			<div className="row">
 				<Snackbar open={open} autoHideDuration={4000} anchorOrigin={{ vertical:'top', horizontal:'right' }} onClose={()=>{this.handleClose()}}>
@@ -529,6 +555,117 @@ class EventRegistrationForm extends React.Component {
 											))}
 										</TextField>
 									</div>
+									<Modal show={this.state.show}>
+										<Modal.Header closeButton>
+										<Modal.Title>Event Speaker</Modal.Title>
+										</Modal.Header>
+										<Modal.Body>
+										<div className="container">
+										<div className="row" style={{border:'1px solid gray', margin:'1rem', padding:'1rem'}}>
+											<div className="col-md-6">
+												<TextField
+													required
+													select
+													name="speaker"
+													label={<FormattedMessage id="Event.List.Column.Speaker"/>}
+													style={styles.textField}
+													onChange={(e)=>{this.handleChangeSpeaker(e)}}
+													SelectProps={{
+														native: true,
+														MenuProps: {
+															className: styles.menu
+														}
+													}}
+													error={validateEventSpeaker['speaker']}
+													helperText={validateEventSpeaker['speaker'] && 'this field is required'}
+													margin="normal"
+													variant="outlined"
+												>
+													<option>
+														Select Speaker....
+													</option>
+													{speaker_list.map(option => (
+														<option key={option.value} value={option.value}>
+															{option.label}
+														</option>
+													))}
+												</TextField>
+											</div>
+											<div className="col-md-6">
+												<TextField
+													required
+													select
+													name="role"
+													label={<FormattedMessage id="Event.List.Column.Role"/>}
+													style={styles.textField}
+													onChange={(e)=>{this.handleChangeSpeaker(e)}}
+													SelectProps={{
+														native: true,
+														MenuProps: {
+															className: styles.menu
+														}
+													}}
+													error={validateEventSpeaker['role']}
+													helperText={validateEventSpeaker['role'] && 'this field is required'}
+													margin="normal"
+													variant="outlined"
+												>
+													<option>
+														Select Role....
+													</option>
+													{role_list.map(option => (
+														<option key={option.value} value={option.value}>
+															{option.label}
+														</option>
+													))}
+												</TextField>
+											</div>
+											<div className="col-md-6">
+												<TextField
+													required
+													name="duration"
+													label={<FormattedMessage id="Event.Create.Duration"/>}
+													type="number"
+													style={styles.textField}
+													value={current_speaker.duration}
+													onChange={(e)=>{this.handleChangeSpeaker(e)}}
+													margin="normal"
+													variant="outlined"
+													error={validateEventSpeaker['duration']}
+													helperText={validateEventSpeaker['duration'] && 'this field is required'}
+												/>
+											</div>
+											<div className="col-md-12 pt-4 ml-4">
+											<h5>Displacement</h5>
+											<div className="col-md-12 pt-4 ml-4">
+												<FormControl component="fieldset" style={styles.formControl}>
+													<RadioGroup
+														aria-label="Gender"
+														name="displacement"
+														style={styles.group}
+														value={current_speaker.displacement}
+														onChange={(e)=>{this.handleChangeSpeaker(e)}}
+													>
+														<FormControlLabel value="local" control={<Radio />} label="Local (at the same State)" />
+														<FormControlLabel value="regional" control={<Radio />} label="Regional (at the same Country)" />
+														<FormControlLabel value="international" control={<Radio />} label="International (at different Country)" />
+													</RadioGroup>
+												</FormControl>
+											</div>
+										</div>
+
+										</div>
+									</div>
+										</Modal.Body>
+										<Modal.Footer>
+										<Button variant="secondary" onClick={this.handleClose}>
+											Close
+										</Button>
+										<Button variant="primary" onClick={this.handleClose}>
+											Save Changes
+										</Button>
+										</Modal.Footer>
+									</Modal>
 									<div className="container">
 										<div className="row" style={{border:'1px solid gray', margin:'1rem', padding:'1rem'}}>
 											<div className="col-md-6">
@@ -670,11 +807,11 @@ class EventRegistrationForm extends React.Component {
 															<td>{spk.specialty && specialty.find(specialty => spk.specialty == specialty.id).name}</td>
 															<td>{speaker.tier}</td>
 															<td>{speaker.event_speaker.role}</td>
-															<td>{speaker.event_speaker.price}</td>
+															<td>{parseInt(speaker.event_speaker.price)/parseInt(speaker.event_speaker.duration)}</td>
 															<td>{speaker.event_speaker.duration}</td>
 															<td>{speaker.event_speaker.price}</td>
 															<td style={{textAlign:'center'}}>
-																<Edit style={{cursor:'pointer'}}/>
+																<Edit style={{cursor:'pointer'}} onClick={this.handleOpen}/>
 																<Delete style={{cursor:'pointer'}} onClick={()=>{
 																	// event.speaker = event.speaker.filter(e => e !== speaker)
 																	this.handleDeleteSpeaker(speaker.event_speaker.id)
@@ -829,7 +966,7 @@ class EventRegistrationForm extends React.Component {
 																			<td className="p-1">{spk.specialty && specialty.find(specialty => spk.specialty == specialty.id).name}</td>
 																			<td className="p-1">{speaker.tier}</td>
 																			<td className="p-1">{speaker.event_speaker.role}</td>
-																			<td className="p-1">{speaker.event_speaker.price}</td>
+																			<td className="p-1">{parseInt(speaker.event_speaker.price)/parseInt(speaker.event_speaker.duration)}</td>
 																			<td className="p-1">{speaker.event_speaker.duration}</td>
 																			<td className="p-1">{speaker.event_speaker.price}</td>
 																		</tr>
@@ -838,7 +975,7 @@ class EventRegistrationForm extends React.Component {
 															</tbody>
 														</Table>
 													<hr />
-													<span><h3>Event Total</h3> Speaker Quantity = {event.speaker.length} <br /> 
+													<span><h3>Event Total</h3> Speaker Quantity = {total_speaker} <br /> 
 													Total Event = {spk_total_price} </span>
 													</div>
 												</div>

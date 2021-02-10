@@ -119,6 +119,8 @@
   "Event.List.Column.Speaker": "Nome do Palestrante",
   "Event.List.Column.Role": "Selecione a função",
   "Event.List.Column.Virtual": "Virtual / Presencial",
+  "Event.List.Column.Product": "Produtos",
+  "Event.List.Column.Percent": "Por cento %",
   
   "Speaker.Registration.Title": "Registro de palestrante",
   "Speaker.Registration.Form.F_Flag": "Estrangeiro (a)",

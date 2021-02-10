@@ -18,12 +18,12 @@ class EventRegistrationForm extends React.Component {
 		super(props);
 		this.event={
 			name:"", _type:"", date:"", duration:"", web_presential:"", country:"",	state:"",
-			city:"", address:"", solicitant:"", business_unit:"", despartment:"", cost_center:"",
+			city:"", address:"", solicitant:"", business_unit:"", despartment:"", cost_center:"", product:"", percent:"",
 			speaker:[], virtual_presential:"",
 		}
 		this.validateEvent={
 			name:false, _type:false, date:false, duration:false, web_presential:false, country:false,	state:false,
-			city:false, address:false, solicitant:false, business_unit:false, despartment:false, cost_center:false, virtual_presential:false,
+			city:false, address:false, solicitant:false, business_unit:false, despartment:false, cost_center:false,product:false, percent:false, virtual_presential:false,
 
 		}
 
@@ -493,6 +493,37 @@ class EventRegistrationForm extends React.Component {
 											))}
 										</TextField>
 									</div>
+									<div className="col-md-6" style={{display:"flex"}}>
+									  <div className="col-md-6">
+										<TextField
+											required
+											name="product"
+											label={<FormattedMessage id="Event.List.Column.Product"/>}
+											style={styles.textField}
+											value={event.product}
+											onChange={(e)=>{this.handleChange(e)}}
+											margin="normal"
+											variant="outlined"
+											error={validateEvent['product']}
+											helperText={validateEvent['product'] && 'this field is required'}
+										/>
+										</div>
+									  <div className="col-md-6" style={{display:"flex"}}>
+										<TextField
+											required
+											name="percent"
+											label={<FormattedMessage id="Event.List.Column.Percent"/>}
+											style={styles.textField}
+											value={event.percent}
+											type= "number"
+											onChange={(e)=>{this.handleChange(e)}}
+											margin="normal"
+											variant="outlined"
+											error={validateEvent['percent']}
+											helperText={validateEvent['percent'] && 'this field is required'}
+										/><Icon className="" style={styles.rightIcon }>add</Icon>
+										</div>
+									</div>
 
 									<div className="container">
 										<div className="row" style={{border:'1px solid gray', margin:'1rem', padding:'1rem'}}>
@@ -749,6 +780,16 @@ class EventRegistrationForm extends React.Component {
 													<div className="col-md-6 col-12">
 														<div className="kt_detail__item_title">Displacement</div>
 														<div>{current_speaker.displacement ? current_speaker.displacement : '---'}</div>
+													</div>
+												</div>
+												<div className="row mb-4">
+													<div className="col-md-6 col-12">
+														<div className="kt_detail__item_title">Product</div>
+														<div>{event.product ? event.product : '---'}</div>
+													</div>
+													<div className="col-md-6 col-12">
+														<div className="kt_detail__item_title">Percent %</div>
+														<div>{event.percent ? event.percent : '---'}</div>
 													</div>
 												</div>
 												<div className="row mb-4">
