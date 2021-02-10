@@ -135,8 +135,8 @@ class EventSerializer(serializers.ModelSerializer):
         self.fields['speaker'].required = True
 
     event_speaker = EventSpeakerSerializer(many=True, write_only=True)
-    # event_product = EventProductSerializer(many=False, write_only=True)
-    event_product = serializers.ListField(write_only=True)
+    event_product = EventProductSerializer(many=True, write_only=True)
+    # event_product = serializers.ListField(write_only=True)
 
     def create(self, validated_data):
         event_speaker = validated_data.pop('event_speaker')
@@ -145,7 +145,6 @@ class EventSerializer(serializers.ModelSerializer):
 
         for data in event_product:
             data['event'] = event
-            print(data['event'])
             EventProduct.objects.create(**data)
 
         for data in event_speaker:
