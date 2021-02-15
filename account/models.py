@@ -74,11 +74,13 @@ class Speaker(models.Model):
     class Meta:
         ordering = ['created_at']
 
+
 class SpeakerPerson(models.Model):
     speaker = models.ForeignKey(Speaker, models.CASCADE)
     name = models.CharField(max_length=191)
     birthday = models.DateField(auto_now=False, auto_now_add=False)
     relationship = models.CharField(max_length=191)
+
 
 class Event(models.Model):
     name = models.CharField(max_length=191)
@@ -103,6 +105,12 @@ class Event(models.Model):
 
     class Meta:
         ordering = ['date']
+
+
+class EventProduct(models.Model):
+    event = models.ForeignKey(Event, models.CASCADE, blank=True, null=True)
+    product = models.CharField(max_length=191)
+    percent = models.IntegerField()
 
 
 class EventSpeaker(models.Model):
