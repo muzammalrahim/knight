@@ -186,9 +186,9 @@
   "Speaker.Registration.Form.Bank_Name" : "Nome do banco",
   "Speaker.Registration.Form.AccountOwner" : "Dono da conta",
 
-  "Speaker.Registration.Tier.One":"camada 1",
-  "Speaker.Registration.Tier.Two":"camada 2",
-  "Speaker.Registration.Tier.Three":"camada 3",
+  "Speaker.Registration.Tier.One":"Tier 1",
+  "Speaker.Registration.Tier.Two":"Tier 2",
+  "Speaker.Registration.Tier.Three":"Tier 3",
 
   "Speaker.add_person_name":"NOME",
   "Speaker.add_person_relationship":"parentesco",

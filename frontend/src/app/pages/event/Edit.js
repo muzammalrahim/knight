@@ -19,7 +19,7 @@ class EventRegistrationForm extends React.Component {
 		this.event={
 			id:this.props.match.params.id,	name:"", _type:"", date:"", duration:"", web_presential:"", country:"",	state:"",
 			city:"", address:"", solicitant:"", business_unit:"", despartment:"", cost_center:"",
-			speaker:[], virtual_presential:"",
+			speaker:[], virtual_presential:"", editspeaker:[]
 		}
 		this.validateEvent={
 			name:false, _type:false, date:false, duration:false, web_presential:false, country:false,	state:false,
@@ -42,6 +42,14 @@ class EventRegistrationForm extends React.Component {
 			duration:'',
 			displacement:''
 		}
+		this.editspeaker = {
+			speaker:'',
+			role:'',
+			price:0,
+			duration:'',
+			displacement:'',
+			id:'',
+		}
 		this.state={
 			event: this.event,
 			validateEvent: this.validateEvent,
@@ -54,6 +62,7 @@ class EventRegistrationForm extends React.Component {
 			specialty:[],
 			event_speaker:[],
 			current_speaker:this.speaker,
+			edit_speaker:this.editspeaker,
 			show:false,
 			speaker: []
 		}
@@ -67,6 +76,15 @@ class EventRegistrationForm extends React.Component {
             validateEventSpeaker[key] = current_speaker[key] ? false : true;
         }
 		this.setState({current_speaker, validateEventSpeaker})
+	}
+
+	handleEditSpeaker(e){
+		let [key, value, {edit_speaker, validateEventSpeaker}] = [e.target.name, e.target.value, this.state];
+		edit_speaker[key]=value;
+		if(validateEventSpeaker[key]){
+            validateEventSpeaker[key] = edit_speaker[key] ? false : true;
+        }
+		this.setState({edit_speaker, validateEventSpeaker})
 	}
 	handleAddSpeaker(){
 		let {event_speaker, event, current_speaker, validateEventSpeaker, speakers} = this.state;
@@ -92,6 +110,37 @@ class EventRegistrationForm extends React.Component {
 						event_speaker, 
 						event, 
 						current_speaker:{speaker:'', price:0, duration:'',displacement:''}
+					});
+				}).catch((err)=>{
+					console.log(err)
+				})
+			
+		})
+	}
+	handleSubmitSpeaker=( )=>{
+		let {event_speaker, event, edit_speaker, validateEventSpeaker, speakers} = this.state;
+		let isSubmit = null;
+		let show = false
+		Object.keys(validateEventSpeaker).map((key)=>{
+			validateEventSpeaker[key] = edit_speaker[key] ? false : true;
+			isSubmit = edit_speaker[key] && isSubmit !== false ? true : false;
+		})
+		this.setState({validateEventSpeaker, show})
+
+		let speaker = speakers.find(data => data.id == edit_speaker.speaker)
+		if(!isSubmit) return false
+		isSubmit && list(`api/price`, {specialty:speaker.specialty, program_type:event._type, tier:speaker.tier, role:edit_speaker.role, event:event.id, speaker:speaker.id}).then((response)=>{
+			// if(response.data) return false	
+			edit_speaker['price'] = response?.data[0]?.hour_price*parseInt(edit_speaker.duration);
+				event['speaker'].push(edit_speaker.speaker);
+				event_speaker.push(edit_speaker);
+				let eventspeaker = {specialty:speaker.specialty, program_type:event._type, price:edit_speaker.price, duration:edit_speaker.duration, tier:speaker.tier, role:edit_speaker.role, event:event.id, speaker:speaker.id} 
+				put(`api/event_speaker/${edit_speaker.id}/`, eventspeaker).then((res)=>{
+					this.getEvent()
+					this.setState({
+						event_speaker, 
+						event, 
+						edit_speaker:{speaker:'', price:0, duration:'',displacement:''}
 					});
 				}).catch((err)=>{
 					console.log(err)
@@ -190,11 +239,18 @@ class EventRegistrationForm extends React.Component {
 			this.setState({specialty:response.data})
 		})
 	}
-	handleOpen= ()=>{
+	modalOpen= (speaker)=>{
+		const {event, speakers, edit_speaker } = this.state
 		const show = true
-		this.setState({show})
+		let spk = speakers.find (data=> data.id === speaker.id)
+		 edit_speaker.speaker =spk.name
+		 edit_speaker.role = speaker.event_speaker.role
+		 edit_speaker.duration = speaker.event_speaker.duration
+		 edit_speaker.id = speaker.event_speaker.id
+		 edit_speaker.price = speaker.event_speaker.price
+		this.setState({show,edit_speaker})
 	}
-	handleClose= ()=>{
+	modalClose= ()=>{
 		let show = false
 		this.setState({show})
 	}
@@ -209,15 +265,13 @@ class EventRegistrationForm extends React.Component {
 	}
 	render(){
 		let {event:{web_presential}, event, currentTab, speaker_list, speakers, countries, event_speaker,
-			validateEvent, alert:{open, severity, message, title}, specialty, current_speaker, validateEventSpeaker, speaker } = this.state;
-			// console.log(current_speaker)
-			console.log(speaker)
+			validateEvent, alert:{open, severity, message, title}, specialty, current_speaker, validateEventSpeaker, speaker, edit_speaker } = this.state;
+
 		let spk_total_price = 0;
 		event.speaker.map(speaker=>{
 			speakers.find(data=>data.id === speaker.id)
-			spk_total_price += parseInt(speaker.event_speaker.price)
+			spk_total_price += parseInt(speaker?.event_speaker?.price)
 		})
-		// let total_speaker = 0;
 		let total_speaker = new Set(speaker.map(x => x.id)).size
 		event.speaker.filter(speaker=>{
 			speakers.find(data=>data.id === speaker.id)
@@ -557,7 +611,7 @@ class EventRegistrationForm extends React.Component {
 									</div>
 									<Modal show={this.state.show}>
 										<Modal.Header closeButton>
-										<Modal.Title>Event Speaker</Modal.Title>
+										<Modal.Title>Update Event Speaker</Modal.Title>
 										</Modal.Header>
 										<Modal.Body>
 										<div className="container">
@@ -569,7 +623,7 @@ class EventRegistrationForm extends React.Component {
 													name="speaker"
 													label={<FormattedMessage id="Event.List.Column.Speaker"/>}
 													style={styles.textField}
-													onChange={(e)=>{this.handleChangeSpeaker(e)}}
+													onChange={(e)=>{this.handleEditSpeaker(e)}}
 													SelectProps={{
 														native: true,
 														MenuProps: {
@@ -598,7 +652,7 @@ class EventRegistrationForm extends React.Component {
 													name="role"
 													label={<FormattedMessage id="Event.List.Column.Role"/>}
 													style={styles.textField}
-													onChange={(e)=>{this.handleChangeSpeaker(e)}}
+													onChange={(e)=>{this.handleEditSpeaker(e)}}
 													SelectProps={{
 														native: true,
 														MenuProps: {
@@ -627,8 +681,8 @@ class EventRegistrationForm extends React.Component {
 													label={<FormattedMessage id="Event.Create.Duration"/>}
 													type="number"
 													style={styles.textField}
-													value={current_speaker.duration}
-													onChange={(e)=>{this.handleChangeSpeaker(e)}}
+													value={edit_speaker.duration}
+													onChange={(e)=>{this.handleEditSpeaker(e)}}
 													margin="normal"
 													variant="outlined"
 													error={validateEventSpeaker['duration']}
@@ -643,8 +697,8 @@ class EventRegistrationForm extends React.Component {
 														aria-label="Gender"
 														name="displacement"
 														style={styles.group}
-														value={current_speaker.displacement}
-														onChange={(e)=>{this.handleChangeSpeaker(e)}}
+														value={edit_speaker.displacement}
+														onChange={(e)=>{this.handleEditSpeaker(e)}}
 													>
 														<FormControlLabel value="local" control={<Radio />} label="Local (at the same State)" />
 														<FormControlLabel value="regional" control={<Radio />} label="Regional (at the same Country)" />
@@ -658,10 +712,10 @@ class EventRegistrationForm extends React.Component {
 									</div>
 										</Modal.Body>
 										<Modal.Footer>
-										<Button variant="secondary" onClick={this.handleClose}>
+										<Button variant="secondary" onClick={this.modalClose}>
 											Close
 										</Button>
-										<Button variant="primary" onClick={this.handleClose}>
+										<Button variant="primary" onClick={this.handleSubmitSpeaker}>
 											Save Changes
 										</Button>
 										</Modal.Footer>
@@ -785,7 +839,7 @@ class EventRegistrationForm extends React.Component {
 									</div>
 									{event.speaker.length > 0 && <div className="col-md-12 m-4">
 										<h5>Selected Speakers</h5>
-										<Table striped bordered hover className="ml-4 mr-4">
+										<Table striped="striped" bordered="bordered" hover="hover" className="ml-4 mr-4">
 											<thead>
 												<tr>
 												<th>Name</th>
@@ -811,7 +865,7 @@ class EventRegistrationForm extends React.Component {
 															<td>{speaker.event_speaker.duration}</td>
 															<td>{speaker.event_speaker.price}</td>
 															<td style={{textAlign:'center'}}>
-																<Edit style={{cursor:'pointer'}} onClick={this.handleOpen}/>
+																<Edit style={{cursor:'pointer'}} onClick={()=>this.modalOpen(speaker)}/>
 																<Delete style={{cursor:'pointer'}} onClick={()=>{
 																	// event.speaker = event.speaker.filter(e => e !== speaker)
 																	this.handleDeleteSpeaker(speaker.event_speaker.id)
@@ -945,7 +999,7 @@ class EventRegistrationForm extends React.Component {
 												<div className="row mb-4">
 													<div className="col-md-6 col-12">
 													<div className="kt_detail__item_title">Speakers</div>
-														<Table striped bordered hover className="ml-4 mr-4">
+														<Table striped="striped" bordered="bordered" hover="hover" className="ml-4 mr-4">
 															<thead>
 																<tr>
 																	<th className="p-2">Name</th>

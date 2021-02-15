@@ -18,12 +18,12 @@ class EventRegistrationForm extends React.Component {
 		super(props);
 		this.event={
 			name:"", _type:"", date:"", duration:"", web_presential:"", country:"",	state:"",
-			city:"", address:"", solicitant:"", business_unit:"", despartment:"", cost_center:"", product:"", percent:"",
+			city:"", address:"", solicitant:"", business_unit:"", despartment:"", cost_center:"", product:[],
 			speaker:[], virtual_presential:"",
 		}
 		this.validateEvent={
 			name:false, _type:false, date:false, duration:false, web_presential:false, country:false,	state:false,
-			city:false, address:false, solicitant:false, business_unit:false, despartment:false, cost_center:false,product:false, percent:false, virtual_presential:false,
+			city:false, address:false, solicitant:false, business_unit:false, despartment:false, cost_center:false, virtual_presential:false,
 
 		}
 
@@ -37,6 +37,9 @@ class EventRegistrationForm extends React.Component {
 		this.validateEventSpeaker={
 			duration:false, role: false, speaker:false , displacement:false
 		}
+		this.validateEventProduct={
+			product:false, percent: false,
+		}
 
 		this.speaker = {
 			speaker:'',
@@ -44,6 +47,10 @@ class EventRegistrationForm extends React.Component {
 			price:0,
 			duration:'',
 			displacement:''
+		}
+		this.product ={
+			product: "",
+			percent: 0,
 		}
 		this.state={
 			event: this.event,
@@ -56,7 +63,8 @@ class EventRegistrationForm extends React.Component {
 			specialty:[],
 			validateEventSpeaker: this.validateEventSpeaker,
 			event_speaker:[],
-			current_speaker:this.speaker
+			current_speaker:this.speaker,
+			add_product : this.product,
 		}
 		this.handleTabChange = this.handleTabChange.bind(this);
 	}
@@ -157,6 +165,9 @@ class EventRegistrationForm extends React.Component {
 	handleClose(){
         this.setState({alert:{open:false, severity: '', message:'' }})
     }
+	handleAddFields = ()=>{
+	 const {add_product} = this.state
+	}
 	componentDidMount(){
 		this.getSpeakers();
 		fetch('https://restcountries.eu/rest/v2/all')
@@ -174,7 +185,7 @@ class EventRegistrationForm extends React.Component {
 	}
 	render(){
 		let {event:{web_presential}, event, currentTab, speaker_list, speakers, countries, event_speaker,
-			validateEvent, alert:{open, severity, message, title}, specialty, current_speaker, validateEventSpeaker} = this.state;
+			validateEvent, alert:{open, severity, message, title}, specialty, current_speaker, validateEventSpeaker, add_product} = this.state;
 			let airport={}
 		return (
 			<div className="row">
@@ -500,7 +511,7 @@ class EventRegistrationForm extends React.Component {
 											name="product"
 											label={<FormattedMessage id="Event.List.Column.Product"/>}
 											style={styles.textField}
-											value={event.product}
+											value={add_product.product}
 											onChange={(e)=>{this.handleChange(e)}}
 											margin="normal"
 											variant="outlined"
@@ -514,14 +525,14 @@ class EventRegistrationForm extends React.Component {
 											name="percent"
 											label={<FormattedMessage id="Event.List.Column.Percent"/>}
 											style={styles.textField}
-											value={event.percent}
+											value={add_product.percent}
 											type= "number"
 											onChange={(e)=>{this.handleChange(e)}}
 											margin="normal"
 											variant="outlined"
 											error={validateEvent['percent']}
 											helperText={validateEvent['percent'] && 'this field is required'}
-										/><Icon className="" style={styles.rightIcon }>add</Icon>
+										/><Icon className="percent-icon" style={styles.rightIcon, styles.cursorchange } onClick={this.handleAddFields}>add</Icon>
 										</div>
 									</div>
 
@@ -645,7 +656,7 @@ class EventRegistrationForm extends React.Component {
 									</div>
 
 									{ event.speaker.length > 0 && <div className="col-md-12 m-4">
-										<h5>speaker.add_person.addperson_SelectedPerson</h5>
+										<h5><FormattedMessage id="speaker.add_person.addperson_SelectedPerson"/></h5>
 										<Table striped bordered hover className="ml-4 mr-4">
 											<thead>
 												<tr>
@@ -970,6 +981,9 @@ const styles = {
 	},
 	rightIcon: {
 		marginLeft: "0.25rem",
+	},
+	cursorchange: {
+		cursor: "pointer",
 	},
 	
 	button: {
