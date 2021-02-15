@@ -18,7 +18,7 @@ class EventRegistrationForm extends React.Component {
 		super(props);
 		this.event={
 			name:"", _type:"", date:"", duration:"", web_presential:"", country:"",	state:"",
-			city:"", address:"", solicitant:"", business_unit:"", despartment:"", cost_center:"", product:[],
+			city:"", address:"", solicitant:"", business_unit:"", despartment:"", cost_center:"", products:[],
 			speaker:[], virtual_presential:"",
 		}
 		this.validateEvent={
@@ -37,7 +37,7 @@ class EventRegistrationForm extends React.Component {
 		this.validateEventSpeaker={
 			duration:false, role: false, speaker:false , displacement:false
 		}
-		this.validateEventProduct={
+		this.validateEventProducts={
 			product:false, percent: false,
 		}
 
@@ -48,8 +48,8 @@ class EventRegistrationForm extends React.Component {
 			duration:'',
 			displacement:''
 		}
-		this.product ={
-			product: "",
+		this.products ={
+			product: '',
 			percent: 0,
 		}
 		this.state={
@@ -62,9 +62,11 @@ class EventRegistrationForm extends React.Component {
 			countries:[],
 			specialty:[],
 			validateEventSpeaker: this.validateEventSpeaker,
+			validateEventProducts:this.validateEventProducts,
 			event_speaker:[],
+			event_product:[{product:"event", percent:2,}],
 			current_speaker:this.speaker,
-			add_product : this.product,
+			add_product : this.products,
 		}
 		this.handleTabChange = this.handleTabChange.bind(this);
 	}
@@ -76,6 +78,11 @@ class EventRegistrationForm extends React.Component {
 			validateEventSpeaker[key] = current_speaker[key] ? false : true;
 		   }
 		this.setState({current_speaker, validateEventSpeaker})
+	}
+	handleChangeProduct(e,key){
+		let {event_product} = this.state;
+		event_product[key][e.target.name] = e.target.value;
+		this.setState({event_product: event_product});
 	}
 
 	handleAddSpeaker(){
@@ -89,6 +96,7 @@ class EventRegistrationForm extends React.Component {
 		let speaker = speakers.find(data => data.id == current_speaker.speaker)
 		 isSubmit && list(`api/price`, {specialty:speaker.specialty, program_type:event._type, tier:speaker.tier})
 		 .then((response)=>{
+			 if(response.data) return false
 			if(!event['speaker'].includes(current_speaker.speaker)){
 				current_speaker['price'] = response.data[0].hour_price*current_speaker.duration;
 				current_speaker['price'] = 200*current_speaker.duration;
@@ -144,6 +152,7 @@ class EventRegistrationForm extends React.Component {
         })
 		this.setState({validateEvent});
 		event['event_speaker']=this.state.event_speaker;
+		event['event_product']=this.state.event_product;
         isSubmit ? post('api/events', event).then((response)=>{
                 this.setState({alert:{open:true, severity:"success", title:"success", message:'User Created Sucessfully'}})
 				setTimeout(()=>{this.props.history.push('/events')}, 1000)
@@ -166,7 +175,14 @@ class EventRegistrationForm extends React.Component {
         this.setState({alert:{open:false, severity: '', message:'' }})
     }
 	handleAddFields = ()=>{
-	 const {add_product} = this.state
+	 const {add_product, event,  validateEventProducts, event_product} = this.state
+	 let isSubmit = null;
+		Object.keys(validateEventProducts).map((key)=>{
+			validateEventProducts[key] = add_product[key] ? false : true;
+			isSubmit = add_product[key] && isSubmit !== false ? true : false;
+		})
+	  event_product.push(add_product)
+	  this.setState({event_product, event, add_product:{product:"", percent:0,}})
 	}
 	componentDidMount(){
 		this.getSpeakers();
@@ -184,8 +200,8 @@ class EventRegistrationForm extends React.Component {
 		})
 	}
 	render(){
-		let {event:{web_presential}, event, currentTab, speaker_list, speakers, countries, event_speaker,
-			validateEvent, alert:{open, severity, message, title}, specialty, current_speaker, validateEventSpeaker, add_product} = this.state;
+		let {event:{web_presential}, event, currentTab, speaker_list, speakers, countries, event_speaker, event_product,
+			validateEvent, alert:{open, severity, message, title}, specialty, current_speaker, validateEventSpeaker, validateEventProducts, add_product} = this.state;
 			let airport={}
 		return (
 			<div className="row">
@@ -504,36 +520,44 @@ class EventRegistrationForm extends React.Component {
 											))}
 										</TextField>
 									</div>
-									<div className="col-md-6" style={{display:"flex"}}>
-									  <div className="col-md-6">
-										<TextField
-											required
-											name="product"
-											label={<FormattedMessage id="Event.List.Column.Product"/>}
-											style={styles.textField}
-											value={add_product.product}
-											onChange={(e)=>{this.handleChange(e)}}
-											margin="normal"
-											variant="outlined"
-											error={validateEvent['product']}
-											helperText={validateEvent['product'] && 'this field is required'}
-										/>
+									<div className="col-md-6">
+									
+										{event_product.map((product, i)=>{
+										return <div className="row" key={i}>
+											<div className="col-md-12" style={{display:"flex"}}>
+												<div className="col-md-6">
+													<TextField
+														required
+														name="product"
+														label={<FormattedMessage id="Event.List.Column.Product"/>}
+														style={styles.textField}
+														value={product.product}
+														onChange={(e)=>{this.handleChangeProduct(e,i)}}
+														margin="normal"
+														variant="outlined"
+														// error={validateEventProducts['product']}
+														// helperText={validateEventProducts['product'] && 'this field is required'}
+													/>
+													</div>
+												<div className="col-md-6" style={{display:"flex"}}>
+												<TextField
+													required
+													name="percent"
+													label={<FormattedMessage id="Event.List.Column.Percent"/>}
+													style={styles.textField}
+													value={product.percent}
+													type= "number"
+													onChange={(e)=>{this.handleChangeProduct(e,i)}}
+													margin="normal"
+													variant="outlined"
+													// error={validateEventProducts['percent']}
+													// helperText={validateEventProducts['percent'] && 'this field is required'}
+												/> {event_product.length -1 == i && <Icon className="percent-icon" style={styles.rightIcon, styles.cursorchange } onClick={this.handleAddFields}>add</Icon>}
+												</div>
+											
+											</div>
 										</div>
-									  <div className="col-md-6" style={{display:"flex"}}>
-										<TextField
-											required
-											name="percent"
-											label={<FormattedMessage id="Event.List.Column.Percent"/>}
-											style={styles.textField}
-											value={add_product.percent}
-											type= "number"
-											onChange={(e)=>{this.handleChange(e)}}
-											margin="normal"
-											variant="outlined"
-											error={validateEvent['percent']}
-											helperText={validateEvent['percent'] && 'this field is required'}
-										/><Icon className="percent-icon" style={styles.rightIcon, styles.cursorchange } onClick={this.handleAddFields}>add</Icon>
-										</div>
+										})}
 									</div>
 
 									<div className="container">
