@@ -156,8 +156,7 @@ class EventSerializer(serializers.ModelSerializer):
         representation = super(EventSerializer, self).to_representation(instance)
         try:
             represes = EventProduct.objects.filter(event=instance.id).values()
-            ev_id = list(map(lambda x: x["id"], represes))
-            representation['eventproduct'] = ev_id
+            representation['eventproduct'] = represes
         except:
             representation['eventproduct'] = None
 
