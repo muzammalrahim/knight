@@ -64,7 +64,7 @@ class EventRegistrationForm extends React.Component {
 			validateEventSpeaker: this.validateEventSpeaker,
 			validateEventProducts:this.validateEventProducts,
 			event_speaker:[],
-			event_product:[{product:"event", percent:2,}],
+			event_product:[{product:"", percent:0}],
 			current_speaker:this.speaker,
 			add_product : this.products,
 		}
@@ -96,7 +96,7 @@ class EventRegistrationForm extends React.Component {
 		let speaker = speakers.find(data => data.id == current_speaker.speaker)
 		 isSubmit && list(`api/price`, {specialty:speaker.specialty, program_type:event._type, tier:speaker.tier})
 		 .then((response)=>{
-			 if(response.data) return false
+			if(response===[]) return false
 			if(!event['speaker'].includes(current_speaker.speaker)){
 				current_speaker['price'] = response.data[0].hour_price*current_speaker.duration;
 				current_speaker['price'] = 200*current_speaker.duration;

@@ -115,6 +115,9 @@
   "Event.List.Column.Virtual": "Virtual / Presential",
   "Event.List.Column.Product": "Product",
   "Event.List.Column.Percent": "Percent %",
+  "Event.List.Column.Total_Cost": "Total Cost",
+  "Event.List.Column.Hour_Cost": "Cost (hour)",
+  "Event.List.Column.Total_Hours": "Total Hours",
 
   "Speaker.Registration.Title": "Speaker Registration",
   "Speaker.Registration.Form.F_Flag": "Foreign Flag",

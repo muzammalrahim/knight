@@ -18,7 +18,7 @@ class EventRegistrationForm extends React.Component {
 		super(props);
 		this.event={
 			id:this.props.match.params.id,	name:"", _type:"", date:"", duration:"", web_presential:"", country:"",	state:"",
-			city:"", address:"", solicitant:"", business_unit:"", despartment:"", cost_center:"",
+			city:"", address:"", solicitant:"", business_unit:"", despartment:"", cost_center:"", products:[],
 			speaker:[], virtual_presential:"", editspeaker:[]
 		}
 		this.validateEvent={
@@ -29,11 +29,19 @@ class EventRegistrationForm extends React.Component {
 		this.validateEventSpeaker={
 			duration:false, role: false, speaker:false,displacement:false
 		}
+
+		this.validateEventProducts={
+			product:false, percent: false,
+		}
 		this.alert={
             open: false, 
             severity: '',
             message:'',
             title:''
+		}
+		this.products ={
+			product: '',
+			percent: 0,
 		}
 		this.speaker = {
 			speaker:'',
@@ -54,6 +62,7 @@ class EventRegistrationForm extends React.Component {
 			event: this.event,
 			validateEvent: this.validateEvent,
 			validateEventSpeaker: this.validateEventSpeaker,
+			validateEventProducts:this.validateEventProducts,
 			alert: this.alert,
 			currentTab: 0,
 			speaker_list:[],
@@ -63,8 +72,10 @@ class EventRegistrationForm extends React.Component {
 			event_speaker:[],
 			current_speaker:this.speaker,
 			edit_speaker:this.editspeaker,
+			eventproduct:[{product:'',percent:0}],
 			show:false,
-			speaker: []
+			speaker: [],
+			add_product: this.products
 		}
 		this.handleTabChange = this.handleTabChange.bind(this);
 	}
@@ -188,6 +199,7 @@ class EventRegistrationForm extends React.Component {
         })
 		this.setState({validateEvent});
 		event['event_speaker']=this.state.event_speaker;
+		event['event_product']= this.state.eventproduct
         isSubmit ?  put(`api/event/${event.id}/`, event).then((response)=>{
                 this.setState({alert:{open:true, severity:"success", title:"success", message:'User Created Sucessfully'}})
 				setTimeout(()=>{this.props.history.push('/events')}, 1000)
@@ -239,6 +251,28 @@ class EventRegistrationForm extends React.Component {
 			this.setState({specialty:response.data})
 		})
 	}
+	handleDeleteProduct=(id)=>{
+		del(`api/event_product/${id}`).then((response)=>{
+			this.getEvent();
+			this.setState({eventproduct:this.state.eventproduct})
+
+				})
+	}
+	handleChangeProduct(e,key){
+		let {eventproduct} = this.state;
+		eventproduct[key][e.target.name] = e.target.value;
+		this.setState({eventproduct: eventproduct});
+	}
+	handleAddFields = ()=>{
+		const {add_product, event,  validateEventProducts, eventproduct} = this.state
+		let isSubmit = null;
+		   Object.keys(validateEventProducts).map((key)=>{
+			   validateEventProducts[key] = add_product[key] ? false : true;
+			   isSubmit = add_product[key] && isSubmit !== false ? true : false;
+		   })
+		 eventproduct.push(add_product)
+		 this.setState({eventproduct, event, add_product:{product:"", percent:0,}})
+	   }
 	modalOpen= (speaker)=>{
 		const {event, speakers, edit_speaker } = this.state
 		const show = true
@@ -264,9 +298,9 @@ class EventRegistrationForm extends React.Component {
 		return uniqueId.size;
 	}
 	render(){
-		let {event:{web_presential}, event, currentTab, speaker_list, speakers, countries, event_speaker,
-			validateEvent, alert:{open, severity, message, title}, specialty, current_speaker, validateEventSpeaker, speaker, edit_speaker } = this.state;
-
+		let {event:{web_presential}, event, currentTab, speaker_list, speakers, countries, event_speaker, event_product,
+			validateEvent, alert:{open, severity, message, title}, specialty, current_speaker, validateEventSpeaker, speaker, edit_speaker, eventproduct } = this.state;
+           console.log("event",event)
 		let spk_total_price = 0;
 		event.speaker.map(speaker=>{
 			speakers.find(data=>data.id === speaker.id)
@@ -609,6 +643,46 @@ class EventRegistrationForm extends React.Component {
 											))}
 										</TextField>
 									</div>
+									<div className="col-md-6">
+										{event?.eventproduct?.map((product, i)=>{
+										return <div className="row" key={i}>
+											<div className="col-md-12" style={{display:"flex"}}>
+												<div className="col-md-6">
+													<TextField
+														required
+														name="product"
+														label={<FormattedMessage id="Event.List.Column.Product"/>}
+														style={styles.textField}
+														value={product.product}
+														onChange={(e)=>{this.handleChangeProduct(e,i)}}
+														margin="normal"
+														variant="outlined"
+														// error={validateEventProducts['product']}
+														// helperText={validateEventProducts['product'] && 'this field is required'}
+													/>
+													</div>
+												<div className="col-md-6" style={{display:"flex"}}>
+												<TextField
+													required
+													name="percent"
+													label={<FormattedMessage id="Event.List.Column.Percent"/>}
+													style={styles.textField}
+													value={product.percent}
+													type= "number"
+													onChange={(e)=>{this.handleChangeProduct(e,i)}}
+													margin="normal"
+													variant="outlined"
+													// error={validateEventProducts['percent']}
+													// helperText={validateEventProducts['percent'] && 'this field is required'}
+												/> 
+												<Delete className="percent-icon" style={styles.cursorchange} onClick={()=>this.handleDeleteProduct(product.id)} />
+												{event?.eventproduct.length -1 == i && <Icon className="percent-icon" style={styles.rightIcon, styles.cursorchange } onClick={this.handleAddFields}>add</Icon>}
+												</div>
+											
+											</div>
+										</div>
+										})}
+									</div>
 									<Modal show={this.state.show}>
 										<Modal.Header closeButton>
 										<Modal.Title>Update Event Speaker</Modal.Title>
@@ -846,9 +920,9 @@ class EventRegistrationForm extends React.Component {
 												<th>Specialty</th>
 												<th>Tier</th>
 												<th>Role</th>
-												<th>Cost(hour)</th>
-												<th>Total hours</th>
-												<th>Total Cost</th>
+												<th><FormattedMessage id="Event.List.Column.Hour_Cost"/></th>
+												<th><FormattedMessage id="Event.List.Column.Total_Hours"/></th>
+												<th><FormattedMessage id="Event.List.Column.Total_Cost"/></th>
 												<th style={{textAlign:'center'}}>Action</th>
 												</tr>
 											</thead>
@@ -1006,9 +1080,9 @@ class EventRegistrationForm extends React.Component {
 																	<th className="p-1">Specialty</th>
 																	<th className="p-1">Tier</th>
 																	<th className="p-1">Role</th>
-																	<th className="p-1">Cost(hour)</th>
-																	<th className="p-1">Duration</th>
-																	<th className="p-1">Total Cost</th>
+																	<th className="p-1"><FormattedMessage id="Event.List.Column.Hour_Cost"/></th>
+																	<th className="p-1"><FormattedMessage id="Event.List.Column.Total_Hours"/></th>
+																	<th className="p-1"><FormattedMessage id="Event.List.Column.Total_Cost"/></th>
 																</tr>
 															</thead>
 															<tbody>
@@ -1183,6 +1257,9 @@ const styles = {
 	},
 	rightIcon: {
 		marginLeft: "0.25rem",
+	},
+	cursorchange: {
+		cursor: "pointer",
 	},
 	
 	button: {

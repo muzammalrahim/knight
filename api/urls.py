@@ -93,6 +93,7 @@ urlpatterns = format_suffix_patterns([
     path('event_speaker/<pk>/', event_speaker_list, name='event_speaker_delete'),
 
     path('event_product', event_product, name='event_product'),
+    path('event_product/<pk>', event_product, name='event_product'),
 
     path('speakers', speakers_list, name='speakers'),
     path('speaker/<pk>', speakers_detail, name='speaker'),

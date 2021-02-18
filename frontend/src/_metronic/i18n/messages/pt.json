@@ -121,6 +121,10 @@
   "Event.List.Column.Virtual": "Virtual / Presencial",
   "Event.List.Column.Product": "Produtos",
   "Event.List.Column.Percent": "Por cento %",
+  "Event.List.Column.Total_Cost": "Custo Total",
+  "Event.List.Column.Hour_Cost": "Custo (hora)",
+  "Event.List.Column.Total_Hours": "Total Horas",
+
   
   "Speaker.Registration.Title": "Registro de palestrante",
   "Speaker.Registration.Form.F_Flag": "Estrangeiro (a)",
