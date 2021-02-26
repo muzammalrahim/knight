@@ -849,9 +849,9 @@ this.setState({current_addperson});
 										/><strong>Juridical Person Data</strong>
 									</div>
 									<div className="col-md-6 text-center">
-										<TextField
+										{/* <TextField
 											name="national_id"
-										label={<FormattedMessage id="Speaker.Registration.Form.National_ID"/>}
+											label={<FormattedMessage id="Speaker.Registration.Form.National_ID"/>}
 											style={styles.textField}
 											value={speaker.national_id ? speaker.national_id : ''}
 											onChange={(event)=>{this.handleChange(event)}}
@@ -870,7 +870,7 @@ this.setState({current_addperson});
 											variant="outlined"
 											error={validateSpeaker['cpf']}
 											helperText={validateSpeaker['cpf'] && 'this field is required'}
-										/>
+										/> */}
 										<>
 											<InputGroup className="pt-4 ml-2">
 												<InputGroup.Prepend>
@@ -1125,30 +1125,30 @@ this.setState({current_addperson});
 									{speaker.foreign_flag &&<div className="col-md-6">
 										<TextField
 											name="bank_name"
-											select
+											// select
 											label={<FormattedMessage id="Speaker.Registration.Form.Bank_Name"/>}
 											style={styles.textField}
 											value={speaker.national_id ? speaker.bank_name : ''}
 											onChange={(event)=>{this.handleChange(event)}}
-											SelectProps={{
-												native: true,
-												MenuProps: {
-													style: styles.menu
-												}
-											}}
+											// SelectProps={{
+											// 	native: true,
+											// 	MenuProps: {
+											// 		style: styles.menu
+											// 	}
+											// }}
 											error={validateSpeaker['bank_name']}
 											helperText={validateSpeaker['bank_name'] && 'this field is required'}
 											margin="normal"
 											variant="outlined"
 											>
-											<option value={null}>
+											{/* <option value={null}>
 												Select Bank Name....
 											</option>
 											{countries.map(option => (
 												<option key={option.value} value={option.value}>
 													{option.label}
 												</option>
-											))}
+											))} */}
 										</TextField>
 									</div>}
 
@@ -1194,8 +1194,8 @@ this.setState({current_addperson});
 											error={validateSpeaker['iban_account']}
 											helperText={validateSpeaker['iban_account'] && 'this field is required'}
 										/>
-									</div>	
-									{speaker['foreign_flag'] && <div className="col-md-6">
+									</div>
+									<div className="col-md-6">
 										<TextField
 											name="pix"
 											label="PIX"
@@ -1207,7 +1207,7 @@ this.setState({current_addperson});
 											error={validateSpeaker['pix']}
 											helperText={validateSpeaker['pix'] && 'this field is required'}
 										/>
-									</div>}
+									</div>
 									<div className="col-md-6">
 										<TextField
 											name="agency"

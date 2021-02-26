@@ -965,7 +965,7 @@ this.addperson = {
 											))}
 										</TextField> 
 									</div>
-									<div className="col-md-6 text-center">
+									{juridcal_person && <div className="col-md-6 text-center">
 										<div style={{opacity: !juridcal_person && "0.5"}}>
 												<TextField
 													disabled={!juridcal_person}
@@ -1119,7 +1119,7 @@ this.addperson = {
 													helperText={validateSpeaker['agency'] && 'this field is required'}
 												/> */}
 											</div>
-										</div>
+									</div>}
 									<div className="col-md-6">
 										<TextField
 											name="account_owner"
@@ -1136,30 +1136,30 @@ this.addperson = {
 									<div className="col-md-6">
 										<TextField
 											name="bank_name"
-											select
+											// select
 											label="Bank Name"
 											style={styles.textField}
 											value={speaker.national_id ? speaker.bank_name : ''}
 											onChange={(event)=>{this.handleChange(event)}}
-											SelectProps={{
-												native: true,
-												MenuProps: {
-													style: styles.menu
-												}
-											}}
+											// SelectProps={{
+											// 	native: true,
+											// 	MenuProps: {
+											// 		style: styles.menu
+											// 	}
+											// }}
 											error={validateSpeaker['bank_name']}
 											helperText={validateSpeaker['bank_name'] && 'this field is required'}
 											margin="normal"
 											variant="outlined"
 											>
-											<option value={null}>
+											{/* <option value={null}>
 												Select Bank Name....
 											</option>
 											{countries.map(option => (
 												<option key={option.value} value={option.value}>
 													{option.label}
 												</option>
-											))}
+											))} */}
 										</TextField>
 									</div>	
 									<div className="col-md-6">

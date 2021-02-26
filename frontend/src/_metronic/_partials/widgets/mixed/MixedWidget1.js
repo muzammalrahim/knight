@@ -12,7 +12,7 @@ import { FormattedMessage } from "react-intl";
 export function MixedWidget1({ className }) {
   const uiService = useHtmlClassService();
   const history = useHistory();
-  const [user, setUser] = useState();
+  const [user, setUser] = useState({});
 
   const layoutProps = useMemo(() => {
     return {
@@ -51,9 +51,11 @@ export function MixedWidget1({ className }) {
     };
   }, [layoutProps]);
   useEffect(() => {
-    let User = localStorage.getItem('persist:v705-demo1-auth') && JSON.parse(localStorage.getItem('persist:v705-demo1-auth')).user;
-    User = JSON.parse(User)
-    User && User.groups.length > 0 && setUser(User.groups[0])
+    let user = localStorage.getItem('persist:v705-demo1-auth') && JSON.parse(localStorage.getItem('persist:v705-demo1-auth')).user;
+    setUser(() => JSON.parse(user));
+    // console.log('user', user);
+    // User = JSON.parse(User)
+    // User && User.groups.length > 0 && setUser(User.groups[0])
   },[]);
   function handleClick(url){
     history.push(`/${url}`);
@@ -107,7 +109,7 @@ export function MixedWidget1({ className }) {
               </a>
             </div>
           </div>
-          {user === 1 && <div className="row m-0">
+          {user.is_superuser === true && <div className="row m-0">
             <div className="col bg-light-danger px-6 py-8 rounded-xl mr-7" style={{cursor:'pointer'}} onClick={()=>{handleClick('user/create')}}>
               <span className="svg-icon svg-icon-3x svg-icon-danger d-block my-2">
                 <SVG

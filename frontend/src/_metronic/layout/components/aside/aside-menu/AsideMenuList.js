@@ -7,16 +7,18 @@ import {toAbsoluteUrl, checkIsActive} from "../../../../_helpers";
 import { FormattedMessage } from "react-intl";
 export function AsideMenuList({ layoutProps }) {
   const location = useLocation();
-  const [user, setUser] = useState();
+  const [user, setUser] = useState({});
   const getMenuItemActive = (url, hasSubmenu = false) => {
     return checkIsActive(location, url)
         ? ` ${!hasSubmenu && "menu-item-active"} menu-item-open `
         : "";
   };
   useEffect(() => {
-    let User = localStorage.getItem('persist:v705-demo1-auth') && JSON.parse(localStorage.getItem('persist:v705-demo1-auth')).user;
-    User = JSON.parse(User)
-    User && User.groups.length > 0 && setUser(User.groups[0])
+    let user = localStorage.getItem('persist:v705-demo1-auth') && JSON.parse(localStorage.getItem('persist:v705-demo1-auth')).user;
+    setUser(() => JSON.parse(user));
+    // console.log('user', user);
+    // User = JSON.parse(User)
+    // User && User.groups.length > 0 && setUser(User.groups[0])
   },[]);
   return (
       <>
@@ -151,7 +153,7 @@ export function AsideMenuList({ layoutProps }) {
             </div>
           </li>
           {/* {user && user === 1 && */}
-          {user === 1 && <li
+          {user.is_superuser === true && <li
               className={`menu-item menu-item-submenu ${getMenuItemActive(
                   "/google-material", true
               )}`}
@@ -209,7 +211,7 @@ export function AsideMenuList({ layoutProps }) {
             </div>
           </li>
           }
-          {user === 1 &&<li
+          {user.is_superuser === true &&<li
               className={`menu-item menu-item-submenu ${getMenuItemActive(
                   "/google-material", true
               )}`}
