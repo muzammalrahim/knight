@@ -8,9 +8,11 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import {
 	getCurrentDate
   } from "../../../_metronic/_helpers";
-  import list, {post} from '../helper/api';
-  import { Alert, AlertTitle } from '@material-ui/lab';
-  import {Modal} from 'react-bootstrap'
+import list, {post} from '../helper/api';
+import { Alert, AlertTitle } from '@material-ui/lab';
+import {Modal} from 'react-bootstrap'
+import moment from 'moment'
+import DatePicker from 'react-datepicker'
 
   const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
   const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -77,6 +79,8 @@ class EventRegistrationForm extends React.Component {
 			add_product : this.products,
 			show:false,
 			edit_speaker:this.editspeaker,
+			spk_to_edit:{spk:{}, data:{}},
+			dateFormat:'',
 		}
 		this.handleTabChange = this.handleTabChange.bind(this);
 	}
@@ -93,6 +97,29 @@ class EventRegistrationForm extends React.Component {
 		let {event_product} = this.state;
 		event_product[key][e.target.name] = e.target.value;
 		this.setState({event_product: event_product});
+	}
+	handleSubmitSpeaker(){
+		let {event_speaker, spk_to_edit, event, current_speaker, validateEventSpeaker, speakers} = this.state;
+		let isSubmit = null;
+		Object.keys(validateEventSpeaker).map((key)=>{
+			validateEventSpeaker[key] = event_speaker[key] ? false : true;
+			isSubmit = event_speaker[key] && isSubmit !== false ? true : false;
+		})
+		this.setState({validateEventSpeaker})
+		let speaker = speakers.find(data => data.id == event_speaker.speaker)
+		 isSubmit && list(`api/price`, {specialty:speaker.specialty, program_type:event._type, tier:speaker.tier})
+		 .then((response)=>{
+			if(response===[]) return false
+			if(!event['speaker'].includes(event_speaker.speaker)){
+				event_speaker['price'] = response.data[0].hour_price*parseInt(current_speaker.duration);
+				event['speaker'].push(event_speaker.speaker);
+				spk_to_edit.push(event_speaker)
+			}
+			this.setState({
+				spk_to_edit,
+				event,
+			});
+		})
 	}
 
 	handleAddSpeaker(){
@@ -210,33 +237,51 @@ class EventRegistrationForm extends React.Component {
 		})
 	}
 	handleEditSpeaker(e){
-		let [key, value, {edit_speaker, validateEventSpeaker}] = [e.target.name, e.target.value, this.state];
-		edit_speaker[key]=value;
+		let [key, value, {spk_to_edit, validateEventSpeaker}] = [e.target.name, e.target.value, this.state];
+		spk_to_edit[key]=value;
 		if(validateEventSpeaker[key]){
-            validateEventSpeaker[key] = edit_speaker[key] ? false : true;
+            validateEventSpeaker[key] = spk_to_edit[key] ? false : true;
         }
-		this.setState({edit_speaker, validateEventSpeaker})
+		this.setState({spk_to_edit, validateEventSpeaker})
 	}
-	modalOpen= (id)=>{
-		const {event, speakers, event_speaker } = this.state
-		console.log(event_speaker)
+	modalOpen= (spk, data)=>{
+		// const {event, speakers, event_speaker } = this.state
+		// console.log(event_speaker)
 		const show = true
-		let spk = speakers.find (data=> data.id === event_speaker)
-		this.setState({show,event_speaker})
+		// let spk = speakers.find (data=> data.id === event_speaker)
+		// let data = event_speaker.find(data =>  data.speaker == speaker)
+		this.setState({show,spk_to_edit:{
+			spk, data
+		}})
 	}
 	modalClose= ()=>{
 		let show = false
 		this.setState({show})
 	}
 
+	dateFormat(){ 
+		const { dateFormat } = this.state
+		let selectedLang = (JSON.parse(localStorage.getItem('i18nConfig')).selectedLang)
+		if(selectedLang === 'pt'){
+          dateFormat =  moment(new Date()).format('DD-MM-YYYY')
+		  this.setState({dateFormat: dateFormat})
+		}else{
+           dateFormat = moment(new Date()).format('MM-DD-YYYY')
+		   this.setState({dateFormat: dateFormat})
+
+		}
+	}
+
 	render(){
 		let {event:{web_presential}, event, currentTab, speaker_list, speakers, countries, event_speaker, event_product,
-			validateEvent, alert:{open, severity, message, title}, specialty, current_speaker, validateEventSpeaker, validateEventProducts, add_product} = this.state;
-
+			validateEvent, alert:{open, severity, message, title}, specialty, current_speaker, validateEventSpeaker, validateEventProducts, add_product,
+			spk_to_edit} = this.state;
 		let spk_total_price = 0;
 		event_speaker.map(speaker=>{
 			speakers.find(data=>data.id === speaker)
 			spk_total_price += parseInt(speaker?.price)})
+		
+			
 		return (
 			<div className="row">
 				<Snackbar open={open} autoHideDuration={4000} anchorOrigin={{ vertical:'top', horizontal:'right' }} onClose={()=>{this.handleClose()}}>
@@ -305,9 +350,24 @@ class EventRegistrationForm extends React.Component {
 										</TextField>
 									</div>
 									<div className="col-md-6">
-										<TextField
+										<DatePicker 
 											required
 											name="date"
+											label={<FormattedMessage id="Event.Create.Date"/>}
+											dateFormat='Pp'
+											value={event.date ? event.date : ''}
+											onChange={(e) =>{this.handleChange(e)}}
+											style={styles.textField}
+											InputLabelProps={{
+												shrink: true
+											}}
+											error={validateEvent['date']}
+                                    		helperText={validateEvent['date'] && 'this field is required'}
+										/>
+										{/* <TextField
+											required
+											name="date"
+											defaultValue={this.state.dateFormat}
 											label={<FormattedMessage id="Event.Create.Date"/>}
 											type="date"
 											value={event.date ? event.date : ''}
@@ -318,7 +378,7 @@ class EventRegistrationForm extends React.Component {
 											}}
 											error={validateEvent['date']}
                                     		helperText={validateEvent['date'] && 'this field is required'}
-										/>
+										/> */}
 									</div>
 									<div className="col-md-6">
 										<TextField
@@ -594,7 +654,6 @@ class EventRegistrationForm extends React.Component {
 										})}
 									</div>
                                     <Modal show={this.state.show}>
-										{console.log(event_speaker)}
 										<Modal.Header closeButton>
 										<Modal.Title>Update Event Speaker</Modal.Title>
 										</Modal.Header>
@@ -624,7 +683,7 @@ class EventRegistrationForm extends React.Component {
 														Select Speaker....
 													</option>
 													{speaker_list.map(option => (
-														<option key={option.value} value={option.value}>
+														<option selected={spk_to_edit.spk.id === option.value} key={option.value} value={option.value}>
 															{option.label}
 														</option>
 													))}
@@ -653,7 +712,7 @@ class EventRegistrationForm extends React.Component {
 														Select Role....
 													</option>
 													{role_list.map(option => (
-														<option key={option.value} value={option.value}>
+														<option selected={spk_to_edit.spk.specialty == option.value} key={option.value} value={option.value}>
 															{option.label}
 														</option>
 													))}
@@ -666,7 +725,7 @@ class EventRegistrationForm extends React.Component {
 													label={<FormattedMessage id="Event.Create.Duration"/>}
 													type="number"
 													style={styles.textField}
-													value={event_speaker[0]?.duration}
+													value={spk_to_edit?.data?.duration}
 													onChange={(e)=>{this.handleEditSpeaker(e)}}
 													margin="normal"
 													variant="outlined"
@@ -682,7 +741,7 @@ class EventRegistrationForm extends React.Component {
 													aria-label="Gender"
 													name="displacement"
 													style={styles.group}
-													value={event_speaker[0]?.displacement}
+													value={spk_to_edit?.data?.displacement}
 													onChange={(e)=>{this.handleEditSpeaker(e)}}
 												>
 													<FormControlLabel value="local" control={<Radio />} label={<FormattedMessage id="Event.Create.displacement_Loc"/>} />
@@ -847,10 +906,7 @@ class EventRegistrationForm extends React.Component {
 													// event['speaker'].push(current_speaker.speaker);
 													event.speaker.map((speaker)=>{
 														let spk = speakers.find(data => data.id == speaker)
-														console.log(spk)
-
-												let data = event_speaker.find(data =>  data.speaker == speaker)
-												console.log(data.id)
+														let data = event_speaker.find(data =>  data.speaker == speaker)
 														return spk && <tr>
 															<td>{spk.name}</td>
 															<td>{spk.specialty && specialty.find(specialty => spk.specialty == specialty.id).name}</td>
@@ -860,7 +916,7 @@ class EventRegistrationForm extends React.Component {
 															<td>{data?.duration}</td>
 															<td>{data && data.price}</td>
 															<td style={{textAlign:'center'}}>
-															<Edit style={{cursor:'pointer'}} onClick={()=>this.modalOpen(spk.id)}/>
+															{/* <Edit style={{cursor:'pointer'}} onClick={()=>this.modalOpen(spk, data)}/> */}
 															<Delete style={{cursor:'pointer'}} onClick={()=>{
 																event.speaker = event.speaker.filter(e => e !== speaker)
 																this.setState({event})

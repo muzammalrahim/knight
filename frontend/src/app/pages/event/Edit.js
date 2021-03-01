@@ -300,7 +300,6 @@ class EventRegistrationForm extends React.Component {
 	render(){
 		let {event:{web_presential}, event, currentTab, speaker_list, speakers, countries, event_speaker, event_product,
 			validateEvent, alert:{open, severity, message, title}, specialty, current_speaker, validateEventSpeaker, speaker, edit_speaker, eventproduct } = this.state;
-           console.log("event",event)
 		let spk_total_price = 0;
 		event.speaker.map(speaker=>{
 			speakers.find(data=>data.id === speaker.id)
