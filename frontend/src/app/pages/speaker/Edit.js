@@ -964,6 +964,91 @@ this.addperson = {
 												</option>
 											))}
 										</TextField> 
+										<TextField
+											name="iban_account"
+											label="IBAN / Account"
+											style={styles.textField}
+											value={speaker.national_id ? speaker.iban_account : ''}
+											onChange={(event)=>{this.handleChange(event)}}
+											margin="normal"
+											variant="outlined"
+											error={validateSpeaker['iban_account']}
+											helperText={validateSpeaker['iban_account'] && 'this field is required'}
+										/>
+										<TextField
+											name="pix"
+											label="PIX"
+											style={styles.textField}
+											value={speaker.pix}
+											onChange={(event)=>{this.handleChange(event)}}
+											margin="normal"
+											variant="outlined"
+											error={validateSpeaker['pix']}
+											helperText={validateSpeaker['pix'] && 'this field is required'}
+										/>
+										<TextField
+											name="agency"
+											label="Agency"
+											style={styles.textField}
+											value={speaker.national_id ? speaker.agency : ''}
+											onChange={(event)=>{this.handleChange(event)}}
+											margin="normal"
+											variant="outlined"
+											error={validateSpeaker['agency']}
+											helperText={validateSpeaker['agency'] && 'this field is required'}
+										/>
+										<TextField
+											name="bank_name"
+											// select
+											label="Bank Name"
+											style={styles.textField}
+											value={speaker.national_id ? speaker.bank_name : ''}
+											onChange={(event)=>{this.handleChange(event)}}
+											// SelectProps={{
+											// 	native: true,
+											// 	MenuProps: {
+											// 		style: styles.menu
+											// 	}
+											// }}
+											error={validateSpeaker['bank_name']}
+											helperText={validateSpeaker['bank_name'] && 'this field is required'}
+											margin="normal"
+											variant="outlined"
+											></TextField>
+										{speaker['foreign_flag'] &&<> <TextField
+											name="account_owner"
+											label="Account Owner"
+											style={styles.textField}
+											value={speaker.national_id ? speaker.account_owner : ''}
+											onChange={(event)=>{this.handleChange(event)}}
+											margin="normal"
+											variant="outlined"
+											error={validateSpeaker['account_owner']}
+											helperText={validateSpeaker['account_owner'] && 'this field is required'}
+										/>
+										<TextField
+											name="bank_address"
+											label="Bank Address"
+											style={styles.textField}
+											value={speaker.national_id ? speaker.bank_address : ''}
+											onChange={(event)=>{this.handleChange(event)}}
+											margin="normal"
+											variant="outlined"
+											error={validateSpeaker['bank_address']}
+											helperText={validateSpeaker['bank_address'] && 'this field is required'}
+										/>
+										<TextField
+											name="swift_bic"
+											label="Swift / BIC"
+											style={styles.textField}
+											value={speaker.national_id ? speaker.swift_bic : ''}
+											onChange={(event)=>{this.handleChange(event)}}
+											margin="normal"
+											variant="outlined"
+											error={validateSpeaker['swift_bic']}
+											helperText={validateSpeaker['swift_bic'] && 'this field is required'}
+										/>
+										</>}
 									</div>
 									{juridcal_person && <div className="col-md-6 text-center">
 										<div style={{opacity: !juridcal_person && "0.5"}}>
@@ -1120,114 +1205,7 @@ this.addperson = {
 												/> */}
 											</div>
 									</div>}
-									<div className="col-md-6">
-										<TextField
-											name="account_owner"
-											label="Account Owner"
-											style={styles.textField}
-											value={speaker.national_id ? speaker.account_owner : ''}
-											onChange={(event)=>{this.handleChange(event)}}
-											margin="normal"
-											variant="outlined"
-											error={validateSpeaker['account_owner']}
-											helperText={validateSpeaker['account_owner'] && 'this field is required'}
-										/>
-									</div>	
-									<div className="col-md-6">
-										<TextField
-											name="bank_name"
-											// select
-											label="Bank Name"
-											style={styles.textField}
-											value={speaker.national_id ? speaker.bank_name : ''}
-											onChange={(event)=>{this.handleChange(event)}}
-											// SelectProps={{
-											// 	native: true,
-											// 	MenuProps: {
-											// 		style: styles.menu
-											// 	}
-											// }}
-											error={validateSpeaker['bank_name']}
-											helperText={validateSpeaker['bank_name'] && 'this field is required'}
-											margin="normal"
-											variant="outlined"
-											>
-											{/* <option value={null}>
-												Select Bank Name....
-											</option>
-											{countries.map(option => (
-												<option key={option.value} value={option.value}>
-													{option.label}
-												</option>
-											))} */}
-										</TextField>
-									</div>	
-									<div className="col-md-6">
-										<TextField
-											name="bank_address"
-											label="Bank Address"
-											style={styles.textField}
-											value={speaker.national_id ? speaker.bank_address : ''}
-											onChange={(event)=>{this.handleChange(event)}}
-											margin="normal"
-											variant="outlined"
-											error={validateSpeaker['bank_address']}
-											helperText={validateSpeaker['bank_address'] && 'this field is required'}
-										/>
-									</div>	
-									<div className="col-md-6">
-										<TextField
-											name="swift_bic"
-											label="Swift / BIC"
-											style={styles.textField}
-											value={speaker.national_id ? speaker.swift_bic : ''}
-											onChange={(event)=>{this.handleChange(event)}}
-											margin="normal"
-											variant="outlined"
-											error={validateSpeaker['swift_bic']}
-											helperText={validateSpeaker['swift_bic'] && 'this field is required'}
-										/>
-										
-									</div>	
-									<div className="col-md-6">
-										<TextField
-											name="iban_account"
-											label="IBAN / Account"
-											style={styles.textField}
-											value={speaker.national_id ? speaker.iban_account : ''}
-											onChange={(event)=>{this.handleChange(event)}}
-											margin="normal"
-											variant="outlined"
-											error={validateSpeaker['iban_account']}
-											helperText={validateSpeaker['iban_account'] && 'this field is required'}
-										/>
-									</div>
-									{speaker['foreign_flag'] && <div className="col-md-6">
-										<TextField
-											name="pix"
-											label="PIX"
-											style={styles.textField}
-											value={speaker.pix}
-											onChange={(event)=>{this.handleChange(event)}}
-											margin="normal"
-											variant="outlined"
-											error={validateSpeaker['pix']}
-											helperText={validateSpeaker['pix'] && 'this field is required'}
-										/>
-									</div>}	
-									<div className="col-md-6">
-										<TextField
-											name="agency"
-											label="Agency"
-											style={styles.textField}
-											value={speaker.national_id ? speaker.agency : ''}
-											onChange={(event)=>{this.handleChange(event)}}
-											margin="normal"
-											variant="outlined"
-											error={validateSpeaker['agency']}
-											helperText={validateSpeaker['agency'] && 'this field is required'}
-										/>
-									</div>	
+																			
 									<div className="col-md-12 text-right pt-4">
 										<Button variant="contained" color="default" style={styles.button} style={{float:'left'}} onClick={(e)=>{this.handleTabChange(e,0)}}>
 											<ChevronLeft style={styles.rightIcon} />
