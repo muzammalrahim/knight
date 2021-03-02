@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import {ChevronLeft, CheckBox as CheckBoxIcon, CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, Delete, Edit} from '@material-ui/icons';
 import { FormattedMessage } from "react-intl";
 import {
-	getCurrentDate
+	getCurrentDate, getDate
   } from "../../../_metronic/_helpers";
   import list, {put, del, post} from '../helper/api';
   import { Alert, AlertTitle } from '@material-ui/lab';
@@ -997,7 +997,7 @@ class EventRegistrationForm extends React.Component {
 												<div className="row mb-4">
 													<div className="col-md-6 col-12">
 														<div className="kt_detail__item_title">Date</div>
-														<div>{event.date ? event.date : '---'}</div>
+														<div>{event.date ? getDate(event.date) : '---'}</div>
 													</div>
 													<div className="col-md-6 col-12">
 														<div className="kt_detail__item_title">Duration</div>

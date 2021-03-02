@@ -10,6 +10,7 @@ import { Alert, AlertTitle } from '@material-ui/lab';
 import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
 import jsPDF from 'jspdf'
 import 'jspdf-autotable'
+import {getDate} from '../../../_metronic/_helpers'
 
 function createData(id, event_name, date, event_duration, speaker_duration, business_unit, price, email, status) {
   return { id, event_name, date, event_duration, speaker_duration, business_unit, price, email, status };
@@ -272,7 +273,7 @@ export default function EnhancedTable(props) {
                       <TableCell>
                         {row.event_name}
                       </TableCell>
-                      <TableCell>{row.date}</TableCell>
+                      <TableCell>{getDate(row.date)}</TableCell>
                       <TableCell>{row.event_duration}</TableCell>
                       <TableCell>{row.speaker_duration}</TableCell>
                       <TableCell>{row.business_unit}</TableCell>

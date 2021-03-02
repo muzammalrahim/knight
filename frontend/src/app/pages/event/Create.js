@@ -259,19 +259,6 @@ class EventRegistrationForm extends React.Component {
 		this.setState({show})
 	}
 
-	dateFormat(){ 
-		const { dateFormat } = this.state
-		let selectedLang = (JSON.parse(localStorage.getItem('i18nConfig')).selectedLang)
-		if(selectedLang === 'pt'){
-          dateFormat =  moment(new Date()).format('DD-MM-YYYY')
-		  this.setState({dateFormat: dateFormat})
-		}else{
-           dateFormat = moment(new Date()).format('MM-DD-YYYY')
-		   this.setState({dateFormat: dateFormat})
-
-		}
-	}
-
 	render(){
 		let {event:{web_presential}, event, currentTab, speaker_list, speakers, countries, event_speaker, event_product,
 			validateEvent, alert:{open, severity, message, title}, specialty, current_speaker, validateEventSpeaker, validateEventProducts, add_product,

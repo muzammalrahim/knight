@@ -4,8 +4,10 @@ import PropTypes from 'prop-types';
 import {withRouter} from "react-router-dom";
 import {ChevronLeft} from '@material-ui/icons';
 import { FormattedMessage } from "react-intl";
-  import list, {put} from '../helper/api';
-  import { Alert, AlertTitle } from '@material-ui/lab';
+import list, {put} from '../helper/api';
+import { Alert, AlertTitle } from '@material-ui/lab';
+import {getDate} from '../../../_metronic/_helpers'
+
 
 class EventEditForm extends React.Component {
 	constructor(props){
@@ -108,7 +110,7 @@ class EventEditForm extends React.Component {
                                         </div>
                                         <div className="col-md-6 col-12">
                                             <div className="kt_detail__item_title">Date</div>
-                                            <div>{event.event ? event.event.date : '---'}</div>
+                                            <div>{event.event ? getDate(event.event.date) : '---'}</div>
                                         </div>
                                     </div>
                                     <div className="row mb-4">
@@ -135,7 +137,7 @@ class EventEditForm extends React.Component {
                                         </div>
                                         <div className="col-md-6 col-12">
                                             <div className="kt_detail__item_title">Date of Birth</div>
-                                            <div>{event.speaker ? event.speaker.dob : '---'}</div>
+                                            <div>{event.speaker ? getDate(event.speaker.dob) : '---'}</div>
                                         </div>
                                     </div>
                                     <div className="row mb-4">

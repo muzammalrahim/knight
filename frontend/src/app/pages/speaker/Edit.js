@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import {ChevronLeft,Delete} from '@material-ui/icons';
 import { FormattedMessage } from "react-intl";
 import {
-	getCurrentDate
+	getCurrentDate, getDate
   } from "../../../_metronic/_helpers";
 import list, {put, del, post} from '../helper/api';
 import { Alert, AlertTitle } from '@material-ui/lab';
@@ -827,7 +827,7 @@ this.addperson = {
 									          return <tr>
 														<td>{addperson.name}</td>
 														<td>{addperson.relationship}</td>
-														<td>{addperson.birthday}</td>
+														<td>{getDate(addperson.birthday)}</td>
 														<td style={{textAlign:'center'}}>
 														<Delete style={{cursor:'pointer'}} onClick={()=>{
 															this.handleDeleteSpeakerPerson(addperson.id)
