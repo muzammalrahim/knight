@@ -337,7 +337,7 @@ class EventRegistrationForm extends React.Component {
 										</TextField>
 									</div>
 									<div className="col-md-6">
-										<DatePicker 
+										{/* <DatePicker 
 											required
 											name="date"
 											label={<FormattedMessage id="Event.Create.Date"/>}
@@ -350,8 +350,8 @@ class EventRegistrationForm extends React.Component {
 											}}
 											error={validateEvent['date']}
                                     		helperText={validateEvent['date'] && 'this field is required'}
-										/>
-										{/* <TextField
+										/> */}
+										<TextField
 											required
 											name="date"
 											defaultValue={this.state.dateFormat}
@@ -365,7 +365,7 @@ class EventRegistrationForm extends React.Component {
 											}}
 											error={validateEvent['date']}
                                     		helperText={validateEvent['date'] && 'this field is required'}
-										/> */}
+										/>
 									</div>
 									<div className="col-md-6">
 										<TextField
@@ -415,7 +415,7 @@ class EventRegistrationForm extends React.Component {
 									</div>
 									<div className="col-md-6"/>
 									{web_presential === "Presential" && <>
-										{/* <div className="col-md-6">
+										<div className="col-md-6">
 											<TextField
 												required
 												select
@@ -445,7 +445,7 @@ class EventRegistrationForm extends React.Component {
 													</option>
 												))}
 											</TextField>
-										</div> */}
+										</div>
 										<div className="col-md-6">
 											<TextField
 												required
@@ -460,7 +460,7 @@ class EventRegistrationForm extends React.Component {
 												helperText={validateEvent['state'] && 'this field is required'}
 											/>
 										</div>
-										{/* <div className="col-md-6">
+										<div className="col-md-6">
 											<TextField
 												required
 												name="city"
@@ -487,7 +487,7 @@ class EventRegistrationForm extends React.Component {
 											error={validateEvent['address']}
 											helperText={validateEvent['address'] && 'this field is required'}
 										/>
-									</div> */}
+									</div>
 									</>}
 									<div className="col-md-12 text-right pt-4">
 										<Button variant="contained" color="primary" style={styles.button} onClick={(e)=>{this.handleTabChange(e,1)}}>
@@ -591,9 +591,9 @@ class EventRegistrationForm extends React.Component {
 											margin="normal"
 											variant="outlined"
 										>
-											<option value={null}>
-												Options: Virtual ; Presecial
-											</option>
+											{/* <option value={null}>
+												Options: Virtual | Presecial
+											</option> */}
 											{virtual_presential.map(option => (
 												<option key={option.value} value={option.value}>
 													{option.label}
@@ -1117,21 +1117,21 @@ const b_unit = [
 ];
 const virtual_presential = [
 	{
-		value: "Test 1",
-		label: "Test 1"
+		value: "Virtual",
+		label: "Virtual"
 	},
 	{
-		value: "Test 2",
-		label: "Test 2"
+		value: "Presecial",
+		label: "Presecial"
 	},
-	{
-		value: "Test 3",
-		label: "Test 3"
-	},
-	{
-		value: "Test 4",
-		label: "Test 4"
-	}
+	// {
+	// 	value: "Test 3",
+	// 	label: "Test 3"
+	// },
+	// {
+	// 	value: "Test 4",
+	// 	label: "Test 4"
+	// }
 ];
 const type = [
 	{
