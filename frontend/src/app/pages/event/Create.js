@@ -11,8 +11,7 @@ import {
 import list, {post} from '../helper/api';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import {Modal} from 'react-bootstrap'
-import moment from 'moment'
-import DatePicker from 'react-datepicker'
+// import DatePicker from 'react-datepicker'
 
   const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
   const checkedIcon = <CheckBoxIcon fontSize="small" />;

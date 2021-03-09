@@ -9,11 +9,15 @@ class UserSerializer(serializers.ModelSerializer):
     business_unit = serializers.CharField(source='user.business_unit')
 
     def create(self, validated_data):
-        validated_data['password'] = make_password(validated_data.get('password'))
+        # validated_data['password'] = make_password(validated_data.get('password'))
         custom_user = validated_data.pop('user')
         # permissions = validated_data.pop('user_permissions')
 
         user = User.objects.create(**validated_data)
+        print("user user user",user)
+        user.set_password(validated_data.get('password'))
+        user.save()
+        print("user user", user.password)
         CustomUser.objects.create(business_unit=custom_user['business_unit'], user=user)
 
         # import uuid

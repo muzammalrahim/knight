@@ -31,13 +31,22 @@ export function newPassword(newpassword) {
 
 }
 
-export function getUserByToken() {
+
+export function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export async function getUserByToken() {
+  await sleep(2000);
+
   // Authorization head should be fulfilled in interceptor.
-  let Authorization = JSON.parse(localStorage.getItem('persist:v705-demo1-auth')).authToken;
-  return axios.get(process.env.REACT_APP_API_URL + ME_URL, {
-        headers: {
-           Authorization: `Token ${Authorization.replaceAll('"','')}`,
-           'Content-Type': 'application/json'
-        }
-  });
+    let Authorization = JSON.parse(localStorage.getItem('persist:v705-demo1-auth')).token;
+    return axios.get(process.env.REACT_APP_API_URL + ME_URL).then(response => {
+      
+      window.location.assign('/dashboard');
+      return response;
+    });
+
+
+
 }

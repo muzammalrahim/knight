@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API_URL = process.env.REACT_APP_API_URL;
-const Authorization = JSON.parse(localStorage.getItem('persist:v705-demo1-auth')) && JSON.parse(localStorage.getItem('persist:v705-demo1-auth')).authToken;
+const Authorization = JSON.parse(localStorage.getItem('persist:v705-demo1-auth')) && JSON.parse(localStorage.getItem('persist:v705-demo1-auth')).token;
 export const headers = {
   'Content-Type': 'application/json',
   Authorization: `Token ${Authorization && Authorization.replaceAll('"','')}`,
