@@ -70,7 +70,7 @@ class EventEditForm extends React.Component {
     }
     
 	render(){
-		let {event, alert:{open, severity, message, title}, specialty} = this.state;
+		let {event, alert:{open, severity, message, title} } = this.state;
 		return (
 			<div className="row">
 				<Snackbar open={open} autoHideDuration={4000} anchorOrigin={{ vertical:'top', horizontal:'right' }} onClose={()=>{this.handleClose()}}>
