@@ -1,11 +1,12 @@
 /* eslint-disable no-script-url,jsx-a11y/anchor-is-valid,no-undef */
-import React from "react";
+import React, {useState, useEffect} from "react";
 import SVG from "react-inlinesvg";
 import { useHistory } from "react-router-dom";
 import {toAbsoluteUrl} from "../../../../_helpers";
 
 export function QuickUser() {
   const history = useHistory();
+  const [user, setUser] = useState({});
 
   const logoutClick = () => {
       const toggle = document.getElementById("kt_quick_user_toggle");
@@ -14,7 +15,15 @@ export function QuickUser() {
       }
       history.push("/logout");
   };
-let user = JSON.parse(JSON.parse(localStorage.getItem('persist:v705-demo1-auth')).user)
+
+  useEffect(() => {
+    let ls = JSON.parse(localStorage.getItem('persist:v705-demo1-auth'));
+    if(ls.user) {
+      ls = JSON.parse(localStorage.getItem('persist:v705-demo1-auth')).user;
+      setUser(JSON.parse(ls));
+    }
+  }, [])
+
   return (
       <div id="kt_quick_user" className="offcanvas offcanvas-right offcanvas p-10">
         <div className="offcanvas-header d-flex align-items-center justify-content-between pb-5">

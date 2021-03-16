@@ -51,8 +51,13 @@ export function MixedWidget1({ className }) {
     };
   }, [layoutProps]);
   useEffect(() => {
-    let user = localStorage.getItem('persist:v705-demo1-auth') && JSON.parse(localStorage.getItem('persist:v705-demo1-auth')).user;
-    setUser(() => JSON.parse(user));
+    let ls = JSON.parse(localStorage.getItem('persist:v705-demo1-auth'));
+    if(ls.user) {
+      ls = JSON.parse(localStorage.getItem('persist:v705-demo1-auth')).user;
+      setUser(JSON.parse(ls));
+    }
+    // let user = localStorage.getItem('persist:v705-demo1-auth') && JSON.parse(localStorage.getItem('persist:v705-demo1-auth')).user;
+    // setUser(() => JSON.parse(user));
     // console.log('user', user);
     // User = JSON.parse(User)
     // User && User.groups.length > 0 && setUser(User.groups[0])
