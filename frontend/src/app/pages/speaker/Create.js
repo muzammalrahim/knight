@@ -891,7 +891,7 @@ this.setState({current_addperson});
 												<FormControl
 													name="uf_crm"
 													aria-describedby="basic-addon1"
-													value={speaker.national_id ? speaker.uf_crm : ''}
+													value={speaker.uf_crm ? speaker.uf_crm : ''}
 													onChange={(event)=>{this.handleChange(event)}}
 												/>
 											</InputGroup>
@@ -953,7 +953,7 @@ this.setState({current_addperson});
 											name="iban_account"
 											label={<FormattedMessage id="Speaker.Registration.Form.IBAN"/>}
 											style={styles.textField}
-											value={speaker.national_id ? speaker.iban_account : ''}
+											value={speaker.iban_account ? speaker.iban_account : ''}
 											onChange={(event)=>{this.handleChange(event)}}
 											margin="normal"
 											variant="outlined"
@@ -975,7 +975,7 @@ this.setState({current_addperson});
 											name="agency"
 											label={<FormattedMessage id="Speaker.Registration.Form.Agency"/>}
 											style={styles.textField}
-											value={speaker.national_id ? speaker.agency : ''}
+											value={speaker.agency ? speaker.agency : ''}
 											onChange={(event)=>{this.handleChange(event)}}
 											margin="normal"
 											variant="outlined"
@@ -986,7 +986,7 @@ this.setState({current_addperson});
 											name="bank_name"
 											label={<FormattedMessage id="Speaker.Registration.Form.Bank_Name"/>}
 											style={styles.textField}
-											value={speaker.national_id ? speaker.bank_name : ''}
+											value={speaker.bank_name ? speaker.bank_name : ''}
 											onChange={(event)=>{this.handleChange(event)}}
 											
 											error={validateSpeaker['bank_name']}

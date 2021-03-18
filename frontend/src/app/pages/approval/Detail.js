@@ -44,7 +44,7 @@ class EventEditForm extends React.Component {
           alert.title = "Success";
           alert.message = "Record has been successfully Updated";
           alert.open = true;
-          this.setState({alert, event});
+          this.setState({alert, event:response.data});
       }).catch((error)=>{
           alert.severity = 'error';
           alert.title = "Error";

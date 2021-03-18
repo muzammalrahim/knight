@@ -310,6 +310,7 @@ class EventRegistrationForm extends React.Component {
 			speakers.find(data=>data.id === speaker.id)
 			total_speaker += (speaker.id !== speaker.id)
 		})
+		console.log(event)
 		return (
 			<div className="row">
 				<Snackbar open={open} autoHideDuration={4000} anchorOrigin={{ vertical:'top', horizontal:'right' }} onClose={()=>{this.handleClose()}}>
@@ -1066,7 +1067,17 @@ class EventRegistrationForm extends React.Component {
 													</div>
 													<div className="col-md-6 col-12">
 														<div className="kt_detail__item_title">Displacement</div>
-														<div>{current_speaker.displacement ? current_speaker.displacement : '---'}</div>
+														{event.speaker.map(item=><div key>{item?.event_speaker?.displacement ? item.event_speaker.displacement : '---'}</div>)}
+													</div>
+												</div>
+												<div className="row mb-4">
+													<div className="col-md-6 col-12">
+														<div className="kt_detail__item_title">Product</div>
+														{event.eventproduct.map(item=><div key>{item.product? item.product : '---'}</div>)}
+													</div>
+													<div className="col-md-6 col-12">
+														<div className="kt_detail__item_title">Percent %</div>
+														{event.eventproduct.map(item=><div key>{item.percent? item.percent : '---'}</div>)}
 													</div>
 												</div>
 												<div className="row mb-4">
