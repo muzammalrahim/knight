@@ -17,12 +17,12 @@ class EventRegistrationForm extends React.Component {
 	constructor(props){
 		super(props);
 		this.event={
-			id:this.props.match.params.id,	name:"", _type:"", date:"", duration:"", web_presential:"", country:"",	state:"",
+			id:this.props.match.params.id,	name:"", _type:"", date:"", duration:"", web_presential:"", web:"", country:"",	state:"",
 			city:"", address:"", solicitant:"", business_unit:"", despartment:"", cost_center:"", products:[],
 			speaker:[], virtual_presential:"", editspeaker:[]
 		}
 		this.validateEvent={
-			name:false, _type:false, date:false, duration:false, web_presential:false, country:false,	state:false,
+			name:false, _type:false, date:false, duration:false, web_presential:false, web:false, country:false,	state:false,
 			city:false, address:false, solicitant:false, business_unit:false, despartment:false, cost_center:false, virtual_presential:false,
 
 		}
@@ -290,7 +290,6 @@ class EventRegistrationForm extends React.Component {
 	}
 	countId = (speaker)=>{
 		let uniqueId = new Set();
-		console.log(speaker)
 		for(let ord of speaker){
 			uniqueId.add(ord.id);
 		}
@@ -310,6 +309,7 @@ class EventRegistrationForm extends React.Component {
 			speakers.find(data=>data.id === speaker.id)
 			total_speaker += (speaker.id !== speaker.id)
 		})
+		console.log(event)
 		return (
 			<div className="row">
 				<Snackbar open={open} autoHideDuration={4000} anchorOrigin={{ vertical:'top', horizontal:'right' }} onClose={()=>{this.handleClose()}}>
@@ -439,7 +439,19 @@ class EventRegistrationForm extends React.Component {
 											))}
 										</TextField>
 									</div>
-									{/* <div className="col-md-6"/> */}
+									<div className="col-md-6">
+									<TextField 
+									  name = "web"
+									  label = "web"
+									  style={styles.textField}
+									  value = {event.web}
+									  onChange= {e=>this.handleChange(e)}
+									  margin="normal"
+									  variant="outlined"
+									  error={validateEvent['web']}
+									  helperText={validateEvent['web'] && 'this field is required'}
+									/>
+									</div>
 									{/* {web_presential === "Presential" && <> */}
 										<div className="col-md-6">
 											<TextField

@@ -88,6 +88,7 @@ class Event(models.Model):
     date = models.DateField()
     duration = models.PositiveIntegerField(blank=True)
     web_presential = models.CharField(max_length=191)
+    web = models.CharField(max_length=191, blank=True, null=True)
     country = models.CharField(max_length=191, blank=True, null=True)
     state = models.CharField(max_length=191, blank=True, null=True)
     city = models.CharField(max_length=191, blank=True, null=True)
