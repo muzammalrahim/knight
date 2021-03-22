@@ -310,7 +310,6 @@ class EventRegistrationForm extends React.Component {
 			speakers.find(data=>data.id === speaker.id)
 			total_speaker += (speaker.id !== speaker.id)
 		})
-		console.log(event)
 		return (
 			<div className="row">
 				<Snackbar open={open} autoHideDuration={4000} anchorOrigin={{ vertical:'top', horizontal:'right' }} onClose={()=>{this.handleClose()}}>
@@ -440,11 +439,11 @@ class EventRegistrationForm extends React.Component {
 											))}
 										</TextField>
 									</div>
-									<div className="col-md-6"/>
-									{web_presential === "Presential" && <>
+									{/* <div className="col-md-6"/> */}
+									{/* {web_presential === "Presential" && <> */}
 										<div className="col-md-6">
 											<TextField
-												required
+												required = {web_presential === "Presential" ? true : false }
 												select
 												name="country"
 												label={<FormattedMessage id="Event.List.Column.Country"/>}
@@ -475,7 +474,7 @@ class EventRegistrationForm extends React.Component {
 										</div>
 										<div className="col-md-6">
 											<TextField
-												required
+												required = {web_presential === "Presential" ? true : false }
 												select
 												name="state"
 												label={<FormattedMessage id="Speaker.Registration.Form.state_OR_province"/>}
@@ -505,7 +504,7 @@ class EventRegistrationForm extends React.Component {
 										</div>
 										<div className="col-md-6">
 											<TextField
-												required
+												required = {web_presential === "Presential" ? true : false }
 												name="city"
 												label={<FormattedMessage id="Speaker.Registration.Form.City"/>}
 												value={event.city}
@@ -519,7 +518,7 @@ class EventRegistrationForm extends React.Component {
 										</div>
 										<div className="col-md-6">
 										<TextField
-											required
+											required = {web_presential === "Presential" ? true : false }
 											name="address"
 											label={<FormattedMessage id="Speaker.Registration.Form.Address"/>}
 											value={event.address}
@@ -531,7 +530,7 @@ class EventRegistrationForm extends React.Component {
 											helperText={validateEvent['address'] && 'this field is required'}
 										/>
 									</div>
-									</>}
+									{/* </>} */}
 									<div className="col-md-12 text-right pt-4">
 										<Button variant="contained" color="primary" style={styles.button} onClick={(e)=>{this.handleTabChange(e,1)}}>
 											Next

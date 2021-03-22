@@ -257,6 +257,11 @@ class EventRegistrationForm extends React.Component {
 		let show = false
 		this.setState({show})
 	}
+	handleRemoveField = (index)=>{
+		console.log('index', index);
+		const event_product =  this.state.event_product.filter((p, i) => i !== index)
+		this.setState({event_product})
+	}
 
 	render(){
 		let {event:{web_presential}, event, currentTab, speaker_list, speakers, countries, event_speaker, event_product,
@@ -266,6 +271,8 @@ class EventRegistrationForm extends React.Component {
 		event_speaker.map(speaker=>{
 			speakers.find(data=>data.id === speaker)
 			spk_total_price += parseInt(speaker?.price)})
+		
+		console.log(event_product)
 		return (
 			<div className="row">
 				<Snackbar open={open} autoHideDuration={4000} anchorOrigin={{ vertical:'top', horizontal:'right' }} onClose={()=>{this.handleClose()}}>
@@ -410,11 +417,11 @@ class EventRegistrationForm extends React.Component {
 											))}
 										</TextField>
 									</div>
-									<div className="col-md-6"/>
-									{web_presential === "Presential" && <>
+									{/* <div className="col-md-6"/> */}
+									{/* {web_presential === "Presential" && <> */}
 										<div className="col-md-6">
 											<TextField
-												required
+												required={web_presential === "Presential"? true : false}
 												select
 												name="country"
 												label={<FormattedMessage id="Event.List.Column.Country"/>}
@@ -445,7 +452,7 @@ class EventRegistrationForm extends React.Component {
 										</div>
 										<div className="col-md-6">
 											<TextField
-												required
+												required={web_presential === "Presential"? true : false}
 												name="state"
 												label={<FormattedMessage id="Speaker.Registration.Form.state_OR_province"/>}
 												value={event.state}
@@ -459,7 +466,7 @@ class EventRegistrationForm extends React.Component {
 										</div>
 										<div className="col-md-6">
 											<TextField
-												required
+												required={web_presential === "Presential"? true : false}
 												name="city"
 												label={<FormattedMessage id="Speaker.Registration.Form.City"/>}
 												value={event.city}
@@ -473,7 +480,7 @@ class EventRegistrationForm extends React.Component {
 										</div>
 										<div className="col-md-6">
 										<TextField
-											required
+											required={web_presential === "Presential"? true : false}
 											name="address"
 											label={<FormattedMessage id="Speaker.Registration.Form.Address"/>}
 											value={event.address}
@@ -493,7 +500,7 @@ class EventRegistrationForm extends React.Component {
 											<Icon style={styles.rightIcon}>send</Icon>
 										</Button>
 									</div>
-								</>}
+								{/* </>} */}
 								{currentTab === 1 && <>
 									<div className="col-md-6 text-center">
 										<TextField
@@ -630,7 +637,7 @@ class EventRegistrationForm extends React.Component {
 													variant="outlined"
 													// error={validateEventProducts['percent']}
 													// helperText={validateEventProducts['percent'] && 'this field is required'}
-												/> {event_product.length -1 == i && <Icon className="percent-icon" style={styles.rightIcon, styles.cursorchange } onClick={this.handleAddFields}>add</Icon>}
+												/> {event_product.length -1 == i ? <Icon className="percent-icon" style={styles.rightIcon, styles.cursorchange } onClick={this.handleAddFields}>add</Icon> : <Icon className="percent-icon" style={styles.rightIcon, styles.cursorchange } onClick={()=>this.handleRemoveField(i)}>-</Icon>}
 												</div>
 											
 											</div>
