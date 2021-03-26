@@ -1234,6 +1234,10 @@ export default injectIntl(SpeakerEditForm)
 
 const tier = [
 	{
+        value: "Exceptional",
+		label: "Exceptional"
+	},
+	{
 		value: "1",
 		label: "Tier 1"
 	},

@@ -190,6 +190,7 @@
   "Speaker.Registration.Form.Bank_Name" : "Nome do banco",
   "Speaker.Registration.Form.AccountOwner" : "Dono da conta",
 
+  "Speaker.Registration.Tier.Exceptional":"Excepcional",
   "Speaker.Registration.Tier.One":"Tier 1",
   "Speaker.Registration.Tier.Two":"Tier 2",
   "Speaker.Registration.Tier.Three":"Tier 3",

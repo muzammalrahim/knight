@@ -1244,7 +1244,11 @@ export default injectIntl(SpeakerEditForm)
 
 
 const tier = defineMessages({
-    one: {
+	excepcional: {
+        id: 'Speaker.Registration.Tier.Exceptional',
+        defaultMessage: 'Exceptional',
+    },
+	one: {
         id: 'Speaker.Registration.Tier.One',
         defaultMessage: '1',
     },
@@ -1256,7 +1260,6 @@ const tier = defineMessages({
         id: 'Speaker.Registration.Tier.Three',
         defaultMessage: '3',
     },
-  
 });
 
 
