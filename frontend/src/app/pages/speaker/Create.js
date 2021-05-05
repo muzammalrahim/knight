@@ -205,16 +205,16 @@ this.setState({current_addperson});
 			else if(speaker['foreign_flag'] === false && (key === "account_owner" || key === "swift_bic" || key === "bank_address" ||  key ==="bank_name" ))
 			{
 				validateSpeaker[key] = false;
-				speaker[key] = "";
+				// speaker[key] = "";
 			}
 
 			//Skip Optional Fields form Validation
-			else if(key === "lattes" || key === "linkedin" || key === "ddd" || key === "fax" || key === "orcid" || key === "juridcal_person"){
+			else if(key === "lattes" || key === "linkedin" || key === "ddd" || key === "fax" || key === "orcid" || key === "juridcal_person" || key === "national_id" || key === "cpf"){
 				validateSpeaker[key] = false;
 			}
 			else if(key === "pix" && speaker['foreign_flag'] === false){
 				validateSpeaker['pix'] = false;
-				speaker['pix'] = "";
+				// speaker['pix'] = "";
 
 			}
 			else if(key==="foreign_flag" || key==="registration_in_city" || key==="social_security"   ||key==="accept_information_rule"){
@@ -1161,7 +1161,7 @@ this.setState({current_addperson});
 											name="account_owner"
 											label={<FormattedMessage id="Speaker.Registration.Form.AccountOwner"/>}
 											style={styles.textField}
-											value={speaker.national_id ? speaker.account_owner : ''}
+											value={speaker.foreign_flag ? speaker.account_owner : ''}
 											onChange={(event)=>{this.handleChange(event)}}
 											margin="normal"
 											variant="outlined"
@@ -1191,7 +1191,7 @@ this.setState({current_addperson});
 											name="bank_address"
 											label={<FormattedMessage id="Speaker.Registration.Form.BankAddress"/>}
 											style={styles.textField}
-											value={speaker.national_id ? speaker.bank_address : ''}
+											value={speaker.foreign_flag ? speaker.bank_address : ''}
 											onChange={(event)=>{this.handleChange(event)}}
 											margin="normal"
 											variant="outlined"
@@ -1205,7 +1205,7 @@ this.setState({current_addperson});
 											name="swift_bic"
 											label={<FormattedMessage id="Speaker.Registration.Form.Swift"/>}
 											style={styles.textField}
-											value={speaker.national_id ? speaker.swift_bic : ''}
+											value={speaker.foreign_flag ? speaker.swift_bic : ''}
 											onChange={(event)=>{this.handleChange(event)}}
 											margin="normal"
 											variant="outlined"
