@@ -15,9 +15,13 @@ services:
   api:
     build: .
     command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    restart: always
     volumes:
       - .:/code
     ports:
       - "8000:8000"
+    environment:
+      - DEBUG=True
+      - MYSQL_HOST=db
     depends_on:
       - db

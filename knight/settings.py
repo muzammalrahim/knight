@@ -11,6 +11,14 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+import environ
+
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
+
+environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -106,8 +114,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'knight',
         'USER': 'root',
-        'PASSWORD': 'Khan1234',
-        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+        'PASSWORD': 'knight12',
+        'HOST': env("MYSQL_HOST", default='localhost'),   # Or an IP Address that your DB is hosted on
         'PORT': '3306',
         'default-character-set': 'utf8',
     }
@@ -158,10 +166,11 @@ AUTHENTICATION_BACKENDS = (
     'account.backend.EmailBackend'
 )
 
-CORS_ORIGIN_WHITELIST = (
-    'http://localhost:3001',
-    'http://localhost:3000',
-)
+CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_WHITELIST = (
+#     'http://localhost:3001',
+#     'http://localhost:3000',
+# )
 
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
