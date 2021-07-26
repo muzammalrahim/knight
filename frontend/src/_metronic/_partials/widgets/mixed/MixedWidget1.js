@@ -101,7 +101,7 @@ export function MixedWidget1({ className }) {
 
 
       <MuiThemeProvider theme={theme}>
-      <Typography   variant="h1" component="h2" align="center">
+      <Typography style={{fontWeight:"bold"}}  variant="h1" component="h2" align="center">
         Fair Market Value
 </Typography>
       
