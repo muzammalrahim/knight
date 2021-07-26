@@ -284,7 +284,7 @@ this.setState({current_addperson});
 							<FormattedMessage id="Speaker.Registration.Title"/>
 						</h3>
 						<AppBar position="static">
-							<Tabs value={currentTab} onChange={this.handleTabChange}>
+							<Tabs  style={{background:"#00008B" ,color:"white"}} value={currentTab} onChange={this.handleTabChange}>
 								<Tab label="Step One"/>
 								<Tab label="Step Two"/>
 							</Tabs>
