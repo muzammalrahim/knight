@@ -24,14 +24,16 @@ export function HeaderMenuWrapper() {
         };
     }, [uiService]);
     const getHeaderLogo = () => {
-        let result = "logo-light.png";
+        let result = "Knight_Logo.png";
         if (layoutProps.headerSelfTheme && layoutProps.headerSelfTheme !== "dark") {
-            result = "logo-dark.png";
+            // result = "logo-dark.png";
+            result = "Knight_Logo.png";
         }
         return toAbsoluteUrl(`/media/logos/${result}`);
     };
 
     return <>
+     
         {/*begin::Header Menu Wrapper*/}
         <div className="header-menu-wrapper header-menu-wrapper-left" id="kt_header_menu_wrapper">
             {layoutProps.disabledAsideSelfDisplay && (

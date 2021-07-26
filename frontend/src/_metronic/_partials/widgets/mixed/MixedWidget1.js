@@ -8,6 +8,8 @@ import {toAbsoluteUrl} from "../../../_helpers";
 import {useHtmlClassService} from "../../../layout";
 import { useHistory } from "react-router";
 import { FormattedMessage } from "react-intl";
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
 
 export function MixedWidget1({ className }) {
   const uiService = useHtmlClassService();
@@ -68,32 +70,41 @@ export function MixedWidget1({ className }) {
   return (
     <div className={`card card-custom bg-gray-100 ${className}`}>
       {/* Header */}
-      <div className="card-header border-0 bg-danger py-5">
+      <div className="card-header border-0 bg-warning py-5">
         <h3 className="card-title font-weight-bolder text-white">
-          <FormattedMessage id="Dashboard.Welcome" />
+          {/* <FormattedMessage id="Dashboard.Welcome" /> */}
         </h3>
       </div>
       {/* Body */}
       <div className="card-body p-0 position-relative overflow-hidden">
         {/* Chart */}
         <div
-          id="kt_mixed_widget_1_chart"
-          className="card-rounded-bottom bg-danger"
+          // id="kt_mixed_widget_1_chart"
+          className="card-rounded-bottom bg-warning"
           style={{ height: "200px" }}
-        ></div>
+        >
+    
+          {/* <Box fontSize="h1.fontSize" m={1} align="center">
+          Fair Market Valuee
+        </Box> */}
+
+        <Typography variant="h1" component="h2" align="center">
+        Fair Market Value
+</Typography>
+        </div>
 
         {/* Stat */}
         <div className="card-spacer mt-n25">
           <div className="row m-0">
-            <div className="col bg-light-warning px-6 py-8 rounded-xl mr-7 mb-7" style={{cursor:'pointer'}} onClick={()=>{handleClick('speaker/create')}}>
-              <span className="svg-icon svg-icon-3x svg-icon-warning d-block my-2">
+            <div className="col bg-primary px-6 py-8 rounded-xl mr-7 mb-7" style={{cursor:'pointer'}} onClick={()=>{handleClick('speaker/create')}}>
+              <span className="svg-icon svg-icon-3x svg-icon-success d-block my-2">
                 <SVG
                   src={toAbsoluteUrl("/media/svg/icons/Communication/Group.svg")}
                 ></SVG>
               </span>
               <a
                 href="#"
-                className="text-warning font-weight-bold font-size-h6"
+                className="text-success font-weight-bold font-size-h6"
               >
                 <FormattedMessage id="Dashboard.New.Speaker" />
               </a>
@@ -115,20 +126,20 @@ export function MixedWidget1({ className }) {
             </div>
           </div>
           {user.is_superuser === true && <div className="row m-0">
-            <div className="col bg-light-danger px-6 py-8 rounded-xl mr-7" style={{cursor:'pointer'}} onClick={()=>{handleClick('user/create')}}>
-              <span className="svg-icon svg-icon-3x svg-icon-danger d-block my-2">
+            <div className="col bg-warning px-6 py-8 rounded-xl mr-7" style={{cursor:'pointer'}} onClick={()=>{handleClick('user/create')}}>
+              <span className="svg-icon svg-icon-3x svg-icon-primary d-block my-2">
                 <SVG
                   src={toAbsoluteUrl("/media/svg/icons/Communication/Add-user.svg")}
                 ></SVG>
               </span>
               <a
                 href="#"
-                className="text-danger font-weight-bold font-size-h6 mt-2"
+                className="text-primary font-weight-bold font-size-h6 mt-2"
               >
                 <FormattedMessage id="Dashboard.New.User" />
               </a>
             </div>
-            <div className="col bg-light-success px-6 py-8 rounded-xl" style={{cursor:'pointer'}} onClick={()=>{handleClick('approvals')}}>
+            <div className="col bg-light-warning px-6 py-8 rounded-xl" style={{cursor:'pointer'}} onClick={()=>{handleClick('approvals')}}>
               <span className="svg-icon svg-icon-3x svg-icon-success d-block my-2">
                 <SVG
                   src={toAbsoluteUrl(

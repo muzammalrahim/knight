@@ -35,7 +35,7 @@ export function Header() {
           {layoutProps.menuHeaderDisplay && <HeaderMenuWrapper />}
           {!layoutProps.menuHeaderDisplay && <div />}
           {/*end::Header Menu Wrapper*/}
-
+    
           {/*begin::Topbar*/}
           <Topbar />
           {/*end::Topbar*/}
