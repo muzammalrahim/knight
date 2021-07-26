@@ -9,7 +9,14 @@ import {useHtmlClassService} from "../../../layout";
 import { useHistory } from "react-router";
 import { FormattedMessage } from "react-intl";
 import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
+import {
+  createMuiTheme,
+  responsiveFontSizes,
+  MuiThemeProvider,
+} from "@material-ui/core";
+
+let theme = createMuiTheme();
+theme = responsiveFontSizes(theme)
 
 export function MixedWidget1({ className }) {
   const uiService = useHtmlClassService();
@@ -85,12 +92,21 @@ export function MixedWidget1({ className }) {
         >
     
           {/* <Box fontSize="h1.fontSize" m={1} align="center">
-          Fair Market Valuee
+          Fair Market Value
         </Box> */}
 
-        <Typography variant="h1" component="h2" align="center">
+        {/* <Typography   variant="h1" component="h2" align="center">
+        Fair Market Value
+</Typography> */}
+
+
+      <MuiThemeProvider theme={theme}>
+      <Typography   variant="h1" component="h2" align="center">
         Fair Market Value
 </Typography>
+      
+      </MuiThemeProvider>
+
         </div>
 
         {/* Stat */}
