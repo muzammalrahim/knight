@@ -112,7 +112,7 @@ export function MixedWidget1({ className }) {
         {/* Stat */}
         <div className="card-spacer mt-n25">
           <div className="row m-0">
-            <div className="col bg-primary px-6 py-8 rounded-xl mr-7 mb-7" style={{cursor:'pointer'}} onClick={()=>{handleClick('speaker/create')}}>
+            <div className="col px-6 py-8 rounded-xl mr-7 mb-7" style={{cursor:'pointer',backgroundColor:"#1d2d51"}} onClick={()=>{handleClick('speaker/create')}}>
               <span className="svg-icon svg-icon-3x svg-icon-success d-block my-2">
                 <SVG
                   src={toAbsoluteUrl("/media/svg/icons/Communication/Group.svg")}
@@ -125,7 +125,7 @@ export function MixedWidget1({ className }) {
                 <FormattedMessage id="Dashboard.New.Speaker" />
               </a>
             </div>
-            <div className="col bg-light-primary px-6 py-8 rounded-xl mb-7" style={{cursor:'pointer'}} onClick={()=>{handleClick('event/create')}}>
+            <div className="col px-6 py-8 rounded-xl mb-7" style={{cursor:'pointer',backgroundColor:"#d2dfef"}} onClick={()=>{handleClick('event/create')}}>
               <span className="svg-icon svg-icon-3x svg-icon-primary d-block my-2">
                 <SVG
                   src={toAbsoluteUrl(
@@ -142,7 +142,7 @@ export function MixedWidget1({ className }) {
             </div>
           </div>
           {user.is_superuser === true && <div className="row m-0">
-            <div className="col bg-warning px-6 py-8 rounded-xl mr-7" style={{cursor:'pointer'}} onClick={()=>{handleClick('user/create')}}>
+            <div className="col  px-6 py-8 rounded-xl mr-7" style={{cursor:'pointer',backgroundColor:"#ffc000"}} onClick={()=>{handleClick('user/create')}}>
               <span className="svg-icon svg-icon-3x svg-icon-primary d-block my-2">
                 <SVG
                   src={toAbsoluteUrl("/media/svg/icons/Communication/Add-user.svg")}
@@ -155,7 +155,7 @@ export function MixedWidget1({ className }) {
                 <FormattedMessage id="Dashboard.New.User" />
               </a>
             </div>
-            <div className="col bg-light-warning px-6 py-8 rounded-xl" style={{cursor:'pointer'}} onClick={()=>{handleClick('approvals')}}>
+            <div className="col px-6 py-8 rounded-xl" style={{cursor:'pointer',backgroundColor:"#fcecd2"}} onClick={()=>{handleClick('approvals')}}>
               <span className="svg-icon svg-icon-3x svg-icon-success d-block my-2">
                 <SVG
                   src={toAbsoluteUrl(
