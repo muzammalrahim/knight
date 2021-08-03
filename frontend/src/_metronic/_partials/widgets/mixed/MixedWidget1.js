@@ -9,7 +9,14 @@ import {useHtmlClassService} from "../../../layout";
 import { useHistory } from "react-router";
 import { FormattedMessage } from "react-intl";
 import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
+import {
+  createMuiTheme,
+  responsiveFontSizes,
+  MuiThemeProvider,
+} from "@material-ui/core";
+
+let theme = createMuiTheme();
+theme = responsiveFontSizes(theme)
 
 export function MixedWidget1({ className }) {
   const uiService = useHtmlClassService();
@@ -85,18 +92,27 @@ export function MixedWidget1({ className }) {
         >
     
           {/* <Box fontSize="h1.fontSize" m={1} align="center">
-          Fair Market Valuee
+          Fair Market Value
         </Box> */}
 
-        <Typography variant="h1" component="h2" align="center">
+        {/* <Typography   variant="h1" component="h2" align="center">
+        Fair Market Value
+</Typography> */}
+
+
+      <MuiThemeProvider theme={theme}>
+      <Typography style={{fontWeight:"bold"}}  variant="h1" component="h2" align="center">
         Fair Market Value
 </Typography>
+      
+      </MuiThemeProvider>
+
         </div>
 
         {/* Stat */}
         <div className="card-spacer mt-n25">
           <div className="row m-0">
-            <div className="col bg-primary px-6 py-8 rounded-xl mr-7 mb-7" style={{cursor:'pointer'}} onClick={()=>{handleClick('speaker/create')}}>
+            <div className="col px-6 py-8 rounded-xl mr-7 mb-7" style={{cursor:'pointer',backgroundColor:"#1d2d51"}} onClick={()=>{handleClick('speaker/create')}}>
               <span className="svg-icon svg-icon-3x svg-icon-success d-block my-2">
                 <SVG
                   src={toAbsoluteUrl("/media/svg/icons/Communication/Group.svg")}
@@ -109,7 +125,7 @@ export function MixedWidget1({ className }) {
                 <FormattedMessage id="Dashboard.New.Speaker" />
               </a>
             </div>
-            <div className="col bg-light-primary px-6 py-8 rounded-xl mb-7" style={{cursor:'pointer'}} onClick={()=>{handleClick('event/create')}}>
+            <div className="col px-6 py-8 rounded-xl mb-7" style={{cursor:'pointer',backgroundColor:"#d2dfef"}} onClick={()=>{handleClick('event/create')}}>
               <span className="svg-icon svg-icon-3x svg-icon-primary d-block my-2">
                 <SVG
                   src={toAbsoluteUrl(
@@ -126,7 +142,7 @@ export function MixedWidget1({ className }) {
             </div>
           </div>
           {user.is_superuser === true && <div className="row m-0">
-            <div className="col bg-warning px-6 py-8 rounded-xl mr-7" style={{cursor:'pointer'}} onClick={()=>{handleClick('user/create')}}>
+            <div className="col  px-6 py-8 rounded-xl mr-7" style={{cursor:'pointer',backgroundColor:"#ffc000"}} onClick={()=>{handleClick('user/create')}}>
               <span className="svg-icon svg-icon-3x svg-icon-primary d-block my-2">
                 <SVG
                   src={toAbsoluteUrl("/media/svg/icons/Communication/Add-user.svg")}
@@ -139,7 +155,7 @@ export function MixedWidget1({ className }) {
                 <FormattedMessage id="Dashboard.New.User" />
               </a>
             </div>
-            <div className="col bg-light-warning px-6 py-8 rounded-xl" style={{cursor:'pointer'}} onClick={()=>{handleClick('approvals')}}>
+            <div className="col px-6 py-8 rounded-xl" style={{cursor:'pointer',backgroundColor:"#fcecd2"}} onClick={()=>{handleClick('approvals')}}>
               <span className="svg-icon svg-icon-3x svg-icon-success d-block my-2">
                 <SVG
                   src={toAbsoluteUrl(
